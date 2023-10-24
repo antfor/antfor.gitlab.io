@@ -17,23 +17,50 @@ body {
   width: 100%;
 }
 
-
-/*
-
-.navbar {
-  background-color: #313236;
-  border-radius: 2px;
-  /*max-width: 800px;
-} 
-.navbar a {
-  color: #aaa;
-  display: inline-block;
-  font-size: 15px;
-  padding: 10px;
-  text-decoration: none;
+iframe {
+  border: none;
+  height: 100%;
+  width: 100%;
 }
 
-.navbar a:hover {
-  color: #ffffff;
+
+.logo {
+  font-family: 'Libre Barcode 128 Text';font-size: 39px;
 }
-*/
+
+.card{
+
+  margin-left: 10%;
+  opacity: 0.5;
+}
+
+.relarive {
+  position: relative;
+
+  left:0;
+  top:0;
+  z-index:-1;
+  height: 100%;
+  width: 100%;
+}
+
+.background {
+
+  position: absolute;
+
+  z-index:-1;
+  border: none;
+  height: 100%;
+  width: 100%;
+}
+
+
+.foreground0 {
+  position: absolute;
+  left:0;
+  top:1;
+  z-index:0;
+  height: 50%;
+  width: 100%;
+
+}

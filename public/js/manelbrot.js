@@ -1,33 +1,90 @@
+
 const vs = `
-    attribute vec4 v_position;
+    attribute vec4 position;
 
     void main() {
-      gl_Position = v_position;
-    }     
+    gl_Position = position;
+    }  
 `;
 
 const fs = `
-    precision mediump float;
+precision highp float;
 
-    void main() {
-       gl_FragColor = vec4(fract(gl_FragCoord.xy / vec2(16., 32.)),0,1); 
+uniform vec2 resolution;
+uniform float time;
+
+float mandelbrot( in vec2 c )
+{
+ 
+   {
+    float c2 = dot(c, c);
+    float s1 = 256.0*c2*c2 - 96.0*c2 + 32.0*c.x - 3.0;
+    
+    // early skip computation inside M1
+    if( s1 < 0.0 ) return 0.0;
+    
+    float s2 = 16.0*(c2+2.0*c.x+1.0) - 1.0;
+    // early skip computation inside M2
+    if( s2 < 0.0 ) return 0.0;
+   }
+
+    float l = 0.0;
+    vec2 z  = vec2(0.0);
+
+    for( int i=0; i< 128; i++ )
+    {
+        z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
+        if( dot(z,z)>= 100.0) break;
+        l += 1.0;   
     }
-`;
+    
+    if( l>=128.0 ) return 0.0;
+    
+    float sl = 1.0 + l - log(log(length(z))/log(2.0))/log(2.0);
 
-var gl = document.querySelector("canvas").getContext("webgl");
-var shader_program = twgl.createProgram(gl, [vs, fs]);
-gl.useProgram(shader_program);
-var vertexPositionAttribute = gl.getAttribLocation(shader_program, "v_position");
-var quad_vertex_buffer = gl.createBuffer();
-var quad_vertex_buffer_data = new Float32Array([ 
-    -1.0, -1.0, 0.0,
-     1.0, -1.0, 0.0,
-    -1.0,  1.0, 0.0,
-    -1.0,  1.0, 0.0,
-     1.0, -1.0, 0.0,
-     1.0,  1.0, 0.0]);
-gl.bindBuffer(gl.ARRAY_BUFFER, quad_vertex_buffer);
-gl.bufferData(gl.ARRAY_BUFFER, quad_vertex_buffer_data, gl.STATIC_DRAW);
-gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-gl.enableVertexAttribArray(vertexPositionAttribute);
-gl.drawArrays(gl.TRIANGLES, 0, 6);
+    return sl;
+}
+
+void main()
+{
+    vec3 col = vec3(0.0,0.5,0.5);//vec3(0.0);
+     
+    vec2 p = (gl_FragCoord.xy*2.0 - resolution.xy) * 2.0/ resolution.x;
+  
+    p += vec2(-1.5,0.0);
+    float l = mandelbrot(p);
+
+    col = 0.5 + 0.5*cos( 3.0 + l*0.15 + vec3(0.0,0.6,1.0));
+
+    gl_FragColor = vec4( col, 1.0 );
+}
+
+`;
+const gl = document.getElementById("c").getContext("webgl");
+const programInfo = twgl.createProgramInfo(gl, [vs, fs]);
+ 
+const arrays = {
+  position: [-1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0],
+};
+const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
+
+
+function render(time){
+	
+    twgl.resizeCanvasToDisplaySize(gl.canvas);
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+    const uniforms = {
+        time: time * 0.001,
+        resolution: [gl.canvas.width, gl.canvas.height],
+      };
+
+    gl.useProgram(programInfo.program);
+    twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
+    twgl.setUniforms(programInfo, uniforms);
+    twgl.drawBufferInfo(gl, bufferInfo);
+
+	requestAnimationFrame(render)
+}
+
+requestAnimationFrame(render)
