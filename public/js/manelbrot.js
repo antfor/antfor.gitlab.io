@@ -13,9 +13,13 @@ precision highp float;
 uniform vec2 resolution;
 uniform float time;
 
-float mandelbrot( in vec2 c )
+float mandelbrot( in vec2 fragCoord )
 {
  
+    vec2 p = (fragCoord.xy*2.0 - resolution.xy) * 2.0/ resolution.x;
+  
+    vec2 c = p*1.3 + vec2(-1.5,0.0);
+
    {
     float c2 = dot(c, c);
     float s1 = 256.0*c2*c2 - 96.0*c2 + 32.0*c.x - 3.0;
@@ -48,14 +52,17 @@ float mandelbrot( in vec2 c )
 void main()
 {
     vec3 col = vec3(0.0,0.5,0.5);//vec3(0.0);
-     
-    vec2 p = (gl_FragCoord.xy*2.0 - resolution.xy) * 2.0/ resolution.x;
-  
-    p += vec2(-1.5,0.0);
-    float l = mandelbrot(p);
 
+    //float l0 = mandelbrot(gl_FragCoord.xy + vec2(0.125,0.375));
+    //float l1 = mandelbrot(gl_FragCoord.xy + vec2(0.375,-0.125));
+    //float l2 = mandelbrot(gl_FragCoord.xy + vec2(-0.375,0.375));
+    //float l3 = mandelbrot(gl_FragCoord.xy + vec2(-0.125,-0.125));
+    //float l = (l0+l1+l2+l3)*0.25;
+
+    float l = mandelbrot(gl_FragCoord.xy);
+    
     col = 0.5 + 0.5*cos( 3.0 + l*0.15 + vec3(0.0,0.6,1.0));
-
+    //col =  vec3(l/64.0);
     gl_FragColor = vec4( col, 1.0 );
 }
 
