@@ -31,14 +31,14 @@ float mandelbrot( in vec2 c )
     float l = 0.0;
     vec2 z  = vec2(0.0);
 
-    for( int i=0; i< 128; i++ )
+    for( int i=0; i< 256; i++ )
     {
         z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
         if( dot(z,z)>= 100.0) break;
         l += 1.0;   
     }
     
-    if( l>=128.0 ) return 0.0;
+    if( l>=256.0 ) return 0.0;
     
     float sl = 1.0 + l - log(log(length(z))/log(2.0))/log(2.0);
 
@@ -71,7 +71,8 @@ const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
 
 function render(time){
 	
-    twgl.resizeCanvasToDisplaySize(gl.canvas);
+    const multiplier = 4;
+    twgl.resizeCanvasToDisplaySize(gl.canvas, multiplier);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     const uniforms = {
