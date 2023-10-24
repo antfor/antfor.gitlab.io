@@ -78,7 +78,7 @@ const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
 
 function render(time){
 	
-    const multiplier = 4;
+    const multiplier = 2;
     twgl.resizeCanvasToDisplaySize(gl.canvas, multiplier);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
