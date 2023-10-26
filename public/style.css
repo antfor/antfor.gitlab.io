@@ -48,7 +48,7 @@ iframe {
 
   position: absolute;
 
-  z-index:-1;
+  z-index:0;
   border: none;
   height: 100%;
   width: 100%;
@@ -59,7 +59,7 @@ iframe {
   position: absolute;
   left:0;
   top:1;
-  z-index:0;
+  z-index:1;
   height: 50%;
   width: 100%;
 
