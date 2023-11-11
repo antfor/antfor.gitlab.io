@@ -13,12 +13,34 @@ precision highp float;
 uniform vec2 resolution;
 uniform float time;
 
+vec2 zoom(in vec2 zero){
+
+    float tot_time = 1.0;//5.0/1000.0;
+    float animation_time = 30.0;
+
+    
+    float ftime = 0.0;
+
+    if(time < animation_time) 
+        ftime = 1.0 - pow(cos(time * 3.14159265 / animation_time),2.0*4.6740);
+    
+    
+    
+    vec2 pos = vec2(-1.49,0.0);
+
+    float zoom_min = 1.3;
+    float zoom_max = 1.0/10000.0;
+
+    float zoom = zoom_max * ftime/tot_time + zoom_min * (1.0 - ftime/tot_time);
+
+    return zoom * zero + pos;
+}
+
 float mandelbrot( in vec2 fragCoord )
 {
  
     vec2 p = (fragCoord.xy*2.0 - resolution.xy) * 2.0/ resolution.x;
-  
-    vec2 c = p*1.3 + vec2(-1.5,0.0);
+    vec2 c = zoom(p);
 
    {
     float c2 = dot(c, c);
@@ -75,15 +97,38 @@ const arrays = {
 };
 const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
 
+let start = 0.0;
+let start_animate = false;
+let animate = false;
+let animation_time = 30.0;
 
 function render(time){
-	
+
+    if(start_animate){
+        start_animate = false;
+        start = time;
+        animate = true;
+    }
+
+    let glTime = (time - start) * 0.001;
+
+    if(glTime > animation_time){
+        
+        animate = false;
+        toggleZoomButton(false);
+        
+    }  
+    
+    if(!animate){
+        glTime = 0;
+    }
+
     const multiplier = 2;
     twgl.resizeCanvasToDisplaySize(gl.canvas, multiplier);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     const uniforms = {
-        time: time * 0.001,
+        time: glTime,
         resolution: [gl.canvas.width, gl.canvas.height],
       };
 
@@ -96,3 +141,25 @@ function render(time){
 }
 
 requestAnimationFrame(render)
+
+//jQuery
+function toggleZoomButton(b){
+
+    $('#zoom_button').prop("disabled", b);
+}
+
+
+
+$(function(){
+
+    $('#zoom_button').on('click', function (e) {
+    
+        if(!animate){
+            start_animate = true;
+            toggleZoomButton(true);
+        }
+    
+    });
+        
+    
+});
