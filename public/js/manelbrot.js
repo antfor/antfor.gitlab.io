@@ -22,8 +22,7 @@ vec2 zoom(in vec2 zero){
     float ftime = 0.0;
 
     if(time < animation_time) 
-        ftime = 1.0 - pow(cos(time * 3.14159265 / animation_time),2.0*4.6740);
-    
+        ftime = 1.0 - pow(cos(time * 3.14159265 / animation_time),8.0);
     
     
     vec2 pos = vec2(-1.49,0.0);
