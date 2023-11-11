@@ -75,7 +75,7 @@ iframe {
 
 .jump {
   --fa-animation-iteration-count: 2;
-  --fa-animation-delay : 1s;
+  --fa-animation-delay : 2s;
 }
 
 .opacity50 {
