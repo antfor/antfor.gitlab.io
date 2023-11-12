@@ -12,27 +12,50 @@ precision highp float;
 
 uniform vec2 resolution;
 uniform float time;
+uniform float animation_time;
+uniform int animation;
 
-float animation_time = 30.0;
 
-float zoom(){
+float getTime(){
 
     float ftime = 0.0;
 
     if(time < animation_time) 
         ftime = 1.0 - pow(cos(time * 3.14159265 / animation_time),8.0);
     
+    return ftime;
+}
+
+float getMaxZoom(){
+    return animation == 0 ? 1.0/10000.0 : 1.0/100000.0;
+}
+
+float zoom(){
+
+    float ftime = getTime();
+
     float zoom_min = 1.3;
-    float zoom_max = 1.0/10000.0;
+    float zoom_max = getMaxZoom();
 
     float zoom = zoom_max * ftime + zoom_min * (1.0 - ftime);
 
     return zoom;
 }
 
+vec2 getEndPos(){
+
+    return animation == 0 ? vec2(-1.49,0.0) : vec2(-0.743643900055, 0.131825890901);
+}
+
 vec2 translate(){
 
-    vec2 pos =  vec2(-1.49,0.0);
+    float ftime = getTime();
+
+    vec2 start = vec2(-1.49,0.0);
+    vec2 end = getEndPos();
+
+    vec2 pos = start * (1.0 - ftime) + end * ftime;
+
     return pos;
 }
 
@@ -66,7 +89,7 @@ float mandelbrot( in vec2 fragCoord )
     float l = -1.0;
     vec2 z  = vec2(0.0);
 
-    for( int i=0; i< 256; i++ )
+    for( int i=0; i< 512; i++ )
     {
         z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
         if( dot(z,z)>= 100.0) {
@@ -79,61 +102,18 @@ float mandelbrot( in vec2 fragCoord )
 
 }
 
-float mandelbrot_prep( in vec2 fragCoord )
-{
-    vec2 p = (fragCoord.xy*2.0 - resolution.xy) * 2.0/ resolution.x;
-
-    vec2 c = translate();
-    vec2 dc = p * zoom();
-
-    {
-        vec2 cdc = c + dc;
-        float c2 = dot(cdc, cdc);
-        float s1 = 256.0*c2*c2 - 96.0*c2 + 32.0*cdc.x - 3.0;
-        
-        // early skip computation inside M1
-        if( s1 < 0.0 ) return 0.0;
-        
-        float s2 = 16.0*(c2+2.0*cdc.x+1.0) - 1.0;
-        // early skip computation inside M2
-        if( s2 < 0.0 ) return 0.0;
-    }
-
-    vec2 z = vec2(0.0);
-    vec2 dz = vec2(0.0);
-
-    float l = -1.0;
-
-    for(int i=0; i< 256; i++){
-
-        vec2 a = 2.0*z+dz;
-        dz = vec2(a.x*dz.x-a.y*dz.y, a.x*dz.y+a.y*dz.x) + dc;
-        z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
-
-        if( dot(dz,dz)>= 100.0) {
-            l = float(i);  
-            break;
-        }
-
-    }
-
-    return smooth(l,z + dz); // dz?
-}
 
 void main()
 {
     vec3 col = vec3(0.0,0.5,0.5);//vec3(0.0);
 
-    //float l0 = mandelbrot(gl_FragCoord.xy + vec2(0.125,0.375));
-    //float l1 = mandelbrot(gl_FragCoord.xy + vec2(0.375,-0.125));
-    //float l2 = mandelbrot(gl_FragCoord.xy + vec2(-0.375,0.375));
-    //float l3 = mandelbrot(gl_FragCoord.xy + vec2(-0.125,-0.125));
-    //float l = (l0+l1+l2+l3)*0.25;
-
-    //float l = mandelbrot(gl_FragCoord.xy);
-    float l = mandelbrot_prep(gl_FragCoord.xy);
+    float l = mandelbrot(gl_FragCoord.xy);
     
-    col = 0.5 + 0.5*cos( 3.0 + l*0.15 + vec3(0.0,0.6,1.0));
+
+    float col_scale = animation == 0 ? 1.0 : pow( zoom(),0.2);
+
+    col = 0.5 + 0.5*cos( col_scale*l*0.15 + vec3(3.0,3.6,4.0));
+
     //col =  vec3(l/64.0);
     gl_FragColor = vec4( col, 1.0 );
 }
@@ -152,6 +132,9 @@ let start_animate = false;
 let animate = false;
 let animation_time = 30.0;
 
+let num_animation = 2; 
+let animation = 0;
+
 function render(time){
 
     if(start_animate){
@@ -162,8 +145,9 @@ function render(time){
 
     let glTime = (time - start) * 0.001;
 
-    if(glTime > animation_time){
+    if(animate && glTime > animation_time){
         
+        animation = (animation + 1) % num_animation;
         animate = false;
         toggleZoomButton(false);
         
@@ -180,6 +164,9 @@ function render(time){
     const uniforms = {
         time: glTime,
         resolution: [gl.canvas.width, gl.canvas.height],
+        animation_time: animation_time,
+        animation: animation,
+
       };
 
     gl.useProgram(programInfo.program);
