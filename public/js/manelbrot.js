@@ -86,6 +86,19 @@ float mandelbrot_prep( in vec2 fragCoord )
     vec2 c = translate();
     vec2 dc = p * zoom();
 
+    {
+        vec2 cdc = c + dc;
+        float c2 = dot(cdc, cdc);
+        float s1 = 256.0*c2*c2 - 96.0*c2 + 32.0*cdc.x - 3.0;
+        
+        // early skip computation inside M1
+        if( s1 < 0.0 ) return 0.0;
+        
+        float s2 = 16.0*(c2+2.0*cdc.x+1.0) - 1.0;
+        // early skip computation inside M2
+        if( s2 < 0.0 ) return 0.0;
+    }
+
     vec2 z = vec2(0.0);
     vec2 dz = vec2(0.0);
 
