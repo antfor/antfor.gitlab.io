@@ -27,7 +27,7 @@ float getTime(){
 }
 
 float getMaxZoom(){
-    return animation == 0 ? 1.0/10000.0 : 1.0/100000.0;
+    return animation == 0 ? 1.0/10000.0 : 1.0/30000.0;
 }
 
 float zoom(){
