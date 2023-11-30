@@ -37,34 +37,132 @@ void main() {
 
 "use strict";
 
-function forward(state){
+function push(state){
+
+  let m = state.getMat();
+  state.push(...m);
+
+}
+
+function pop(state){
+
+  state.pop();
+}
+
+function forwardVal(state, val){
   
   state.numInstances += 1;
   let m = state.getMat();
-  state.save(...m); 
-  m4.translate(m, [0, state.step, 0], m);
+  let scale = m4.scaling([1, val, 1]);
+  m4.multiply(m, scale, scale);
+  state.save(...scale); 
+  m4.translate(m, [0, state.step * val, 0], m);
   state.update(...m);
 
 }
 
+// F
+function forward(state){
+  forwardVal(state, 1);
+}
+
+
+function forwardColorVal(state, val){
+  forwardVal(state, val);
+  state.pushColor(...state.color);
+}
+
+function forwardColor(state){
+  forwardColorVal(state, 1);
+}
+
+// f Forward without drawing
+function translateVal(state, val){
+  let m = state.getMat();
+  m4.translate(m, [0, state.step * val, 0], m);
+  state.update(...m);
+}
+
+// f
+function translate(state){
+  translateVal(state, 1);
+}
+
+
+// +-
+function yaw(state, angle){
+  let m = state.getMat();
+  m4.rotateZ(m, angle * Math.PI/180.0, m);
+  state.update(...m);
+}
+
+// ^& 
+function pitch(state, angle){
+  let m = state.getMat();
+  m4.rotateX(m, angle * Math.PI/180.0, m);
+  state.update(...m);
+}
+
+// \/
+function roll(state, angle){
+  let m = state.getMat();
+  m4.rotateY(m, angle * Math.PI/180.0, m);
+  state.update(...m);
+}
+
+//|
+function turnAround(state){
+  yaw(state, 180);
+}
+
+//+
 function turnRight(state){
+  yaw(state, state.angle);
+}
+
+//-
+function turnLeft(state){
+  yaw(state, -state.angle);
+}
+
+//Cn
+function color(state, RGB){
+  state.color.set(RGB);
+}
+
+//! 
+function width(state, width){
   let m = state.getMat();
-  m4.rotateZ(m, state.angle * Math.PI/180.0, m);
+  let scale = m4.scaling([width, 1, width]);
+  m4.multiply(scale, m, m); //m * scale ???
   state.update(...m);
 }
 
-function turnLeft(state){
+//f foward function
+function tropismVal(T, e, f, state, val){
+
+  f(state, val);  
+
   let m = state.getMat();
-  m4.rotateZ(m, -state.angle * Math.PI/180.0, m);
-  this.stack = m4.translation([0,step,0]);
+  let H = getAxis(m);
+  let axis = v3.cross(H, T, H);
+  m4.rotate(m, axis, v3.length(axis)*e, m);
   state.update(...m);
 }
+
+
+//~
+//function shape(state, shape){
+//  state.shape = shape;
+//}
+
 class Rule {
 
-  constructor(pred, succ, func) {
+  constructor(pred, succ, func, val = false) {
     this.pred = pred;
     this.succ = succ;
-    this.func = func
+    this.func = func;
+    this.valuFunction = val;
   }
 
 
@@ -83,30 +181,38 @@ class State{
 
 
   pop(n=16){
-    this.stack = this.stack.slice(0, this.stack.length - n);
+    //this.stack = this.stack.slice(0, this.stack.length - n);
+    this.stack.splice(this.stack.length - n, n);
   }
 
   push(...mat){
-    //this.stack.push(...mat);
-    this.stack = [...this.stack, ...mat];
+    this.stack.push(...mat);
+    //this.stack = [...this.stack, ...mat];
+  }
+
+  pushColor(...col){
+    this.colors.push(...col);
   }
 
   getMat(n=16){
     return this.stack.slice(this.stack.length - n, this.stack.length);
+    //return this.stack.subarray(this.stack.length - n, this.stack.length);
   }
 
   save(...mat){
-    //this.saveStates.push(...mat);
-    this.saveStates = [...this.saveStates, ...mat];
+    this.saveStates.push(...mat);
+    //this.saveStates = [...this.saveStates, ...mat];
   }
 
   reset(angle=90,step=1.0, dir = [0,1,0], scale = [1,1,1]){
     this.dir = dir;
     this.angle = angle;
     this.step = step;
-    this.stack = m4.scaling(scale);
+    this.stack = [...m4.scaling(scale)];
     this.saveStates = [];
     this.numInstances = 0;
+    this.color = new Float32Array(3);
+    this.colors = [];
   }
 }
 
@@ -125,6 +231,64 @@ class FractalFactory {
 
     return new Fractal(axiom, 90, scale, step, rf, ry, rp, rm);
 
+  }
+
+  bushC(scale = [1,1,1], step = 1.0){
+    let axiom = "F";
+    let rf = new Rule("F", "FF-[-F+F+F]+[+F-F-F]", forward);
+    let rp = new Rule("+", undefined, turnRight);
+    let rm = new Rule("-", undefined, turnLeft);
+    let rs = new Rule("[", undefined, push);
+    let rl = new Rule("]", undefined, pop);
+
+    return new Fractal(axiom, 22.5, scale, step, rf, rp, rm, rs, rl);
+  }
+
+  bushCParCOl(scale = [1,1,1], step = 1.0){
+    let axiom = "F";
+    let rf = new Rule("F", ['C',[140/255, 80/255, 60/255],..."FFC",[24/255, 180/255, 24/255],..."-[-F+F+F]C",[48/255, 220/255, 48/255],..."+[+F-F-F]"], forwardColor);
+    let rc = new Rule("C", undefined, color, true);
+    let rp = new Rule("+", undefined, turnRight);
+    let rm = new Rule("-", undefined, turnLeft);
+    let rs = new Rule("[", undefined, push);
+    let rl = new Rule("]", undefined, pop);
+
+    return new Fractal(axiom, 22.5, scale, step, rf, rp, rm, rc, rs, rl);
+  }
+
+  bushCCol(scale = [1,1,1], step = 1.0){
+    let axiom = "F";
+    let rf = new Rule("F", "BFF-G[-F+F+F]+L[+F-F-F]", forwardColor);
+    let rp = new Rule("+", undefined, turnRight);
+    let rm = new Rule("-", undefined, turnLeft);
+    let rB = new Rule("B", undefined, s => color(s,[140/255, 80/255, 60/255]));
+    let rG = new Rule("G", undefined, s => color(s,[24/255, 180/255, 24/255]));
+    let rL = new Rule("L", undefined, s => color(s,[48/255, 220/255, 48/255]));
+    let rs = new Rule("[", undefined, push);
+    let rl = new Rule("]", undefined, pop);
+
+    return new Fractal(axiom, 22.5, scale, step, rf, rp, rm, rs, rl, rB, rG, rL);
+  }
+
+  parametricTree(scale = [1,1,1], step = 1.0){
+  
+    let axiom = "BA";
+    let R = 1.456;
+    // let rA = new Rule("A", ['F',1,'[','+','A',']','[','-','A',']' ], forward);
+    // let rA = new Rule("A", ['F', 1,..."[+A][-A]"], forward);
+    let rA = new Rule("A", "F1G[+A][-A]", forwardColor);
+    let rF = new Rule("F", (s) => ['B','F', s*R], forwardColorVal, true);
+    let rC = new Rule("C", undefined, s => color(s, [0,0.5,0.5]));
+    let rs = new Rule("[", undefined, push);
+    let rl = new Rule("]", undefined, pop);
+    let rp = new Rule("+", undefined, turnRight);
+    let rm = new Rule("-", undefined, turnLeft);
+    let rB = new Rule("B", undefined, s => color(s,[140/255, 80/255, 60/255]));
+    let rG = new Rule("G", undefined, s => color(s,[24/255, 180/255, 24/255]));
+    let rL = new Rule("L", undefined, s => color(s,[48/255, 220/255, 48/255]));
+    
+
+    return new Fractal(axiom, 85, scale, step, rA, rF, rs, rl,rp,rm,rB,rG, rL);
   }
 
 }
@@ -166,6 +330,37 @@ class Fractal {
     return this.state.saveStates;
   }
 
+  buildParametic(iteration, soucre = this.axiom){
+
+    if(iteration <= 0){
+
+      for(let i = 0; i < soucre.length; i++){
+        let r = this.rules.get(soucre[i]);
+
+        if(r.valuFunction){
+          r.func(this.state, soucre[++i]);
+        }else{
+          r.func(this.state);
+        }
+      }
+      
+    }else{
+      for(let i = 0; i < soucre.length; i++){
+       
+        let r = this.rules.get(soucre[i]);
+        if(r.succ === undefined){
+          r.func(this.state);
+        }else if(r.valuFunction){
+          this.buildParametic(iteration-1, r.succ(soucre[++i]));
+        }else{
+          this.buildParametic(iteration-1, r.succ);
+        }
+      }
+    }
+   
+    return this.state.saveStates;
+  }
+
 }
   const m4 = twgl.m4;
   const v3 = twgl.v3;
@@ -187,25 +382,26 @@ class Fractal {
 
   let numInstances = 1000;
   let instanceWorlds = []; //new Float32Array(numInstances * 16);
-  const instanceColors = [];
-  const r = 1;
+  let instanceColors = [];
 
-  let mat = m4.create();
-  m4.translation([0, 0, 0], mat);
-  let s = 1;
-  let step = 0.3;
+  let s = 1.1;
+  let step = 1;
   uniforms.step = step;
-  let thickness = 0.05;
-  
- 
-  m4.scale(mat, [s, s, s], mat);
+  let thickness = step/8.0;
+
 
 
   let factory = new FractalFactory();
 
-  let fractal = factory.dragon([s, s, s], step);
-  let soy = fractal.build(8);
+  //let fractal = factory.bushCCol([s, s, s], step);
+  //let soy = fractal.build(5);
 
+  let fractal = factory.parametricTree([s, s, s], step);
+  let soy = fractal.buildParametic(6);
+
+  //build fractal
+  //draw fractal
+  
   instanceWorlds = soy;
 
   numInstances = soy.length / 16;
@@ -222,9 +418,9 @@ class Fractal {
     instanceColors.push(0.0, 0.5, 0.5);
   }
 
-  
+  instanceColors = fractal.state.colors;
 
-  const arrays = twgl.primitives.createCylinderVertices(thickness,step,10,10);
+  const arrays = twgl.primitives.createCylinderVertices(thickness,step,9,1);
   Object.assign(arrays, {
     instanceWorld: {
       numComponents: 16,
@@ -241,9 +437,20 @@ class Fractal {
   const vertexArrayInfo = twgl.createVertexArrayInfo(gl, programInfo, bufferInfo);
 
 
+
+const fpsElem = document.querySelector("#fps");
+let then = 0;
 function render(time) {
     time *= 0.001;
-    twgl.resizeCanvasToDisplaySize(gl.canvas);
+
+    const deltaTime = time - then;          // compute time since last frame
+    then = time;                            // remember time for next frame
+    const fps = 1 / deltaTime;             // compute frames per second
+    fpsElem.textContent = fps.toFixed(1);
+
+    const multiplier = 2;
+    console.log("multiplyer: " + multiplier);
+    twgl.resizeCanvasToDisplaySize(gl.canvas, multiplier);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     gl.enable(gl.DEPTH_TEST);
@@ -255,9 +462,9 @@ function render(time) {
     const fov = 30 * Math.PI / 180;
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.5;
-    const zFar = 500;
+    const zFar = 700;
     const projection = m4.perspective(fov, aspect, zNear, zFar);
-    const radius = 25;
+    let radius =  350;
     const speed = time * .1;
     const eye = [
       Math.sin(Math.PI + speed) * radius, 
