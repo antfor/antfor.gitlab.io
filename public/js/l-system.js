@@ -53,12 +53,11 @@ function forwardVal(state, val){
   
   state.numInstances += 1;
   let m = state.getMat();
-  let scale = m4.scaling([1, val, 1]);
+  let scale = m4.scaling([state.width, val, state.width]);  //todo scale instead of scale and multiply
   m4.multiply(m, scale, scale);
   state.save(...scale); 
-  m4.translate(m, [0, state.step * val, 0], m);
+  m4.translate(m, [0, state.step * val, 0], m); //state.dir * state.step * val
   state.update(...m);
-
 }
 
 // F
@@ -69,7 +68,8 @@ function forward(state){
 
 function forwardColorVal(state, val){
   forwardVal(state, val);
-  state.pushColor(...state.color);
+  state.pushColor(rand(0,1),rand(0,1),rand(0,1));
+  //state.pushColor(...state.color);
 }
 
 function forwardColor(state){
@@ -79,7 +79,7 @@ function forwardColor(state){
 // f Forward without drawing
 function translateVal(state, val){
   let m = state.getMat();
-  m4.translate(m, [0, state.step * val, 0], m);
+  m4.translate(m, [0, state.step * val, 0], m); //state.dir * state.step * val
   state.update(...m);
 }
 
@@ -130,24 +130,73 @@ function color(state, RGB){
   state.color.set(RGB);
 }
 
-//! 
-function width(state, width){
+function vert(state){
+
   let m = state.getMat();
-  let scale = m4.scaling([width, 1, width]);
-  m4.multiply(scale, m, m); //m * scale ???
-  state.update(...m);
+  let H = m4.getAxis(m,1);
+  v3.normalize(H,H);
+  let V = [0,1,0];
+  let L = v3.cross(H, V);
+  v3.normalize(L, L);
+  let U = v3.cross(H, L);
+
+  m4.setAxis(m, L, 0, m);
+  m4.setAxis(m, U, 2, m);
+  state.update(...m);  
+
 }
 
+//! 
+function width(state, width){  //just store width in state and use it in forward m4.scaling([w, val, w]);
+  state.width = width;
+}
+
+function tf(T, e, f, state, val){
+  
+  tropismVal(T, e, f, state, val);
+  //tropismVal(T, e, f, state, val);
+
+}
 //f foward function
 function tropismVal(T, e, f, state, val){
 
-  f(state, val);  
+  f(state, val);
 
-  let m = state.getMat();
-  let H = getAxis(m);
-  let axis = v3.cross(H, T, H);
-  m4.rotate(m, axis, v3.length(axis)*e, m);
-  state.update(...m);
+  //let m = state.getMat();
+  //let H = m4.getAxis(m,1);
+  //let axis = v3.cross(H, T);
+  //console.log(axis);
+  //m4.axisRotate(m, axis, v3.length(axis)*e, m); //* Math.PI/180.0
+  //state.update(...m);
+//
+  //forwardColorVal(state, val);
+//
+  //
+  //let m = state.getMat();
+  //if(m.some(isNaN)){
+  //  console.log("NaNNaNNaNNaNNaNNaNNaNNaNNaNNaNNaNNaNNaNNaN");
+  //  console.log(m);
+  //  console.log(state);
+  //}
+//
+  //let H = m4.transformDirection(m,state.dir);
+  //
+  //v3.normalize(H,H);
+  //let axis = v3.cross(H, T);
+  //v3.normalize(axis, axis);
+  //
+  ////m4.axisRotate(m, axis, v3.length(axis)*e, m);
+  //let rot = m4.axisRotation(axis, v3.length(axis)*e);
+  //m4.multiply(m, rot, rot);
+//
+  //console.log("----");
+  //state.update(...m);
+
+  //let m = state.getMat();
+  //let H = m4.getAxis(m);
+  //let axis = v3.cross(H, T, H);
+  //m4.axisRotate(m, axis, v3.length(axis)*e, m);
+  //state.update(...m);
 }
 
 
@@ -175,14 +224,16 @@ class State{
   }
 
   update(...mat){
-    this.pop();
-    this.push(...mat);
+    //this.pop();
+    //this.push(...mat);
+    this.stack.splice(-mat.length,mat.length,...mat);
   }
 
 
   pop(n=16){
     //this.stack = this.stack.slice(0, this.stack.length - n);
-    this.stack.splice(this.stack.length - n, n);
+    //this.stack.splice(this.stack.length - n, n);
+    this.stack.splice(-n);
   }
 
   push(...mat){
@@ -195,7 +246,7 @@ class State{
   }
 
   getMat(n=16){
-    return this.stack.slice(this.stack.length - n, this.stack.length);
+    return this.stack.slice(-n);
     //return this.stack.subarray(this.stack.length - n, this.stack.length);
   }
 
@@ -205,13 +256,14 @@ class State{
   }
 
   reset(angle=90,step=1.0, dir = [0,1,0], scale = [1,1,1]){
-    this.dir = dir;
+    this.dir = new Float32Array(dir);
     this.angle = angle;
     this.step = step;
+    this.width = 1.0;
     this.stack = [...m4.scaling(scale)];
     this.saveStates = [];
     this.numInstances = 0;
-    this.color = new Float32Array(3);
+    this.color = new Float32Array([0,0.5,0.5]);
     this.colors = [];
   }
 }
@@ -291,6 +343,70 @@ class FractalFactory {
     return new Fractal(axiom, 85, scale, step, rA, rF, rs, rl,rp,rm,rB,rG, rL);
   }
 
+  treeTernary(scale = [1,1,1], step = 1.0, lr, vr, d1, d2, a, T, e){
+
+    let axiom = ['B','!',1,'F',200,'/', 45,'A'];
+    let rA = new Rule("A",['!',vr,'F',50,'[','&',a,'F',50,'A',']','/',d1,'[','&',a,'F',50,'A',']','/',d2,'[','&',a,'F',50,'A',']'],(s) => {});
+    let rF = new Rule("F", l => ['F', l * lr], (s,val) => tf(T, e, forwardColorVal,s, val) , true);
+    let rw = new Rule("!",w => ['!', w * vr], (s,val)=>{} , true); //width
+    let rs = new Rule("[", undefined, push);
+    let rl = new Rule("]", undefined, pop);
+    let rp = new Rule("/", undefined, (s,a) => roll(s,-a), true);
+    let rm = new Rule("&", undefined, pitch, true);
+    let rB = new Rule("B", undefined, s => color(s,[140/255, 80/255, 60/255]));
+    let rG = new Rule("G", undefined, s => color(s,[24/255, 180/255, 24/255]));
+
+    return new Fractal(axiom, 0, scale, step, rA, rF, rw, rs, rl, rp, rm, rB, rG);
+  }
+
+  ternaryTreeA(scale = [1,1,1], step = 1.0){
+    let d1 =94.74;
+    let d2 =132.63;
+    let a = 18.95;
+    let lr = 1.109;
+    let vr = 1.732;
+    let T = [0,-1,0];
+    let e =0.22;
+    return this.treeTernary(scale, step, lr, vr, d1, d2, a, T, e);
+  }
+
+  sympodialTree(scale = [1,1,1], step = 1.0, r1,r2,a1,a2,wr=0.707){
+
+    let axiom = ['A', [1,2]];
+    //A,B,F,!,-,+,/,&,[,],$
+    let rA = new Rule("A", lw =>['!', lw[1], 'F', lw[0], '[','&',a1,'B',[lw[0]*r1,lw[1]*wr],']',
+                                '/',180,'[','&',a2, 'B',[lw[0]*r2,lw[1]*wr],']'] ,(s,val) => {},true); //(s, lw) =>forwardColor(s,lw[0])
+    let rB = new Rule("B", lw =>['!', lw[1], 'F', lw[0], '[','+',a1,'$','B',[lw[0]*r1,lw[1]*wr], ']',
+                                  '[','-',a2,'$','B',[lw[0]*r2,lw[1]*wr],']'], (s,val) => {},true);
+    let rF = new Rule("F", undefined, (s,val) => forwardColorVal(s,val), true);
+    let rw = new Rule("!",undefined, width, true); //width
+    let rs = new Rule("[", undefined, push);
+    let rl = new Rule("]", undefined, pop);
+    let rr = new Rule("/", undefined, (s,a) => roll(s,a), true); //roll
+    let rp = new Rule("&", undefined, pitch, true);
+    let rm = new Rule("-", undefined, (s,a)=>yaw(s,-a), true);
+    let radd = new Rule("+", undefined, yaw, true);
+    let rV = new Rule("$", undefined, (s) => {}); //vert
+
+    console.log(rA.succ([1,1]));
+    console.log(rB.succ([1,1]));
+
+    return new Fractal(axiom, 0, scale, step, rA, rB, rF, rw, rs, rl, rr, rp, rm, radd, rV);
+
+  }
+
+  sympodialTreeA(scale = [1,1,1], step = 1.0){
+
+    let r1 = 0.9;
+    let r2 = 0.7;
+    let a1 = 5;
+    let a2 = 65;
+    let wr = 0.707;
+    return this.sympodialTree(scale, step, r1, r2, a1, a2, wr);
+  }
+
+
+
 }
 
 class Fractal {
@@ -348,8 +464,10 @@ class Fractal {
       for(let i = 0; i < soucre.length; i++){
        
         let r = this.rules.get(soucre[i]);
-        if(r.succ === undefined){
+        if(r.succ === undefined && !r.valuFunction){
           r.func(this.state);
+        }else if(r.succ === undefined && r.valuFunction){
+          r.func(this.state, soucre[++i]);
         }else if(r.valuFunction){
           this.buildParametic(iteration-1, r.succ(soucre[++i]));
         }else{
@@ -385,9 +503,10 @@ class Fractal {
   let instanceColors = [];
 
   let s = 1.1;
-  let step = 1;
+  let step = 100.0;
   uniforms.step = step;
   let thickness = step/8.0;
+  thickness = 5.0;
 
 
 
@@ -396,8 +515,9 @@ class Fractal {
   //let fractal = factory.bushCCol([s, s, s], step);
   //let soy = fractal.build(5);
 
-  let fractal = factory.parametricTree([s, s, s], step);
-  let soy = fractal.buildParametic(6);
+  //let fractal = factory.parametricTree([s, s, s], step);
+  let fractal = factory.sympodialTreeA([s, s, s], step);
+  let soy = fractal.buildParametic(10);
 
   //build fractal
   //draw fractal
@@ -449,7 +569,6 @@ function render(time) {
     fpsElem.textContent = fps.toFixed(1);
 
     const multiplier = 2;
-    console.log("multiplyer: " + multiplier);
     twgl.resizeCanvasToDisplaySize(gl.canvas, multiplier);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
@@ -457,14 +576,15 @@ function render(time) {
     gl.enable(gl.CULL_FACE);
     gl.clearColor(0.384314, 0.454902, 0.494118, 1);
     gl.clearColor(0.3, 0.3, 0.3, 1);
+    gl.clearColor(0.9, 0.9, 0.9, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     const fov = 30 * Math.PI / 180;
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.5;
-    const zFar = 700;
+    const zFar = 10000;
     const projection = m4.perspective(fov, aspect, zNear, zFar);
-    let radius =  350;
+    let radius =  3000;
     const speed = time * .1;
     const eye = [
       Math.sin(Math.PI + speed) * radius, 
