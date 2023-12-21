@@ -24,7 +24,8 @@ function push(state){
     let scale = m4.scaling([state.width, val, state.width]);  //todo scale instead of scale and multiply
     m4.multiply(m, scale, scale);
     state.save(...scale); 
-    m4.translate(m, [0, state.step * val, 0], m); //state.dir * state.step * val
+    m4.translate(m,v3.mulScalar(state.dir, val * state.step),m);
+   // m4.translate(m, [0, state.step * val, 0], m); //state.dir * state.step * val
     state.update(...m);
   }
   
@@ -33,10 +34,18 @@ function push(state){
     forwardVal(state, 1);
   }
   
+  function rand(min, max) {
+    if (max === undefined) {
+      max = min;
+      min = 0;
+    }
+    return min + Math.random() * (max - min);
+  }
   
   function forwardColorVal(state, val){
     forwardVal(state, val);
-    state.pushColor(...state.color);
+    //state.pushColor(...state.color);
+    state.pushColor(rand(0,1),rand(0,1),rand(0,1));
   }
   
   function forwardColor(state){
@@ -46,7 +55,8 @@ function push(state){
   // f Forward without drawing
   function translateVal(state, val){
     let m = state.getMat();
-    m4.translate(m, [0, state.step * val, 0], m); //state.dir * state.step * val
+    m4.translate(m,v3.mulScalar(state.dir, val * state.step),m);
+    //m4.translate(m, [0, state.step * val, 0], m); //state.dir * state.step * val
     state.update(...m);
   }
   
@@ -54,6 +64,14 @@ function push(state){
   function translate(state){
     translateVal(state, 1);
   }
+
+  function translateVec(state, Vec){
+    let m = state.getMat();
+    v3.mulScalar(Vec, state.step, Vec);
+    m4.translate(m, Vec, m);
+    state.update(...m);
+  }
+  
   
   
   // +-
@@ -150,9 +168,14 @@ function push(state){
     
   }
   
+  function scaleVal(state, scaleVec){
+    let m = state.getMat();
+    m4.scale(m, scaleVec, m);
+    state.update(...m);
+  }
   
   //~
   //function shape(state, shape){
   //  state.shape = shape;
   //}
-export {push, pop, forward, forwardVal, forwardColor, forwardColorVal, translate, translateVal, yaw, pitch, roll, turnAround, turnRight, turnLeft, color, vert, width, tf};
+export {push, pop, forward, forwardVal, forwardColor, forwardColorVal, translate, translateVal, yaw, pitch, roll, turnAround, turnRight, turnLeft, color, vert, width, tf, scaleVal, translateVec};

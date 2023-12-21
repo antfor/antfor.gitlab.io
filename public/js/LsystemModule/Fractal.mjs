@@ -9,9 +9,10 @@ class Fractal {
       this.axiom = axiom;
       this.rules = new Map();
       this.state = new State(angle, scale ,step);
-      
+      let parametic = false;
       for (let rule of rules) {
         this.rules.set(rule.pred, rule);
+        parametic ||= rule.valuFunction;
       }
 
       /*

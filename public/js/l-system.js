@@ -1,4 +1,5 @@
 import { FractalFactory } from './LsystemModule/FractalFactory.mjs';
+import { createTetrahedron } from './PrimitivesModule/Primitives.mjs';
 
 const vs = `
 uniform mat4 u_viewProjection;
@@ -33,6 +34,7 @@ void main() {
   vec3 a_normal = normalize(v_normal);
   float light = dot(u_lightDir, a_normal) * .5 + .5;
   gl_FragColor = vec4(v_color.rgb * light, v_color.a);
+  //gl_FragColor = vec4(a_normal, v_color.a);
 }
 `;
 
@@ -68,18 +70,18 @@ void main() {
   //thickness = 5.0;
 
 
-
   let factory = new FractalFactory();
 
   //let fractal = factory.bushCCol([s, s, s], step);
   //let soy = fractal.build(5);
 
   //let fractal = factory.parametricTree([s, s, s], step);
-  let fractal = factory.sympodialTreeA([s, s, s], step);
-  let soy = fractal.buildParametic(10);
-
-  
-
+  //let fractal = factory.sympodialTreeA([s, s, s], step);
+  //let soy = fractal.buildParametic(10);
+  let iterations =  3;
+  let L = 6;
+  let fractal = factory.sierpinskitetrahedron([s, s, s], L);
+  let soy = fractal.buildParametic(iterations);
   
   instanceWorlds = soy;
 
@@ -89,7 +91,12 @@ void main() {
 
   instanceColors = fractal.state.colors;
 
-  const arrays = twgl.primitives.createCylinderVertices(thickness,step,9,1);
+  //const arrays = twgl.primitives.createCylinderVertices(thickness,step,9,1);
+  //uniforms.step=0;
+  //uniforms.step = -L*Math.sqrt(2/3);
+  //const arrays = twgl.primitives.createTruncatedConeVertices(L/Math.sqrt(3), 0, L*Math.sqrt(2/3), 3, 1)
+  const arrays = createTetrahedron(L); 
+
   Object.assign(arrays, {
     instanceWorld: {
       numComponents: 16,
@@ -146,7 +153,6 @@ function render(time) {
     const camera = m4.lookAt(eye, target, up);
     const view = m4.inverse(camera);
     const viewProjection = m4.multiply(projection, view);
-    const world = m4.rotationY(time);
 
     uniforms.u_viewProjection = viewProjection;
 
