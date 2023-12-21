@@ -1,7 +1,7 @@
 import {Rule} from './Rule.mjs';
 import {State} from './State.mjs';
 import { Fractal } from './Fractal.mjs';
-import { push, pop, forward, forwardVal, forwardColor, forwardColorVal, translate, translateVal, yaw, pitch, roll, turnAround, turnRight, turnLeft, color, vert, width, tf } from './Turtle.mjs';
+import { push, pop, forward, forwardVal, forwardColor, forwardColorVal, translate, translateVal, yaw, pitch, roll, turnAround, turnRight, turnLeft, color, vert, width, tf, scaleVal, translateVec} from './Turtle.mjs';
 
 "use strict";
 
@@ -161,7 +161,29 @@ class FractalFactory {
       let wr = 0.707;
       return this.sympodialTree(scale, step, r1, r2, a1, a2, wr);
     }
+
+    sierpinskitetrahedron(scale = [1,1,1], L = 1.0){
+
+      let a = Math.sqrt(3)/6 /Math.sqrt(2/3);
+      let b = 0.5/Math.sqrt(2/3);
+      let c = 1/Math.sqrt(3)/Math.sqrt(2/3);
+      let axiom = "S1F";
+      let rF = new Rule("F", "F[AF][BF][CF]f", forwardColor);
+      let rS = new Rule("S", (v) => ['S', v/2], (s,v) => scaleVal(s,[v,v,v]), true);
+      let rf = new Rule("f", "ff", translate);
+      let rA = new Rule("A", "AA", s => translateVec(s, [b,0,-a]));
+      let rB = new Rule("B", "BB", s => translateVec(s, [-b,0,-a]));
+      let rC = new Rule("C", "CC", s => translateVec(s, [0,0, c]));
+      let rp = new Rule("[", undefined, push);
+      let re = new Rule("]", undefined, pop);
+      let step = L * Math.sqrt(2/3);
+
+      let frac = new Fractal(axiom, 0, scale, step, rF, rA, rB, rC, rp, re, rf, rS);
+      frac.state.dir = [0,-1,0]; //todo fix in a better way
+      return frac;
+    }
   
   }
 
+  "F[AF][BF][CF]fF[AF][BF][CF]"
 export {FractalFactory};
