@@ -1,4 +1,4 @@
-
+"use strict";
 const vs = `
     attribute vec4 position;
 
