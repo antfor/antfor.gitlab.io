@@ -1,11 +1,24 @@
-image: alpine:latest
-
+image: node:latest
+ 
+cache:
+  paths:
+    - ./front/ui/rcc/node_modules/
+ 
+before_script:
+  - cd ./front/ui/rcc    # enter the React app directory
+  - rm -rf build     # remove the existing build
+  - CI=false npm install     # install required packages
+ 
 pages:
   stage: deploy
+  environment: Production
   script:
-  - echo 'Nothing to do...'
-  artifacts:
-    paths:
-    - public
-  only:
-  - master
+    - CI=false npm run build     # build the React app, set CI=false because CI=true treats all warnings as errors
+    #- cp build/index.html build/404.html     # reroute to index
+    - ls
+    - cd ..
+    - cd ..
+    - cd ..
+    - mkdir -p ./public/project/rcc
+    - mv ./front/ui/rcc/build/* ./public/project/rcc   # move build contents to new /public directory
+    - export
