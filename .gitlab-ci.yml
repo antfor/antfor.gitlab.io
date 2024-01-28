@@ -2,7 +2,7 @@ image: node:latest
  
 cache:
   paths:
-    - ./front/ui/node_modules/
+    - ./front/ui/rcc/node_modules/
  
 before_script:
   - cd ./front/ui/rcc    # enter the React app directory
@@ -16,5 +16,8 @@ pages:
     - CI=false npm run build     # build the React app, set CI=false because CI=true treats all warnings as errors
     #- cp build/index.html build/404.html     # reroute to index
     - ls
-    - mv ./front/ui/build/* ./public/project/rcc   # move build contents to new /public directory
+    - cd ..
+    - cd ..
+    - cd ..
+    - mv ./front/ui/rcc/build/* ./public/project/rcc   # move build contents to new /public directory
     - export
