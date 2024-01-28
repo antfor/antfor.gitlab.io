@@ -1,0 +1,14 @@
+.App {
+  text-align: center;
+}
+
+#card {
+  height: 100vh; /* Magic here */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body {
+  background-color:rgb(35, 55, 58);
+}
