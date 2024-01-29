@@ -22,9 +22,8 @@ pages:
     - mkdir -p ./public/project/rcc
     - mv ./front/ui/rcc/build/* ./public/project/rcc   # move build contents to new /public directory
     - export
-
-artifacts:
-  paths:
-  - public
-only:
-- master
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
