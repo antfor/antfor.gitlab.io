@@ -3,10 +3,11 @@
 }
 
 #card {
-  height: 100vh; /* Magic here */
+  height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: safe center;
+  padding: 10px;
 }
 
 body {
