@@ -20,7 +20,7 @@ pages:
     - cd ..
     - cd ..
     - ls
-    - mkdir -p ./public/project/rcc
+    - mkdir -p ./public/projects/rcc
     - mv ./front/ui/rcc/build/* ./public/projects/rcc   # move build contents to new /public directory
     - export
   artifacts:
