@@ -14,7 +14,6 @@ pages:
   environment: Production
   script:
     - CI=false npm run build     # build the React app, set CI=false because CI=true treats all warnings as errors
-    #- cp build/index.html build/404.html     # reroute to index
     - ls
     - cd ..
     - cd ..
