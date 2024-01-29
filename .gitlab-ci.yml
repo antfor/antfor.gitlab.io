@@ -14,11 +14,12 @@ pages:
   environment: Production
   script:
     - CI=false npm run build     # build the React app, set CI=false because CI=true treats all warnings as errors
-    #- cp build/index.html build/404.html     # reroute to index
+    - cp build/index.html build/404.html     # reroute to index
     - ls
     - cd ..
     - cd ..
     - cd ..
+    - ls
     - mkdir -p ./public/project/rcc
     - mv ./front/ui/rcc/build/* ./public/project/rcc   # move build contents to new /public directory
     - export
