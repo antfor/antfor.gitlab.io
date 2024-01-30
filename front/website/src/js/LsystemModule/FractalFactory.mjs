@@ -1,5 +1,4 @@
 import {Rule} from './Rule.mjs';
-import {State} from './State.mjs';
 import { Fractal } from './Fractal.mjs';
 import { push, pop, forward, forwardVal, forwardColor, forwardColorVal, translate, translateVal, yaw, pitch, roll, turnAround, turnRight, turnLeft, color, vert, width, tf, scaleVal, translateVec} from './Turtle.mjs';
 

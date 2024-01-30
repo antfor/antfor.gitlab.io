@@ -1,5 +1,5 @@
 "use strict";
-import {State} from './State.mjs';
+import * as twgl from 'twgl.js';
 
 
 const m4 = twgl.m4;
