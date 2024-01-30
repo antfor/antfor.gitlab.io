@@ -2,25 +2,41 @@ image: node:latest
  
 cache:
   paths:
-    - ./front/ui/rcc/node_modules/
+    - ./front/rcc/node_modules/
+    - ./front/website/node_modules/
  
 before_script:
-  - cd ./front/ui/rcc    # enter the React app directory
+  #Website
+  - cd ./front/website    
+  - rm -rf dist    
+  - CI=false npm install
+  - cd ../..
+
+  #RCC
+  - cd ./front/rcc    # enter the React app directory
   - rm -rf build     # remove the existing build
   - CI=false npm install     # install required packages
+  - cd ../..
  
 pages:
   stage: deploy
   environment: Production
   script:
+    #Website
+    - cd ./front/website  
+    - CI=false npm run build
+    - ls
+    - cd ../..
+    - mkdir ./public
+    - mv ./front/website/dist/* ./public  
+    #RCC
+    - cd ./front/rcc
     - CI=false npm run build     # build the React app, set CI=false because CI=true treats all warnings as errors
     - ls
-    - cd ..
-    - cd ..
-    - cd ..
+    - cd ../..
     - ls
     - mkdir -p ./public/projects/rcc
-    - mv ./front/ui/rcc/build/* ./public/projects/rcc   # move build contents to new /public directory
+    - mv ./front/rcc/build/* ./public/projects/rcc   # move build contents to new /public directory
     - export
   artifacts:
     paths:
