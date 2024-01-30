@@ -1,4 +1,5 @@
 
+import * as twgl from 'twgl.js';
 "use strict";
 
 const m4 = twgl.m4;
