@@ -1,3 +1,5 @@
+import * as twgl from 'twgl.js';
+
 "use strict";
 const vs = `
     attribute vec4 position;

@@ -1,5 +1,6 @@
 import { FractalFactory } from './LsystemModule/FractalFactory.mjs';
 import { createTetrahedron } from './PrimitivesModule/Primitives.mjs';
+import * as twgl from 'twgl.js';
 
 const vs = `
 uniform mat4 u_viewProjection;

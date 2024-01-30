@@ -1,6 +1,4 @@
 
-import {State} from './State.mjs';
-
 "use strict";
 
 class Rule {
