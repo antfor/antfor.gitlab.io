@@ -1,5 +1,6 @@
 import { FractalFactory } from './LsystemModule/FractalFactory.mjs';
 import { createTetrahedron } from './PrimitivesModule/Primitives.mjs';
+import { Floor } from './LsystemModule/Scene/Floor.mjs';
 import * as twgl from 'twgl.js';
 
 const vs = `
@@ -111,12 +112,14 @@ void main() {
     },
   });
   const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
-  const vertexArrayInfo = twgl.createVertexArrayInfo(gl, programInfo, bufferInfo);
+  //const vertexArrayInfo = twgl.createVertexArrayInfo(gl, programInfo, bufferInfo);
 
+  const floor = new Floor(gl, 20, 20);
 
-
+  
 const fpsElem = document.querySelector("#fps");
 let then = 0;
+
 function render(time) {
     time *= 0.001;
 
@@ -130,7 +133,7 @@ function render(time) {
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     gl.enable(gl.DEPTH_TEST);
-    gl.enable(gl.CULL_FACE);
+    //gl.enable(gl.CULL_FACE);
     gl.clearColor(0.384314, 0.454902, 0.494118, 1);
     gl.clearColor(0.3, 0.3, 0.3, 1);
     gl.clearColor(0.9, 0.9, 0.9, 1);
@@ -157,11 +160,16 @@ function render(time) {
 
     uniforms.u_viewProjection = viewProjection;
 
+    
+
     gl.useProgram(programInfo.program);
+    const vertexArrayInfo = twgl.createVertexArrayInfo(gl, programInfo, bufferInfo);
     twgl.setBuffersAndAttributes(gl, programInfo, vertexArrayInfo);
     twgl.setUniforms(programInfo, uniforms);
     gl.drawElementsInstanced(gl.TRIANGLES, vertexArrayInfo.numElements, gl.UNSIGNED_SHORT, 0, numInstances);
 
+    floor.draw(gl, viewProjection);
+   
     requestAnimationFrame(render);
 }
 
