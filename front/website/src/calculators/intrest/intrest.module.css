@@ -1,0 +1,27 @@
+
+
+.m2{
+    max-width: 5em;
+    min-width: 5em;
+    width: 5em;
+
+}
+
+.m3{
+    max-width: 6em;
+    min-width: 6em;
+    width: 6em;
+
+}
+
+.m4{
+    max-width: 7em;
+    min-width: 7em;
+    width: 7em;
+
+}
+
+.resulat{
+    font-weight: bold;
+}
+
