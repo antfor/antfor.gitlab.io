@@ -1,6 +1,7 @@
 import { FractalFactory } from './LsystemModule/FractalFactory.mjs';
 import { createTetrahedron } from './PrimitivesModule/Primitives.mjs';
 import { Floor } from './LsystemModule/Scene/Floor.mjs';
+import { ShadowProgram } from './LsystemModule/Scene/ShadowProgram.mjs';
 import * as twgl from 'twgl.js';
 
 const vs = `
@@ -46,11 +47,13 @@ void main() {
   const m4 = twgl.m4;
   const v3 = twgl.v3;
   const gl = document.getElementById("l").getContext("webgl2");
+  const sunPosition = [0, 10, -10];
+  //const sunPosition = [1, 8, -30];
 
   const programInfo = twgl.createProgramInfo(gl, [vs, fs]);
 
   const uniforms = {
-    u_lightDir: v3.normalize([1, 8, -30]),
+    u_lightDir: v3.normalize(sunPosition),
   };
 
   function rand(min, max) {
@@ -114,19 +117,34 @@ void main() {
   const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
   //const vertexArrayInfo = twgl.createVertexArrayInfo(gl, programInfo, bufferInfo);
 
-  const floor = new Floor(gl, 20, 20);
+ 
 
   
 const fpsElem = document.querySelector("#fps");
-let then = 0;
+let fps_time = 0;
+let fps_frames = 0;
+let time_prev = 0;
+
+let shadowMap = new ShadowProgram(gl, sunPosition, 512, 512);
+uniforms.shadowMap = shadowMap.shadowMap_texture;
+const floor = new Floor(gl, 20, 20, shadowMap.shadowMap_texture);
+
 
 function render(time) {
+    let timeMS = time;
     time *= 0.001;
 
-    const deltaTime = time - then;          // compute time since last frame
-    then = time;                            // remember time for next frame
-    const fps = 1 / deltaTime;             // compute frames per second
-    fpsElem.textContent = fps.toFixed(1);
+    const deltaTime = timeMS - time_prev;         
+    time_prev = timeMS;                           
+    fps_time += deltaTime;                       
+    fps_frames += 1;                             
+    if (fps_time > 1000.0) { 
+      let fps = 1000 * fps_frames / fps_time;
+      fpsElem.textContent = fps.toFixed(1);  
+      fps_time = fps_frames = 0;               
+    }                      
+
+    
 
     const multiplier = 2;
     twgl.resizeCanvasToDisplaySize(gl.canvas, multiplier);
@@ -158,19 +176,26 @@ function render(time) {
     const view = m4.inverse(camera);
     const viewProjection = m4.multiply(projection, view);
 
-    uniforms.u_viewProjection = viewProjection;
-
-    
+  
+    shadowMap.draw(draw, gl, viewProjection);
 
     gl.useProgram(programInfo.program);
-    const vertexArrayInfo = twgl.createVertexArrayInfo(gl, programInfo, bufferInfo);
-    twgl.setBuffersAndAttributes(gl, programInfo, vertexArrayInfo);
-    twgl.setUniforms(programInfo, uniforms);
-    gl.drawElementsInstanced(gl.TRIANGLES, vertexArrayInfo.numElements, gl.UNSIGNED_SHORT, 0, numInstances);
-
-    floor.draw(gl, viewProjection);
+    draw(programInfo, viewProjection);
+    
    
     requestAnimationFrame(render);
+}
+
+function draw(programInfo, viewProjection, drawShadowMap=false){
+
+  uniforms.u_viewProjection = viewProjection;
+
+  const vertexArrayInfo = twgl.createVertexArrayInfo(gl, programInfo, bufferInfo);
+  twgl.setBuffersAndAttributes(gl, programInfo, vertexArrayInfo);
+  twgl.setUniforms(programInfo, uniforms);
+  gl.drawElementsInstanced(gl.TRIANGLES, vertexArrayInfo.numElements, gl.UNSIGNED_SHORT, 0, numInstances);
+
+  floor.draw(gl, viewProjection, drawShadowMap, shadowMap.getViewProjection());
 }
 
 
