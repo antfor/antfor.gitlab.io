@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Anton Forsberg</title>
+  <head> 
+    <!-- Required meta tags -->
+    <title>Calculators</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="/images/favicon.png">
 
+    <script type="module" src="/src/commons.js"></script> 
+    <script type="module" src="/src/navbar.jsx"></script>
+    <script type="module" src="/src/calculators/intrest/calculator.jsx"></script>
    
-    <script src="/src/js/l-system.js" type="module"></script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -18,19 +19,16 @@
     integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
 
     <!-- CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href='https://fonts.googleapis.com/css?family=Libre Barcode 128 Text' rel='stylesheet'>
-    
+
+
   </head>
   <body>
 
-    <div>fps: <span id="fps"></span></div>
+    <div id="navbar" active=""></div>
 
-    <canvas id="l" style="height: 512px; width: 512px;" class="l-sys"></canvas>
-    <button id ="plus_button" type="button" class="btn btn-light"> <i class="fa-solid fa-magnifying-glass"></i> </button>
-    <button id ="minus_button" type="button" class="btn btn-light"> <i class="fa-solid fa-magnifying-glass"></i> </button>
+    <div id="calculators"></div>
+    
 
-  
-    </body>
-  </html>
-  
+  </body>
+</html>
