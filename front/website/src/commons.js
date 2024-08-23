@@ -4,3 +4,8 @@ document.addEventListener("DOMContentLoaded", function(){
     const navbar_height = document.querySelector('.navbar').offsetHeight;
     document.body.style.paddingTop = navbar_height + 'px';
   }); 
+
+  window.onresize = function(event) {
+    const navbar_height = document.querySelector('.navbar').offsetHeight;
+    document.body.style.paddingTop = navbar_height + 'px';
+};
