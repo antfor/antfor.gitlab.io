@@ -15,16 +15,30 @@ function playStoreIcon(){
   return  <FontAwesomeIcon icon={faGooglePlay}/>;
 }
 
+const Top = "top";
+const Height = 84.5; //px
+
+function setPaddingTop(fixed){
+  const offset = fixed === Top ? Height+"px" : "0px";
+  document.body.style.paddingTop = offset;
+
+}
 
 function MyNavbar(prop) {
 
   const activePage = prop.active;
+  const fixed = prop.fixed === "false" ? undefined : Top; 
+
+  console.log(fixed);
+  console.log(prop.fixed);
+
+  setPaddingTop(fixed);
 
   return (
 
-    <Navbar expand="lg" fixed="top" className="bg-body-tertiary">
+    <Navbar expand="md" fixed={fixed} className="bg-body-tertiary">
     <Container fluid={true}>  
-    <Navbar.Brand className="logo" href={activePage===PAGES.HOME? false: PAGES.HOME}>Anton Forsberg</Navbar.Brand>
+    <Navbar.Brand className="logo" href={activePage===PAGES.HOME? undefined: PAGES.HOME}>Anton Forsberg</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="me-auto">
