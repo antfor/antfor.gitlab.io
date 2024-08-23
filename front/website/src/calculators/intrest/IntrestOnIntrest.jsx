@@ -19,6 +19,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Result from './resultat.jsx';
+import styles from'./intrest.module.css';
 
 
 function formatValue(value, decimals) {
@@ -181,9 +182,9 @@ function getModel(data, settings){
 function defultSettings(){
   return   {
     intrest: "7",
-    startMoney: "0",
-    monthlySaving: "1000",
-    time: "10",
+    startMoney: "5000",
+    monthlySaving: "100",
+    time: "20",
     intrestBreakdown: false,
     accBreakdown: false,
   };
@@ -202,7 +203,7 @@ function IntrestChart(){
     return (
         <Container>
         <Row>
-          <Col xl={9} className="col-xl-9" ><Bar options={options} data={model} /></Col>
+          <Col xl={9} className={"col-xl-9 "+styles.chart} ><Bar options={options} data={model} /></Col>
           <Col xl={3} className="col-xl-3" >{SettingsComponent(settings, setSettings)}</Col>
         </Row>
         {Result(model.datasets, tot, last)}
