@@ -16,7 +16,7 @@ function playStoreIcon(){
 }
 
 const Top = "top";
-const Height = 84.5; //px
+const Height = 84; //84.5px
 
 function setPaddingTop(fixed){
   const offset = fixed === Top ? Height+"px" : "0px";
@@ -28,9 +28,6 @@ function MyNavbar(prop) {
 
   const activePage = prop.active;
   const fixed = prop.fixed === "false" ? undefined : Top; 
-
-  console.log(fixed);
-  console.log(prop.fixed);
 
   setPaddingTop(fixed);
 
