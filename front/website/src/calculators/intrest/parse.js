@@ -1,10 +1,18 @@
-import { floor,round } from 'mathjs';
+import { floor,round,min } from 'mathjs';
 
 function simplifyValue(value, decimals) {
     return new Intl.NumberFormat("en-US", {
       style: "decimal",
     }).format(round(value, decimals));
   }
+
+function addBackZeros(value, decimals){
+
+    const decimalsValue = value.toString().split(".")[1].length;
+    const minDecimals = min(decimals, decimalsValue);
+    const zeros = ".".repeat(min(1,minDecimals))+"0".repeat(minDecimals);
+    return(zeros);
+}
 
 function formatValue(value, decimals) {
     
@@ -17,9 +25,11 @@ function formatValue(value, decimals) {
 
     let rounded = floor(parseFloat(value), decimals);
 
-    if(value.slice(-1)==='.')
+    if(value.slice(-1)==='.'){
         rounded = rounded + ".";
-   
+    }else if(Number.isInteger(rounded) && decimals > 0 && value.includes('.')){
+        rounded += addBackZeros(value, decimals);
+    }
 
     return(rounded);
 }
