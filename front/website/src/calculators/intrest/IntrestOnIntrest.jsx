@@ -20,13 +20,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Result from './resultat.jsx';
 import styles from'./intrest.module.css';
+import { simplifyValue, parseFloatSafe } from './parse.js';
 
 
-function formatValue(value, decimals) {
-  return new Intl.NumberFormat("en-US", {
-    style: "decimal",
-  }).format(round(value, decimals));
-}
 
 ChartJS.register(
   CategoryScale,
@@ -57,7 +53,7 @@ let options = {
                 if (context.parsed.y !== null) {
                     let value = context.parsed.y;
 
-                    label += formatValue(value,0) + ' kr';
+                    label += simplifyValue(value,0) + ' kr';
                     const dataPoints = context.chart.tooltip.dataPoints;
                     const total = dataPoints.reduce((acc, val) => acc + val.raw, 0);
             
@@ -71,7 +67,7 @@ let options = {
                 
                 
             },
-            afterBody: (ttItem) => (`Totalt: ${formatValue(ttItem.reduce((acc, val) => acc + val.raw, 0),0)} kr (100%)`)
+            afterBody: (ttItem) => (`Totalt: ${simplifyValue(ttItem.reduce((acc, val) => acc + val.raw, 0),0)} kr (100%)`)
         }
     }, 
     },
@@ -91,17 +87,9 @@ let options = {
     },
   };
 
-  function parseValue(v){
-    v = parseFloat(v);
-    if(isNaN(v)){
-        console.log('NaN value in settings');
-        return 0;
-    }
-    return v;
-}
 
 function getTime(N){
-  N = parseValue(N);
+  N = parseFloatSafe(N);
   return new Array(N+1).fill().map((_,i) => i );
 
 }
@@ -123,7 +111,7 @@ function totalDeposit(data){
   return removeEmpty([{
     label: 'insata pengar',
     data: data.totalAcc,
-    backgroundColor: 'rgb(58, 106, 167)',
+    backgroundColor: 'rgb(60, 120, 201)',
     intrest: false,
   }]);
 }
@@ -132,7 +120,7 @@ function accBreakdown(data){
   return removeEmpty([{
     label: 'startbelopp',
     data: data.accPrincipel,
-    backgroundColor: 'rgb(7, 55, 99)',
+    backgroundColor: 'rgb(11, 83, 148)',
     intrest: false,
   },
   {
@@ -194,19 +182,25 @@ function IntrestChart(){
  
     const [settings, setSettings] = useState(defultSettings());
    
-    let dataPoints = calcSavings(...[settings.startMoney, settings.monthlySaving, settings.intrest, settings.time].map(parseValue));
+    let dataPoints = calcSavings(...[settings.startMoney, settings.monthlySaving, settings.intrest, settings.time].map(parseFloatSafe));
     let model = getModel(dataPoints, settings);
 
-    let last = parseValue(settings.time);
+    let last = parseFloatSafe(settings.time);
     let tot = dataPoints.totalSavings[last];
 
     return (
         <Container>
         <Row>
-          <Col xl={9} className={"col-xl-9 "+styles.chart} ><Bar options={options} data={model} /></Col>
+          <Col xl={9} className={"col-xl-9 "+ styles.chart} >
+            <Bar options={options} data={model} />
+            <div className="d-none d-xl-block">
+              {Result(model.datasets, tot, last)}
+            </div>
+          </Col>
           <Col xl={3} className="col-xl-3" >{SettingsComponent(settings, setSettings)}</Col>
         </Row>
-        {Result(model.datasets, tot, last)}
+        <Row className='d-xl-none'>{Result(model.datasets, tot, last)}</Row>
+        
         </Container>
 
     );
