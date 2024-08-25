@@ -2,49 +2,64 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Stack from 'react-bootstrap/Stack';
 import styles from './intrest.module.css'; 
-import { floor,min } from 'mathjs';
+import { max,min } from 'mathjs';
+import {toNumber, formatValue, parseFloatSafe} from './parse.js'
+import Button from 'react-bootstrap/Button';
 
+const Any = "any";
 
-function sliderForm(startValue, min, max, change, step=1, style=styles.m2, max2=max){
+function Buttons(startValue, minVal, maxVal, change, step){
 
+    const value = parseFloatSafe(startValue);
+    const minMaxAny = (mmfun,mmval,val) => mmval === Any ? val : mmfun(mmval,val);
+    const onClick = (v) => {change({target: {value: minMaxAny(max,minVal,minMaxAny(min,maxVal,v)).toString()}})};
+    
     return(
-        <InputGroup className="d-flex flex-column">
-            <Stack direction="horizontal" gap={3}>
-                <Form.Control className={style} type="number" value={startValue} min={min} max={max2} step={step} onChange={change} />
-                
-                <Form.Range value={startValue} min={min} max={max} step={step} onChange={change} /> 
-            </Stack>
-
+        <InputGroup className="btn-group">
+                <Button disabled={value===minVal} variant="outline-danger"  className={styles.button} onClick={()=>onClick(value-step)}>-</Button>
+                <Button disabled={value===maxVal} variant="outline-primary" className={styles.button} onClick={()=>onClick(value+step)}>+</Button>
         </InputGroup>
     );
 }
 
-function formatValue(value, decimals) {
-    return(floor(parseFloat(value), decimals));
-  }
+function sliderForm(startValue, min, max, change, step=1, style=styles.m2, maxControl=max, stepControl=step){
+
+    return(
+        <Stack gap="2">
+            <Stack direction="horizontal" gap="3">
+                   <Form.Control className={style} type="text" inputMode="decimal" pattern="[0-9]*.?[0-9]*" value={startValue} min={min} max={maxControl} step={stepControl} onChange={change} />
+                   {Buttons(startValue, min, maxControl, change, step)}
+            </Stack>
+            <Form.Range value={parseFloatSafe(startValue)} min={min} max={max} step={step} onChange={change} /> 
+        </Stack>
+    );
+}
 
 function räntaForm(intrest, setIntrest){
 
     let startValue = formatValue(intrest, 2);
-    return( sliderForm(startValue, 0, 20, (e) => setIntrest(""+parseFloat(e.target.value)), 0.01, styles.m3 ));
+    return( sliderForm(startValue, 0, 20, (e) => setIntrest(toNumber(e.target.value)), 0.1, styles.m3, Any, 0.01));
 }
 
 function startForm(startMoney, setStartMoney){
 
     let startValue  = formatValue(startMoney, 2);
-    return(sliderForm(startValue, 0, 10000, (e) => setStartMoney(""+parseFloat(e.target.value)), 100, styles.m4, "any"));   
+    return(sliderForm(startValue, 0, 10000, (e) => setStartMoney(toNumber(e.target.value)), 100, styles.m4, Any));   
 }
 
 function sparForm(spar, setSpar){
 
     let startValue  = formatValue(spar, 2);
-    return(sliderForm(startValue, 0, 10000, (e) => setSpar(""+parseFloat(e.target.value)), 100, styles.m4, "any"));
+    return(sliderForm(startValue, 0, 10000, (e) => setSpar(toNumber(e.target.value)), 100, styles.m4, Any));
 }
 
 function tidForm(time, setTime){
 
-    let startValue  = min(formatValue(time, 0),100);
-    return(sliderForm(startValue, 1, 30, (e) => setTime(""+ min(floor(parseFloat(e.target.value),0),100)), 1, styles.m2, 100));
+    let startValue = "";
+    if(time !== "")
+        startValue  = min(formatValue(time, 0),100);
+    
+    return(sliderForm(startValue, 0, 30, (e) => setTime(toNumber(e.target.value)), 1, styles.m2, 100));
 }
 
 function breakDownToggle(setIntrestBreakDown, setAccBreakDown){
@@ -74,6 +89,14 @@ function breakDownToggle(setIntrestBreakDown, setAccBreakDown){
     );
 }
 
+function FormGroup(label, form){
+    return(
+        <Form.Group>
+            <Form.Label>{label}</Form.Label>
+            {form}
+        </Form.Group>
+    );
+}
 
 function SettingsComponent(settings, setSettings) {
     
@@ -85,24 +108,19 @@ function SettingsComponent(settings, setSettings) {
     let setIntrestBreakDown = (v) => {setSettings(prev => ({...prev, intrestBreakdown: v}))};
     let setAccBreakDown = (v) => {setSettings(prev => ({...prev, accBreakdown: v}))};
 
-
+    //todo clean up
     return (
         <Form>
-            <Form.Label>Ränta per år (%)</Form.Label>
-            {räntaForm(settings.intrest, setRänta)}
-
-            <Form.Label>startbelopp (kr)</Form.Label>
-            {startForm(settings.startMoney, setStart)}
-
-            <Form.Label>månadssparande (kr/mån)</Form.Label>
-            {sparForm(settings.monthlySaving, setSpar)}
-
-            <Form.Label>Tid (år)</Form.Label>
-            {tidForm(settings.time, setTid)}
-
-            <Form.Label>Breakdown </Form.Label>
-            {breakDownToggle(setIntrestBreakDown, setAccBreakDown)}
-
+            {FormGroup("Ränta per år (%)",räntaForm(settings.intrest, setRänta))}
+            <br/>
+            {FormGroup("Startbelopp (kr)", startForm(settings.startMoney, setStart))}
+            <br/>
+            {FormGroup("Månadssparande (kr/mån)", sparForm(settings.monthlySaving, setSpar))}
+            <br/>
+            {FormGroup("Tid (år)", tidForm(settings.time, setTid))}
+            <br/>
+            {FormGroup("Breakdown ", breakDownToggle(setIntrestBreakDown, setAccBreakDown))}
+            <br/>
       </Form>
     )
 }
