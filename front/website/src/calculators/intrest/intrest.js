@@ -4,6 +4,19 @@ function intrest(P, r ,t){
     return P * (1 + r)**(t) - P;
 }
 
+const CompoundRate = {
+    
+        Annually: 1,
+        Semiannually: 2,
+        Quarterly: 4,
+        Monthly: 12,
+    };  
+
+function annuallyToCompoundRateIntrest(r, compoundRate){
+        r = r/100.0;
+        return (1 + r)**(1/compoundRate) - 1;
+}
+
 function intrestOnPrincipal(P, r, t){
 
     let RP = Array(t + 1).fill(0);
@@ -47,6 +60,7 @@ function intrestOnIntrest(RP, RM, r ,t){
     M: Monthly saving
     r: intrest
     t: time
+    cr: compound rate
 
        let s = {
 
@@ -63,12 +77,12 @@ function intrestOnIntrest(RP, RM, r ,t){
         totalSavings: []
     };
 */
-function calc(P,M,r,t){
+function calc(P,M,r,t,cr=CompoundRate.Annually){
 
-    r = r/100.0;
+    r = annuallyToCompoundRateIntrest(r, cr);
 
     let Pt = Array(t + 1).fill(P);
-    let Mt = Pt.map((_,i) => M * i * 12);
+    let Mt = Pt.map((_,i) => M * i * 12/cr);
 
     let RP = intrestOnPrincipal(P,r,t);
     let RM = intrestOnMontly(Mt, M,r,t);
@@ -91,15 +105,16 @@ function calc(P,M,r,t){
     M: Monthly saving
     r: intrest
     t: time
+    cr: compound rate
 */
-function calcSavings(P,M,r,t){
+function calcSavings(P,M,r,t,cr=CompoundRate.Annually){
 
-    r = r/100.0;
+    r = annuallyToCompoundRateIntrest(r, cr);
 
     let s = {};
 
     s.accPrincipel = Array(t + 1).fill(P);
-    s.accMonthly = Array(t + 1).fill() .map((_,i) => M * i * 12);
+    s.accMonthly = Array(t + 1).fill() .map((_,i) => M * i * 12/cr);
 
     s.intrestPrincipel = intrestOnPrincipal(P,r,t);
     s.intrestMonthly = intrestOnMontly(s.accMonthly, M,r,t);
@@ -115,4 +130,4 @@ function calcSavings(P,M,r,t){
 
 
 
-export {calc, calcSavings};
+export {calc, calcSavings, CompoundRate};

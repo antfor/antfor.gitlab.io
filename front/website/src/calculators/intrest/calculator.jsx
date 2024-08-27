@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import Card from 'react-bootstrap/Card';
-import { IntrestChart} from './IntrestOnIntrest.jsx'
+import { IntrestChart} from './IntrestChart.jsx'
 import './calculator.css'
 
 
@@ -14,7 +14,7 @@ function container(){
         <Card data-bs-theme="dark">
             <Card.Header> Ränta på ränta </Card.Header>
             <Card.Body> 
-             <IntrestChart/> 
+              <IntrestChart/> 
             </Card.Body>
         </Card>
     );
