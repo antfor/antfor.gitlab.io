@@ -4,6 +4,13 @@
     margin: 2px;
 }
 
+.dropdown{
+    max-width: 6em;
+    min-width: 6em;
+    width: 6em;
+    padding: 2px;
+}
+
 .m2{
     max-width: 4em;
     min-width: 4em;

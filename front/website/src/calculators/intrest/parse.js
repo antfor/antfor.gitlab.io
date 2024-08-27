@@ -49,10 +49,10 @@ function isNaNoE(value){
     return(isNaN(value) || value === "");
 }
 
-function parseFloatSafe(v){
+function parseFloatSafe(v, vDefault=0){
     v = parseFloat(v);
     if(isNaN(v)){
-        return 0;
+        return vDefault;
     }
     return v;
 }

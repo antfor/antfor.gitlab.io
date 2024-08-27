@@ -89,6 +89,21 @@ function breakDownToggle(setIntrestBreakDown, setAccBreakDown){
     );
 }
 
+function DropdownCoumpound(crMap, change){
+
+    const option = (key, value) => <option key={key} value={key}>{value}</option>; 
+
+    return(
+        <Stack direction="horizontal" gap="1"> 
+        {"Tid ("}
+        <Form.Select onChange={(e) => change(e.target.value)} className={styles.dropdown}>
+            {Array.from(crMap.entries(),([key, value]) => option(key, value))}
+        </Form.Select>
+        {")"}
+        </Stack>
+    );
+}
+
 function FormGroup(label, form){
     return(
         <Form.Group>
@@ -98,15 +113,16 @@ function FormGroup(label, form){
     );
 }
 
-function SettingsComponent(settings, setSettings) {
+function SettingsComponent(settings, setSettings, compoundRateMap){
     
-    let setRänta = (v) => {setSettings(prev => ({...prev, intrest: v}))};
-    let setStart = (v) => {setSettings(prev => ({...prev, startMoney: v}))};
-    let setSpar = (v) => {setSettings(prev => ({...prev, monthlySaving: v}))};
-    let setTid = (v) => {setSettings(prev => ({...prev, time: v}))};
+    const setRänta = (v) => {setSettings(prev => ({...prev, intrest: v}))};
+    const setStart = (v) => {setSettings(prev => ({...prev, startMoney: v}))};
+    const setSpar = (v) => {setSettings(prev => ({...prev, monthlySaving: v}))};
+    const setTid = (v) => {setSettings(prev => ({...prev, time: v}))};
+    const setCompoundRate = (v) => {setSettings(prev => ({...prev, compoundRate: v}))};
 
-    let setIntrestBreakDown = (v) => {setSettings(prev => ({...prev, intrestBreakdown: v}))};
-    let setAccBreakDown = (v) => {setSettings(prev => ({...prev, accBreakdown: v}))};
+    const setIntrestBreakDown = (v) => {setSettings(prev => ({...prev, intrestBreakdown: v}))};
+    const setAccBreakDown = (v) => {setSettings(prev => ({...prev, accBreakdown: v}))};
 
     //todo clean up
     return (
@@ -117,7 +133,7 @@ function SettingsComponent(settings, setSettings) {
             <br/>
             {FormGroup("Månadssparande (kr/mån)", sparForm(settings.monthlySaving, setSpar))}
             <br/>
-            {FormGroup("Tid (år)", tidForm(settings.time, setTid))}
+            {FormGroup(DropdownCoumpound(compoundRateMap, setCompoundRate), tidForm(settings.time, setTid))}
             <br/>
             {FormGroup("Breakdown ", breakDownToggle(setIntrestBreakDown, setAccBreakDown))}
             <br/>
