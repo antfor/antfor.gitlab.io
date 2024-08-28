@@ -1,15 +1,9 @@
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import {
-    round
-  } from 'mathjs'
+import { simplifyValue } from './parse.js';
 import styles from './intrest.module.css'; 
 
-function formatValue(value, decimals) {
-    return new Intl.NumberFormat("en-US", {
-      style: "decimal",
-    }).format(round(value, decimals));
-  }
+
 
 function getColor(dataset){
     return ({color:  dataset.backgroundColor});
@@ -22,7 +16,7 @@ function paragraph(dataset, index, tot){
     const percent = data/tot*100;
     return(
         <Col key={label}>
-            <p className={styles.resultat}>{label}: <span style={getColor(dataset)}>{formatValue(data,0)} kr ({formatValue(percent,0)}%) </span></p>
+            <p className={styles.resultat}>{label}: <span style={getColor(dataset)}>{simplifyValue(data,0)} kr ({simplifyValue(percent,0)}%) </span></p>
         </Col>
     );
 }
@@ -51,7 +45,7 @@ export default function Result(datasets, total, index){
     return(
         <div>
         <h2>Resultat</h2>
-            <p>Slutsumma: {formatValue(total,0)} kr (100%)</p>
+            <p>Slutsumma: {simplifyValue(total,0)} kr (100%)</p>
             <Row className="row-cols-auto">
                 {intrest.map((dataset) => paragraph(dataset, index, total))}
             </Row>

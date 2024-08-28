@@ -3,7 +3,7 @@ import { floor,round,min } from 'mathjs';
 function simplifyValue(value, decimals) {
     return new Intl.NumberFormat("en-US", {
       style: "decimal",
-    }).format(round(value, decimals));
+    }).format(round(value, decimals)+0); // +0 to remove -0
   }
 
 function addBackZeros(value, decimals){
