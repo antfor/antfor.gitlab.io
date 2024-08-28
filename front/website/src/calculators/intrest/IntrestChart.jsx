@@ -9,7 +9,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { useState } from 'react';
-import { calcSavings, CompoundRate } from './intrest.js';
+import { calcSavings, Interval } from './intrest.js';
 import { SettingsComponent } from './settings.jsx';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -30,12 +30,12 @@ ChartJS.register(
   Legend
 );
 
-function getCompoundRateMap() {
+function getIntervalMap() {
   const map = new Map();
-  map.set(CompoundRate.Annually, "År");
-  map.set(CompoundRate.Semiannually, "Halvår");
-  map.set(CompoundRate.Quarterly, "Kvartal");
-  map.set(CompoundRate.Monthly, "Månad");
+  map.set(Interval.Year, "År");
+  map.set(Interval.HalfYear, "Halvår");
+  map.set(Interval.Quarter, "Kvartal");
+  map.set(Interval.Month, "Månad");
   return map;
 }
 
@@ -45,7 +45,7 @@ function defultSettings(){
     startMoney: "5000",
     monthlySaving: "100",
     time: "20",
-    compoundRate: CompoundRate.Annually.toString(),
+    Interval: Interval.Year.toString(),
     intrestBreakdown: false,
     accBreakdown: false,
   };
@@ -55,10 +55,10 @@ function IntrestChart(){
  
     const [settings, setSettings] = useState(defultSettings());
    
-    let dataPoints = calcSavings(...[settings.startMoney, settings.monthlySaving, settings.intrest, settings.time, settings.compoundRate].map(parseFloatSafe));
+    let dataPoints = calcSavings(...[settings.startMoney, settings.monthlySaving, settings.intrest, settings.time, settings.Interval].map(parseFloatSafe));
     let model = getModel(dataPoints, settings);
-    const compoundRateMap = getCompoundRateMap();
-    const crLabel = compoundRateMap.get(parseFloatSafe(settings.compoundRate, CompoundRate.Annually));
+    const intervalMap = getIntervalMap();
+    const iLabel = intervalMap.get(parseFloatSafe(settings.Interval, Interval.Annually));
 
     let last = parseFloatSafe(settings.time);
     let total = dataPoints.totalSavings[last];
@@ -67,12 +67,12 @@ function IntrestChart(){
         <Container>
         <Row>
           <Col xl={9} className={"col-xl-9 "+ styles.chart} >
-            <Bar options={getOptions(crLabel)} data={model} />
+            <Bar options={getOptions(iLabel)} data={model} />
             <div className="d-none d-xl-block">
               {Result(model.datasets, total, last)}
             </div>
           </Col>
-          <Col xl={3} className="col-xl-3" >{SettingsComponent(settings, setSettings, compoundRateMap)}</Col>
+          <Col xl={3} className="col-xl-3" >{SettingsComponent(settings, setSettings, intervalMap)}</Col>
         </Row>
         <Row className='d-xl-none'>{Result(model.datasets, total, last)}</Row>
         
