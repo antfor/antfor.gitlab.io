@@ -36,6 +36,10 @@
     font-weight: bold;
 }
 
+.doughnut{
+   max-height: 230px;
+   min-height: 230px;
+}
 
 .chart{
     aspect-ratio: 1/1;
