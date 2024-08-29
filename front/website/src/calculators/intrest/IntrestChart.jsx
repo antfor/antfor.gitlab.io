@@ -66,14 +66,17 @@ function IntrestChart(){
     return (
         <Container>
         <Row>
-          <Col xl={9} className={"col-xl-9 "+ styles.chart} >
-            <Bar options={getOptions(iLabel)} data={model} />
-            <div className="d-none d-xl-block">
+          <Col xl={9} className={"col-xl-9"} >
+            <Row className={styles.chart} >  
+              <Bar options={getOptions(iLabel)} data={model}/>
+            </Row>
+            <Row className={"d-none d-xl-block"}>
               {Result(model.datasets, total, last)}
-            </div>
+            </Row>
           </Col>
           <Col xl={3} className="col-xl-3" >{SettingsComponent(settings, setSettings, intervalMap)}</Col>
         </Row>
+        <br className='d-xl-none'/>
         <Row className='d-xl-none'>{Result(model.datasets, total, last)}</Row>
         
         </Container>

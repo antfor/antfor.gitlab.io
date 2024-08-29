@@ -68,7 +68,7 @@ function breakDownToggle(setIntrestBreakDown, setAccBreakDown){
     return(
         <InputGroup className="xs-auto">
 
-        <div key={`default-${type}`} className="mb-3">
+        <div key={`default-${type}`}>
             
             <Form.Check 
                 type={type}
@@ -136,7 +136,6 @@ function SettingsComponent(settings, setSettings, intervalMap){
             {FormGroup(DropdownCoumpound(intervalMap, setCompoundRate), tidForm(settings.time, setTid))}
             <br/>
             {FormGroup("Breakdown ", breakDownToggle(setIntrestBreakDown, setAccBreakDown))}
-            <br/>
       </Form>
     )
 }

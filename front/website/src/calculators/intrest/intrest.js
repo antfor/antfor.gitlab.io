@@ -52,10 +52,7 @@ function calcSavings(P,M,r,i,IpY=Interval.Year,CRpY=CompoundRate.Monthly){
     const CRpI = CRpY * 1.0/IpY; // to month
     const MpI= M * 12.0 / IpY; // convert to interval
     r = toCrIntrest(r, CRpY);
-
     M = M * 12.0/CRpY;
-    console.log(M,r,CRpI);
-
 
     let s = {};
 
@@ -73,7 +70,6 @@ function calcSavings(P,M,r,i,IpY=Interval.Year,CRpY=CompoundRate.Monthly){
    
     s.intrestIntrest= s.totalSavings.map((ts,i) => ts - s.totalAcc[i] - s.intrestPrincipel[i] - s.intrestMonthly[i]);
 
-    console.log(s);
     return s;
 }
 

@@ -14,8 +14,8 @@ function percentOfTotal(value, total){
 
 function getLabel(context){
             
-    var label = context.dataset.label;
-    if (label !== null) {
+    var label = context.dataset.label || '';
+    if (label) {
         label += ': ';
 
         if (context.parsed.y !== null) {

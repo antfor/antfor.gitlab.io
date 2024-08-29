@@ -11,12 +11,14 @@ const chart = document.getElementById('calculators');
 
 function container(){
     return(
+        <div id="hideNav">
         <Card data-bs-theme="dark">
             <Card.Header> Ränta på ränta </Card.Header>
             <Card.Body> 
               <IntrestChart/> 
             </Card.Body>
         </Card>
+        </div>
     );
 }
 
