@@ -1,9 +1,9 @@
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Stack from 'react-bootstrap/Stack';
-import styles from './intrest.module.css'; 
+import styles from './settings.module.css'; 
 import { max,min } from 'mathjs';
-import {toNumber, formatValue, parseFloatSafe} from './parse.js'
+import {toNumber, formatValue, parseFloatSafe} from '../utils/parse.js'
 import Button from 'react-bootstrap/Button';
 
 const Any = "any";
@@ -38,18 +38,18 @@ function sliderForm(startValue, min, max, change, step=1, style=styles.m2, maxCo
 function räntaForm(intrest, setIntrest){
 
     let startValue = formatValue(intrest, 2);
-    return( sliderForm(startValue, 0, 20, (e) => setIntrest(toNumber(e.target.value)), 0.1, styles.m3, Any, 0.01));
+    return(sliderForm(startValue, 0, 20, (e) => setIntrest(toNumber(e.target.value)), 0.1, styles.m3, Any, 0.01));
 }
 
 function startForm(startMoney, setStartMoney){
 
-    let startValue  = formatValue(startMoney, 2);
+    let startValue = formatValue(startMoney, 2);
     return(sliderForm(startValue, 0, 10000, (e) => setStartMoney(toNumber(e.target.value)), 100, styles.m4, Any));   
 }
 
 function sparForm(spar, setSpar){
 
-    let startValue  = formatValue(spar, 2);
+    let startValue = formatValue(spar, 2);
     return(sliderForm(startValue, 0, 10000, (e) => setSpar(toNumber(e.target.value)), 100, styles.m4, Any));
 }
 
@@ -89,7 +89,7 @@ function breakDownToggle(setIntrestBreakDown, setAccBreakDown){
     );
 }
 
-function DropdownCoumpound(iMap, change){
+function DropdownInterval(iMap, change){
 
     const option = (key, value) => <option key={key} value={key}>{value}</option>; 
 
@@ -124,7 +124,6 @@ function SettingsComponent(settings, setSettings, intervalMap){
     const setIntrestBreakDown = (v) => {setSettings(prev => ({...prev, intrestBreakdown: v}))};
     const setAccBreakDown = (v) => {setSettings(prev => ({...prev, accBreakdown: v}))};
 
-    //todo clean up
     return (
         <Form>
             {FormGroup("Ränta per år (%)",räntaForm(settings.intrest, setRänta))}
@@ -133,7 +132,7 @@ function SettingsComponent(settings, setSettings, intervalMap){
             <br/>
             {FormGroup("Månadssparande (kr/mån)", sparForm(settings.monthlySaving, setSpar))}
             <br/>
-            {FormGroup(DropdownCoumpound(intervalMap, setCompoundRate), tidForm(settings.time, setTid))}
+            {FormGroup(DropdownInterval(intervalMap, setCompoundRate), tidForm(settings.time, setTid))}
             <br/>
             {FormGroup("Breakdown ", breakDownToggle(setIntrestBreakDown, setAccBreakDown))}
       </Form>

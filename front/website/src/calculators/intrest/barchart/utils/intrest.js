@@ -1,10 +1,9 @@
 
 const CompoundRate = {
-    
-        Annually: 1,
-        Semiannually: 2,
-        Quarterly: 4,
-        Monthly: 12,
+    Annually: 1,
+    Semiannually: 2,
+    Quarterly: 4,
+    Monthly: 12,
 };  
 
 const Interval = {

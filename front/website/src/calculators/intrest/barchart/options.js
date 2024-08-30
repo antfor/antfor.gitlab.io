@@ -1,5 +1,5 @@
 import { round } from 'mathjs'
-import { simplifyValue } from './parse.js';
+import { simplifyValue } from './utils/parse.js';
 
 function sumDatapoints(dataPoints){
     return dataPoints.reduce((acc, val) => acc + val.raw, 0);
@@ -21,12 +21,13 @@ function getLabel(context){
         if (context.parsed.y !== null) {
             let value = context.parsed.y;
 
-            label += simplifyValue(value,0) + ' kr';
-
             const dataPoints = context.chart.tooltip.dataPoints;
             const total = sumDatapoints(dataPoints);
 
-            label += ` (${round(percentOfTotal(value, total), 0)}%)`;
+            const Percent = ` (${percentOfTotal(value, total)}%)`;
+            const Money = simplifyValue(value,0) + ' kr';
+
+            label += Money + Percent;
             
         }else{
             label += "0 kr (0%)";
