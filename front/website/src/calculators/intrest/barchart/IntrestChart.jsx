@@ -9,14 +9,14 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { useState } from 'react';
-import { calcSavings, Interval } from './intrest.js';
-import { SettingsComponent } from './settings.jsx';
+import { calcSavings, Interval } from './utils/intrest.js';
+import { SettingsComponent } from './settings/settings.jsx';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Result from './resultat.jsx';
+import Result from './results/resultat.jsx';
 import styles from'./intrest.module.css';
-import { parseFloatSafe } from './parse.js';
+import { parseFloatSafe } from './utils/parse.js';
 import { getModel } from './model.js';
 import { getOptions } from './options.js';
 
@@ -57,18 +57,19 @@ function IntrestChart(){
    
     let dataPoints = calcSavings(...[settings.startMoney, settings.monthlySaving, settings.intrest, settings.time, settings.Interval].map(parseFloatSafe));
     let model = getModel(dataPoints, settings);
+
     const intervalMap = getIntervalMap();
-    const iLabel = intervalMap.get(parseFloatSafe(settings.Interval, Interval.Annually));
+    const intervlLabel = intervalMap.get(parseFloatSafe(settings.Interval, Interval.Annually));
 
     let last = parseFloatSafe(settings.time);
     let total = dataPoints.totalSavings[last];
 
     return (
-        <Container>
+      <Container>
         <Row>
           <Col xl={9} className={"col-xl-9"} >
             <Row className={styles.chart} >  
-              <Bar options={getOptions(iLabel)} data={model}/>
+              <Bar options={getOptions(intervlLabel)} data={model}/>
             </Row>
             <Row className={"d-none d-xl-block"}>
               {Result(model.datasets, total, last)}
@@ -78,8 +79,7 @@ function IntrestChart(){
         </Row>
         <br className='d-xl-none'/>
         <Row className='d-xl-none'>{Result(model.datasets, total, last)}</Row>
-        
-        </Container>
+      </Container>
 
     );
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import Card from 'react-bootstrap/Card';
-import { IntrestChart} from './IntrestChart.jsx'
+import { IntrestChart} from './barchart/IntrestChart.jsx'
 import './calculator.css'
 
 

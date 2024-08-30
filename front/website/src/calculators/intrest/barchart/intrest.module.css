@@ -1,0 +1,15 @@
+
+.chart{
+    aspect-ratio: 1/1;
+    
+}
+
+@media screen and (min-width:576px) {
+    .chart{
+        aspect-ratio: auto;
+        min-height: 300px;
+        max-height: 380px;
+    }
+
+}
+

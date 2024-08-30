@@ -1,6 +1,6 @@
 import { Doughnut } from 'react-chartjs-2';
-import styles from './intrest.module.css';
-import { simplifyValue } from './parse';
+import styles from './result.module.css';
+import { simplifyValue } from '../utils/parse';
 import {
     Chart as ChartJS,
     ArcElement,

@@ -1,7 +1,7 @@
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { simplifyValue } from './parse.js';
-import styles from './intrest.module.css'; 
+import { simplifyValue } from '../utils/parse.js';
+import styles from './result.module.css'; 
 import { DoughnutChart } from './doughnutChart.jsx';
 
 

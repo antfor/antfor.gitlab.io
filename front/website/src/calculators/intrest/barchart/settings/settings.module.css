@@ -1,4 +1,3 @@
-
 .button{
     max-width: 4em;
     margin: 2px;
@@ -29,29 +28,4 @@
     max-width: 6em;
     min-width: 6em;
     width: 6em;
-
 }
-
-.resulat{
-    font-weight: bold;
-}
-
-.doughnut{
-   max-height: 230px;
-   min-height: 230px;
-}
-
-.chart{
-    aspect-ratio: 1/1;
-    
-}
-
-@media screen and (min-width:576px) {
-    .chart{
-        aspect-ratio: auto;
-        min-height: 300px;
-        max-height: 380px;
-    }
-
-}
-
