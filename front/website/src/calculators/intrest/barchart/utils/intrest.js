@@ -72,7 +72,7 @@ function calcSavings(P,M,r,i,IpY=Interval.Year,CRpY=CompoundRate.Monthly){
     s.accMonthly = Array(i + 1).fill().map((_,t) => MpI * t);
     s.totalAcc = s.accMonthly.map((M) => M + P);
 
-    if(r===0){
+    if(r==0){
         s.totalSavings = s.totalAcc;
 
         const zero = Array(i + 1).fill(0);

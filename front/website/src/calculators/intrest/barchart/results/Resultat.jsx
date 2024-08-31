@@ -2,7 +2,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { simplifyValue } from '../utils/parse.js';
 import styles from './result.module.css'; 
-import { DoughnutChart } from './doughnutChart.jsx';
+import { DoughnutChart } from './DoughnutChart.jsx';
 import { Total } from './Total.jsx';
 
 
@@ -42,8 +42,7 @@ function Brake(arr){
 export default function Result(datasets, total, index, dataPoints){
     
     
-    const isEmpty = datasets.length === 0;
-    if(isEmpty){
+    if(datasets.length == 0){
         return (emptyResult());
     }
 
