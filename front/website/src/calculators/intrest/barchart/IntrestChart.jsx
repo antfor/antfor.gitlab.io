@@ -10,11 +10,11 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { useState } from 'react';
 import { calcSavings, Interval } from './utils/intrest.js';
-import { SettingsComponent } from './settings/settings.jsx';
+import { SettingsComponent } from './settings/Settings.jsx';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Result from './results/resultat.jsx';
+import Result from './results/Resultat.jsx';
 import styles from'./intrest.module.css';
 import { parseFloatSafe } from './utils/parse.js';
 import { getModel } from './model.js';

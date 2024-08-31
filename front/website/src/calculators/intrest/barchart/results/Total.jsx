@@ -8,7 +8,7 @@ function getColor(value,total){
     const col0 =[106,168,79];
     const col1 =[182,215,168];
 
-    if(total === 0){
+    if(total == 0){
         return {color: `rgb(${col1[0]},${col1[1]},${col1[2]})`};
     }
 
@@ -46,7 +46,7 @@ export function Total(dataPoints, total, index){
     const totalFromPrincipal = totalPrincipal(dataPoints, index);
     const totalFromMonthly = total - totalFromPrincipal;
 
-    if(totalFromPrincipal === 0 || totalFromMonthly === 0){
+    if(totalFromPrincipal == 0 || totalFromMonthly == 0){
         return;
     }
 

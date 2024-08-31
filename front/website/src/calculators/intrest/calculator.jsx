@@ -12,7 +12,7 @@ const chart = document.getElementById('calculators');
 function container(){
     return(
         <div id="hideNav">
-        <Card id="intrest" data-bs-theme="dark">
+        <Card id="ränta" data-bs-theme="dark">
             <Card.Header>Ränta på ränta</Card.Header>
             <Card.Body> 
               <IntrestChart/> 

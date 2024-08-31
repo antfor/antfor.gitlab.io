@@ -22,7 +22,7 @@ function Buttons(startValue, minVal, maxVal, change, step){
     );
 }
 
-function sliderForm(startValue, min, max, change, step=1, style=styles.m2, maxControl=max, stepControl=step){
+function SliderForm(startValue, min, max, change, step=1, style=styles.m2, maxControl=max, stepControl=step){
 
     return(
         <Stack gap="2">
@@ -35,34 +35,34 @@ function sliderForm(startValue, min, max, change, step=1, style=styles.m2, maxCo
     );
 }
 
-function räntaForm(intrest, setIntrest){
+function RäntaForm(intrest, setIntrest){
 
     let startValue = formatValue(intrest, 2);
-    return(sliderForm(startValue, 0, 20, (e) => setIntrest(toNumber(e.target.value)), 0.1, styles.m3, Any, 0.01));
+    return(SliderForm(startValue, 0, 20, (e) => setIntrest(toNumber(e.target.value)), 0.1, styles.m3, Any, 0.01));
 }
 
-function startForm(startMoney, setStartMoney){
+function StartForm(startMoney, setStartMoney){
 
     let startValue = formatValue(startMoney, 2);
-    return(sliderForm(startValue, 0, 10000, (e) => setStartMoney(toNumber(e.target.value)), 100, styles.m4, Any));   
+    return(SliderForm(startValue, 0, 10000, (e) => setStartMoney(toNumber(e.target.value)), 100, styles.m4, Any));   
 }
 
-function sparForm(spar, setSpar){
+function SparForm(spar, setSpar){
 
     let startValue = formatValue(spar, 2);
-    return(sliderForm(startValue, 0, 10000, (e) => setSpar(toNumber(e.target.value)), 100, styles.m4, Any));
+    return(SliderForm(startValue, 0, 10000, (e) => setSpar(toNumber(e.target.value)), 100, styles.m4, Any));
 }
 
-function tidForm(time, setTime){
+function TidForm(time, setTime){
 
     let startValue = "";
     if(time !== "")
         startValue  = min(formatValue(time, 0),100);
     
-    return(sliderForm(startValue, 0, 30, (e) => setTime(toNumber(e.target.value)), 1, styles.m2, 100));
+    return(SliderForm(startValue, 0, 30, (e) => setTime(toNumber(e.target.value)), 1, styles.m2, 100));
 }
 
-function breakDownToggle(setIntrestBreakDown, setAccBreakDown, setIIBreakDown, settings){
+function BreakDownToggle(setIntrestBreakDown, setAccBreakDown, setIIBreakDown, settings){
 
     let type = 'checkbox';
     const ib = settings.intrestBreakdown;
@@ -142,15 +142,15 @@ function SettingsComponent(settings, setSettings, intervalMap){
 
     return (
         <Form>
-            {FormGroup("Ränta per år (%)",räntaForm(settings.intrest, setRänta))}
+            {FormGroup("Ränta per år (%)",RäntaForm(settings.intrest, setRänta))}
             <br/>
-            {FormGroup("Startbelopp (kr)", startForm(settings.startMoney, setStart))}
+            {FormGroup("Startbelopp (kr)", StartForm(settings.startMoney, setStart))}
             <br/>
-            {FormGroup("Månadssparande (kr/mån)", sparForm(settings.monthlySaving, setSpar))}
+            {FormGroup("Månadssparande (kr/mån)", SparForm(settings.monthlySaving, setSpar))}
             <br/>
-            {FormGroup(DropdownInterval(intervalMap, setCompoundRate), tidForm(settings.time, setTid))}
+            {FormGroup(DropdownInterval(intervalMap, setCompoundRate), TidForm(settings.time, setTid))}
             <br/>
-            {FormGroup("Breakdown", breakDownToggle(setIntrestBreakDown, setAccBreakDown, setIIBreakDown, settings))}
+            {FormGroup("Breakdown", BreakDownToggle(setIntrestBreakDown, setAccBreakDown, setIIBreakDown, settings))}
       </Form>
     )
 }
