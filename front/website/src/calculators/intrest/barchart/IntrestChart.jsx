@@ -47,6 +47,7 @@ function defultSettings(){
     time: "20",
     Interval: Interval.Year.toString(),
     intrestBreakdown: false,
+    intrestOnIntrestBreakdown: false,
     accBreakdown: false,
   };
 }
@@ -72,13 +73,13 @@ function IntrestChart(){
               <Bar options={getOptions(intervlLabel)} data={model}/>
             </Row>
             <Row className={"d-none d-xl-block"}>
-              {Result(model.datasets, total, last)}
+              {Result(model.datasets, total, last, dataPoints)}
             </Row>
           </Col>
           <Col xl={3} className="col-xl-3" >{SettingsComponent(settings, setSettings, intervalMap)}</Col>
         </Row>
         <br className='d-xl-none'/>
-        <Row className='d-xl-none'>{Result(model.datasets, total, last)}</Row>
+        <Row className='d-xl-none'>{Result(model.datasets, total, last, dataPoints)}</Row>
       </Container>
 
     );

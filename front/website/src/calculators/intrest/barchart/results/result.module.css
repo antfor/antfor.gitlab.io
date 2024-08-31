@@ -2,7 +2,11 @@
     font-weight: bold;
 }
 
+.nowrap{
+    white-space: nowrap;
+}
+
 .doughnut{
-   max-height: 230px;
-   min-height: 230px;
+    max-height: 270px;
+    min-height: 270px;
 }
