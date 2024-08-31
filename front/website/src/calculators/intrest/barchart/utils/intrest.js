@@ -32,11 +32,24 @@ function intrestOnPrincipal(P, r, CRpI, i){
     return(RP.map((_, t)=> P * r * (t*CRpI)));
 }
 
+function intrestOnintrestPrincipal(P, r, CRpI, i){
+
+    let RRP = Array(i + 1).fill(0);
+
+    return(RRP.map((_, t)=> P*(1+r)**(t*CRpI) - P - (P * r * (t*CRpI)) ));
+}
+
 
 function intrestOnMontly(M, r, CRpI, i){
 
     let RM = Array(i + 1).fill(0);
     return(RM.map((_,t)=> M*r*(t*CRpI)*(t*CRpI-1)*0.5)); // t-1
+}
+
+function intrestOnintrestMontly(M, r, CRpI, MpI, i){
+
+    let RRM = Array(i + 1).fill(0);
+    return(RRM.map((_,t)=> M * ((1+r)**(t*CRpI)-1)/r - MpI * t - (M*r*(t*CRpI)*(t*CRpI-1)*0.5) )); 
 }
 
 /*
@@ -67,6 +80,9 @@ function calcSavings(P,M,r,i,IpY=Interval.Year,CRpY=CompoundRate.Monthly){
         s.intrestPrincipel = zero;
         s.intrestMonthly = zero;
         s.intrestIntrest = zero;
+        s.intrestIntrestPrincipal = zero;
+        s.intrestIntrestMonthly = zero;
+
     }else{
         s.totalSavings = totalSavings(P,M,r,CRpI,i);
 
@@ -75,7 +91,10 @@ function calcSavings(P,M,r,i,IpY=Interval.Year,CRpY=CompoundRate.Monthly){
         s.intrestPrincipel = intrestOnPrincipal(P,r,CRpI,i);
         s.intrestMonthly = intrestOnMontly(M,r,CRpI,i);
      
-        s.intrestIntrest= s.totalSavings.map((ts,i) => ts - s.totalAcc[i] - s.intrestPrincipel[i] - s.intrestMonthly[i]);    
+        s.intrestIntrest = s.totalSavings.map((ts,i) => ts - s.totalAcc[i] - s.intrestPrincipel[i] - s.intrestMonthly[i]);
+        
+        s.intrestIntrestPrincipal = intrestOnintrestPrincipal(P,r,CRpI,i);
+        s.intrestIntrestMonthly = intrestOnintrestMontly(M,r,CRpI,MpI,i);
     }
 
 

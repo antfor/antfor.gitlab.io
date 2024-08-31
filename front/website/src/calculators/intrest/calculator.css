@@ -19,6 +19,9 @@ body {
   background-color: rgb(7.0, 55.0, 99.0);
   justify-content: center;
   align-items: safe center;
-  
+}
+
+html {
+  scroll-behavior: smooth;
 }
   

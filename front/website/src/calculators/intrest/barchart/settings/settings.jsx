@@ -62,23 +62,38 @@ function tidForm(time, setTime){
     return(sliderForm(startValue, 0, 30, (e) => setTime(toNumber(e.target.value)), 1, styles.m2, 100));
 }
 
-function breakDownToggle(setIntrestBreakDown, setAccBreakDown){
+function breakDownToggle(setIntrestBreakDown, setAccBreakDown, setIIBreakDown, settings){
 
     let type = 'checkbox';
+    const ib = settings.intrestBreakdown;
+    const ab = settings.accBreakdown;
+    const iib = settings.intrestOnIntrestBreakdown;
     return(
-        <InputGroup className="xs-auto">
+        <InputGroup className="xs-auto" gap="3">
 
         <div key={`default-${type}`}>
             
+            <Stack direction="horizontal" gap="5">
+                <Form.Check 
+                    type={type}
+                    checked={ib}
+                    id={`intrest`}
+                    label={`info ränta`}
+                    onChange={(e) => setIntrestBreakDown(e.target.checked)}
+                />
+                <Form.Check 
+                    type={type}
+                    checked={iib}
+                    disabled={!ib}
+                    id={`intrestIntrest`}
+                    label={`info ränta på ränta`}
+                    onChange={(e) => setIIBreakDown(e.target.checked)}
+                />
+            </Stack>
+            <br/>
             <Form.Check 
                 type={type}
-                id={`intrest`}
-                label={`info ränta`}
-                onChange={(e) => setIntrestBreakDown(e.target.checked)}
-            />
-
-            <Form.Check 
-                type={type}
+                checked={ab}
                 id={`acc`}
                 label={`info insättning`}
                 onChange={(e) => setAccBreakDown(e.target.checked)}
@@ -123,6 +138,7 @@ function SettingsComponent(settings, setSettings, intervalMap){
 
     const setIntrestBreakDown = (v) => {setSettings(prev => ({...prev, intrestBreakdown: v}))};
     const setAccBreakDown = (v) => {setSettings(prev => ({...prev, accBreakdown: v}))};
+    const setIIBreakDown = (v) => {setSettings(prev => ({...prev, intrestOnIntrestBreakdown: v}))};
 
     return (
         <Form>
@@ -134,7 +150,7 @@ function SettingsComponent(settings, setSettings, intervalMap){
             <br/>
             {FormGroup(DropdownInterval(intervalMap, setCompoundRate), tidForm(settings.time, setTid))}
             <br/>
-            {FormGroup("Breakdown ", breakDownToggle(setIntrestBreakDown, setAccBreakDown))}
+            {FormGroup("Breakdown", breakDownToggle(setIntrestBreakDown, setAccBreakDown, setIIBreakDown, settings))}
       </Form>
     )
 }
