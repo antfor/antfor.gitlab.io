@@ -1,0 +1,12 @@
+.resulat{
+    font-weight: bold;
+}
+
+.nowrap{
+    white-space: nowrap;
+}
+
+.doughnut{
+    max-height: 270px;
+    min-height: 270px;
+}

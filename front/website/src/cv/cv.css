@@ -1,0 +1,38 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+    background-color: rgb(7.0, 55.0, 99.0);
+    font-family: sans-serif;
+    padding-top: 84px;
+    overflow: scroll;
+  }
+
+iframe {
+    border: none;
+    height: 100%;
+    width: 100%;
+  }
+  
+  #adobe-dc-view {
+    width: 21cm;
+    max-width: 21cm;
+    aspect-ratio: 1/1.4142;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  }
+  
+  .pdf-viewer {
+    background-color:#d1d1d1; 
+    min-height: 100%;
+    height: auto;
+    width: 100%;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    
+  }
