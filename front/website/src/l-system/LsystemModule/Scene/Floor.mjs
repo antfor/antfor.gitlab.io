@@ -8,17 +8,19 @@ const vs = `
 #version 300 es
 uniform mat4 u_MVP;
 uniform mat4 u_NormalMatrix;
-uniform mat4 u_LightMatrix;
+uniform mat4 u_modelView;
+uniform mat4 u_lightMatrix;
 uniform float posY;
 
 in vec4 position;
 in vec3 normal;
 in vec2 texcoord;
 
-out vec4 v_position;
+out vec2 v_position;
 out vec3 v_normal;
 out vec2 v_texCoord;
-out vec3 shadowMapCoord;
+out vec3 viewSpacePosition;
+out vec4 shadowMapCoord;
 
 void main() {
 
@@ -27,11 +29,9 @@ void main() {
 
   v_normal = (u_NormalMatrix * vec4(normal, 0)).xyz;
   v_texCoord = texcoord;
-  v_position = pos;
-
-  vec4 lightPos = u_LightMatrix * pos;
-  vec3 lightPosDNC = lightPos.xyz / lightPos.w;
-  shadowMapCoord = vec3(0.5) + lightPosDNC * 0.5;
+  v_position = pos.xz;
+  viewSpacePosition = (u_modelView * pos).xyz;
+  shadowMapCoord = u_lightMatrix * vec4(viewSpacePosition.xyz, 1.0);
 
   gl_Position = u_MVP * pos;
 }`;
@@ -40,14 +40,16 @@ const fs = `
 #version 300 es
 precision highp float;
 
+uniform mat4 u_lightMatrix;
 uniform sampler2D shadowMapTex;
 uniform float scale;
 uniform float size;
 
-in vec2 v_texCoord;
 in vec3 v_normal;
-in vec4 v_position;
-in vec3 shadowMapCoord;
+in vec2 v_position;
+in vec3 viewSpacePosition;
+in vec4 shadowMapCoord;
+
 
 out vec4 outColor;
 
@@ -75,20 +77,20 @@ float checker(vec2 uv)
 
 void main() {
 
-  float col = 0.1f + 0.05f * checker(v_position.xz*scale/size);
+  float col = 0.5f + 0.05f * checker(v_position.xy*scale/size);
+  vec4 smc = u_lightMatrix * vec4(viewSpacePosition, 1.f);
+
+	float depth = texture(shadowMapTex, v_position.xy).r;
+ 
+	//float visibility = (depth >= (smc.z / smc.w)) ? 1.0 : 0.0;
+  
+
+ // float visibility = textureProj(shadowMapTex, shadowMapCoord).r;
+
   vec4 diffuseColor = vec4(col, col, col, 1.0);
 
-  vec4 depth = texture(shadowMapTex, shadowMapCoord.xy);
-  float shadowCoeff = 1. - smoothstep(0.002, 0.003, shadowMapCoord.z - depth.r);\n\
 
-  if (depth.r + 0.0022 < shadowMapCoord.z){
-    //outColor = vec4(0.,1.,0.,1.); // GREEN
-   // return;
-
-    }
-
-  outColor = vec4(shadowCoeff,shadowCoeff,shadowCoeff, 1);
- // outColor = depth;
+  outColor = diffuseColor;
 }
 `;
 
@@ -100,9 +102,6 @@ uniform float posY;
 
 in vec4 position;
 
-out vec4 v_position;
-out float v_depth;
-
 void main() {
 
   vec4 pos = position;
@@ -111,19 +110,16 @@ void main() {
 
   gl_Position = pos;
 
-  v_depth = (pos.z / pos.w) * .5 + .5;
 }`;
 
 const shadowFs = `
 #version 300 es
 precision highp float;
 
-in float v_depth;
-
 out vec4 outColor;
 
 void main() {
-  outColor = vec4(v_depth,0,0,1);
+  outColor = vec4(gl_FragCoord.z);
 }
 `;
 
@@ -159,22 +155,23 @@ class Floor{
         
     }
     
-    draw(gl, viewProjection, drawShadowMap=false, lightMatrix=undefined){
+    draw(gl, view, viewProjection, drawShadowMap=false, lightMatrix=undefined, ){
 
       if(drawShadowMap){
-        this.scene(gl, viewProjection, this.shadowProgramInfo);
+        this.drawFloor(gl, view, viewProjection, this.shadowProgramInfo);
       }else{
-        this.uniforms.u_LightMatrix = lightMatrix;
-        this.scene(gl, viewProjection);
+        this.uniforms.u_lightMatrix = lightMatrix;
+        this.drawFloor(gl, view, viewProjection);
       }
 
     }
 
-    scene(gl, viewProjection, programInfo=this.programInfo){
+    drawFloor(gl, view, viewProjection, programInfo=this.programInfo){
 
       gl.useProgram(programInfo.program);
       this.uniforms.u_NormalMatrix = m4.transpose(m4.inverse(this.model));
       this.uniforms.u_MVP = m4.multiply(viewProjection, this.model);
+      this.uniforms.u_modelView = m4.multiply(view ,this.model);
 
       twgl.setBuffersAndAttributes(gl, programInfo, this.bufferInfo);
       twgl.setUniforms(programInfo, this.uniforms);

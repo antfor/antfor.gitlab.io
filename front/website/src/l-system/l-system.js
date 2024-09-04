@@ -125,9 +125,9 @@ let fps_time = 0;
 let fps_frames = 0;
 let time_prev = 0;
 
-let shadowMap = new ShadowProgram(gl, sunPosition, 512, 512);
+let shadowMap = new ShadowProgram(gl, sunPosition, 1024, 1024);
 uniforms.shadowMap = shadowMap.shadowMap_texture;
-const floor = new Floor(gl, 20, 20, shadowMap.shadowMap_texture);
+const floor = new Floor(gl, 5, 1, shadowMap.shadowMap_texture);
 
 
 function render(time) {
@@ -154,7 +154,7 @@ function render(time) {
     //gl.enable(gl.CULL_FACE);
     gl.clearColor(0.384314, 0.454902, 0.494118, 1);
     gl.clearColor(0.3, 0.3, 0.3, 1);
-    gl.clearColor(0.9, 0.9, 0.9, 1);
+    gl.clearColor(0.9, 0.0, 0.9, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     const fov = 30 * Math.PI / 180;
@@ -174,28 +174,37 @@ function render(time) {
 
     const camera = m4.lookAt(eye, target, up);
     const view = m4.inverse(camera);
-    const viewProjection = m4.multiply(projection, view);
+    
 
   
-    shadowMap.draw(draw, gl, viewProjection);
+    shadowMap.draw(scene, gl);
 
     gl.useProgram(programInfo.program);
-    draw(programInfo, viewProjection);
+    scene(programInfo, view, projection);
+    
+
+    //let rojection = m4.ortho(-10, 10, -10, 10, 0.5, 100);  //todo scale to fit scene
+    //let iew = m4.lookAt(sunPosition, [0,0,0], [0,1,0]); //todo add light direction
+    //scene(programInfo, iew, rojection);
     
    
     requestAnimationFrame(render);
 }
 
-function draw(programInfo, viewProjection, drawShadowMap=false){
+function scene(programInfo, view, projection, drawShadowMap=false){
 
+  const viewProjection = m4.multiply(projection, view);
+
+  //fractal.draw(gl, viewProjection, drawShadowMap, shadowMap.getLightMatrix(view)) 
   uniforms.u_viewProjection = viewProjection;
 
   const vertexArrayInfo = twgl.createVertexArrayInfo(gl, programInfo, bufferInfo);
   twgl.setBuffersAndAttributes(gl, programInfo, vertexArrayInfo);
   twgl.setUniforms(programInfo, uniforms);
   gl.drawElementsInstanced(gl.TRIANGLES, vertexArrayInfo.numElements, gl.UNSIGNED_SHORT, 0, numInstances);
+  //
 
-  floor.draw(gl, viewProjection, drawShadowMap, shadowMap.getViewProjection());
+  floor.draw(gl, view, viewProjection, drawShadowMap, shadowMap.getLightMatrix(view));
 }
 
 
