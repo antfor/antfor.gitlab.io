@@ -47,7 +47,7 @@ void main() {
   const m4 = twgl.m4;
   const v3 = twgl.v3;
   const gl = document.getElementById("l").getContext("webgl2");
-  const sunPosition = [0, 10, -10];
+  const sunPosition = [0, 10, -50];
   //const sunPosition = [1, 8, -30];
 
   const programInfo = twgl.createProgramInfo(gl, [vs, fs]);
@@ -125,9 +125,9 @@ let fps_time = 0;
 let fps_frames = 0;
 let time_prev = 0;
 
-let shadowMap = new ShadowProgram(gl, sunPosition, 512, 512);
+let shadowMap = new ShadowProgram(gl, sunPosition, 1024, 1024);
 uniforms.shadowMap = shadowMap.shadowMap_texture;
-const floor = new Floor(gl, 20, 20, shadowMap.shadowMap_texture);
+const floor = new Floor(gl, 10, 4, shadowMap.shadowMap_texture);
 
 
 function render(time) {
@@ -181,7 +181,11 @@ function render(time) {
 
     gl.useProgram(programInfo.program);
     draw(programInfo, viewProjection);
-    
+    //const size = 20;
+    //let rojection = m4.ortho(-size, size, -size, size, 0.5, 1000);  //todo scale to fit scene
+    //let iew = m4.lookAt(sunPosition, [0,0,0], [0,1,0]); //todo add light direction
+    //let iewRojection = m4.multiply(rojection, iew);
+    //draw(programInfo, iewRojection);
    
     requestAnimationFrame(render);
 }
