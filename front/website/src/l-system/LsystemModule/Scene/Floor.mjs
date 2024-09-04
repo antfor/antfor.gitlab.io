@@ -95,9 +95,6 @@ uniform float posY;
 
 in vec4 position;
 
-out vec4 v_position;
-out float v_depth;
-
 void main() {
 
   vec4 pos = position;
@@ -105,20 +102,16 @@ void main() {
   pos = u_MVP * pos;
 
   gl_Position = pos;
-
-  v_depth = (pos.z / pos.w) * .5 + .5;
 }`;
 
 const shadowFs = `
 #version 300 es
 precision highp float;
 
-in float v_depth;
-
 out vec4 outColor;
 
 void main() {
-  outColor = vec4(v_depth,0,0,1);
+  outColor = vec4(gl_FragCoord.z);
 }
 `;
 
@@ -157,15 +150,15 @@ class Floor{
     draw(gl, viewProjection, drawShadowMap=false, lightMatrix=undefined){
 
       if(drawShadowMap){
-        this.scene(gl, viewProjection, this.shadowProgramInfo);
+        this.drawFloor(gl, viewProjection, this.shadowProgramInfo);
       }else{
         this.uniforms.u_LightMatrix = lightMatrix;
-        this.scene(gl, viewProjection);
+        this.drawFloor(gl, viewProjection);
       }
 
     }
 
-    scene(gl, viewProjection, programInfo=this.programInfo){
+    drawFloor(gl, viewProjection, programInfo=this.programInfo){
 
       gl.useProgram(programInfo.program);
       this.uniforms.u_NormalMatrix = m4.transpose(m4.inverse(this.model));

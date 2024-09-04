@@ -18,17 +18,13 @@ void main() {
   pos = u_viewProjection * instanceWorld * pos;
 
   gl_Position = pos;
-
-  v_depth = (pos.z / pos.w) * .5 + .5;
 }
 `;
 const fs = `
 precision mediump float;
 
-varying float v_depth;
-
 void main() {
-  gl_FragColor = vec4(v_depth,0,0,1);
+  gl_FragColor = vec4(gl_FragCoord.z);
 }
 `;
 

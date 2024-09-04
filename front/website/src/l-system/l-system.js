@@ -177,10 +177,10 @@ function render(time) {
     const viewProjection = m4.multiply(projection, view);
 
   
-    shadowMap.draw(draw, gl, viewProjection);
+    shadowMap.draw(scene, gl, viewProjection);
 
     gl.useProgram(programInfo.program);
-    draw(programInfo, viewProjection);
+    scene(programInfo, viewProjection);
     //const size = 20;
     //let rojection = m4.ortho(-size, size, -size, size, 0.5, 1000);  //todo scale to fit scene
     //let iew = m4.lookAt(sunPosition, [0,0,0], [0,1,0]); //todo add light direction
@@ -190,7 +190,7 @@ function render(time) {
     requestAnimationFrame(render);
 }
 
-function draw(programInfo, viewProjection, drawShadowMap=false){
+function scene(programInfo, viewProjection, drawShadowMap=false){
 
   uniforms.u_viewProjection = viewProjection;
 
