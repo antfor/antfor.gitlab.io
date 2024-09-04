@@ -10,6 +10,7 @@ uniform mat4 u_MVP;
 uniform mat4 u_NormalMatrix;
 uniform mat4 u_LightMatrix;
 uniform float posY;
+uniform mat4 u_Model;
 
 in vec4 position;
 in vec3 normal;
@@ -29,7 +30,7 @@ void main() {
   v_texCoord = texcoord;
   v_position = pos;
 
-  vec4 lightPos = u_LightMatrix * pos;
+  vec4 lightPos = u_LightMatrix * u_Model * pos;
   vec3 lightPosDNC = lightPos.xyz / lightPos.w;
   shadowMapCoord = vec3(0.5) + lightPosDNC * 0.5;
 
@@ -75,20 +76,14 @@ float checker(vec2 uv)
 
 void main() {
 
-  float col = 0.1f + 0.05f * checker(v_position.xz*scale/size);
+  float col = 0.2f + 0.05f * checker(v_position.xz*scale/size);
   vec4 diffuseColor = vec4(col, col, col, 1.0);
 
   vec4 depth = texture(shadowMapTex, shadowMapCoord.xy);
   float shadowCoeff = 1. - smoothstep(0.002, 0.003, shadowMapCoord.z - depth.r);\n\
 
-  if (depth.r + 0.0022 < shadowMapCoord.z){
-    //outColor = vec4(0.,1.,0.,1.); // GREEN
-   // return;
-
-    }
-
-  outColor = vec4(shadowCoeff,shadowCoeff,shadowCoeff, 1);
- // outColor = depth;
+ // outColor = vec4(diffuseColor);
+  outColor = vec4(diffuseColor.xyz * shadowCoeff,1.0);
 }
 `;
 
@@ -175,6 +170,7 @@ class Floor{
       gl.useProgram(programInfo.program);
       this.uniforms.u_NormalMatrix = m4.transpose(m4.inverse(this.model));
       this.uniforms.u_MVP = m4.multiply(viewProjection, this.model);
+      this.uniforms.u_Model = this.model;
 
       twgl.setBuffersAndAttributes(gl, programInfo, this.bufferInfo);
       twgl.setUniforms(programInfo, this.uniforms);
