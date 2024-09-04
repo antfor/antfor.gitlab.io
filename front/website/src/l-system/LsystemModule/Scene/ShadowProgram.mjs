@@ -74,17 +74,28 @@ class ShadowProgram{
     resize(gl, width, height){
     }
     
-    getViewProjection(lightPos = this.lightPos){
-      let projection = m4.ortho(-10, 10, -10, 10, 0.5, 100);  //todo scale to fit scene
-      let view = m4.lookAt(lightPos, [0,0,0], [0,1,0]); //todo add light direction
 
-      return m4.multiply(projection, view);
+    getView(){
+      return m4.ortho(-10, 10, -10, 10, 0.5, 100);  //todo scale to fit scene
+    }
+    getProjection(lightPos = this.lightPos){
+      return m4.lookAt(lightPos, [0,0,0], [0,1,0]); //todo add light direction
+    }
+
+    getLightMatrix(view){
+      
+      const lightView = this.getView();
+      const lightProjection = this.getProjection();
+      const clipSpace = m4.multiply(lightProjection, m4.multiply(lightView, m4.inverse(view)));
+      const scale = m4.scaling([0.5, 0.5, 0.5]);
+      const translate = m4.translation([0.5, 0.5, 0.5]);
+
+      const texCord = m4.multiply(translate ,m4.multiply(scale, clipSpace));
+      return texCord;
     }
 
 
     draw(drawScene, gl){
-
-      let viewProjection = this.getViewProjection();
 
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
       gl.useProgram(this.programInfo.program);
@@ -93,7 +104,7 @@ class ShadowProgram{
       gl.clearColor(1.0, 0.0, 0.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-      drawScene(this.programInfo, viewProjection, true);
+      drawScene(this.programInfo, this.getView(), this.getProjection(), true);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 }
