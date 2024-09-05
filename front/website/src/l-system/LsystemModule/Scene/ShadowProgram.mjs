@@ -2,35 +2,7 @@ import * as twgl from 'twgl.js';
 
 
 const m4 = twgl.m4;
-const v3 = twgl.v3;
 
-const vs = `
-uniform mat4 u_viewProjection;
-attribute mat4 instanceWorld;
-attribute vec4 position;
-uniform float step;
-
-varying float v_depth;
-
-void main() {
-  vec4 pos = position;
-  pos.y += step/2.0;
-  pos = u_viewProjection * instanceWorld * pos;
-
-  gl_Position = pos;
-}
-`;
-const fs = `
-precision mediump float;
-
-void main() {
-  gl_FragColor = vec4(gl_FragCoord.z);
-}
-`;
-
-function createShadowProgram(gl){
-
-}
 
 class ShadowProgram{
 
@@ -56,7 +28,7 @@ class ShadowProgram{
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	  	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height,
                     0, gl.RGBA, gl.UNSIGNED_BYTE, null);
@@ -67,8 +39,6 @@ class ShadowProgram{
       gl.bindTexture(gl.TEXTURE_2D, null);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
       
-      this.programInfo = twgl.createProgramInfo(gl, [vs, fs]);
-
     }
 
     resize(gl, width, height){
@@ -88,13 +58,13 @@ class ShadowProgram{
       let viewProjection = this.getViewProjection();
 
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
-      gl.useProgram(this.programInfo.program);
-
       gl.viewport(0, 0, this.width, this.height);
-      gl.clearColor(1.0, 0.0, 0.0, 1.0);
+      gl.enable(gl.DEPTH_TEST);
+      gl.enable(gl.CULL_FACE);
+      gl.clearColor(1.0, 1.0, 1.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-      drawScene(this.programInfo, viewProjection, true);
+      drawScene(viewProjection, true);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 }

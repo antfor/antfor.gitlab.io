@@ -14,11 +14,9 @@ uniform mat4 u_Model;
 
 in vec4 position;
 in vec3 normal;
-in vec2 texcoord;
 
 out vec4 v_position;
 out vec3 v_normal;
-out vec2 v_texCoord;
 out vec3 shadowMapCoord;
 
 void main() {
@@ -27,7 +25,6 @@ void main() {
   pos.y += posY;
 
   v_normal = (u_NormalMatrix * vec4(normal, 0)).xyz;
-  v_texCoord = texcoord;
   v_position = pos;
 
   vec4 lightPos = u_LightMatrix * u_Model * pos;
@@ -45,7 +42,6 @@ uniform sampler2D shadowMapTex;
 uniform float scale;
 uniform float size;
 
-in vec2 v_texCoord;
 in vec3 v_normal;
 in vec4 v_position;
 in vec3 shadowMapCoord;
@@ -111,7 +107,7 @@ precision highp float;
 out vec4 outColor;
 
 void main() {
-  outColor = vec4(gl_FragCoord.z);
+  outColor = vec4(vec3(gl_FragCoord.z), 1.0);
 }
 `;
 
@@ -121,22 +117,9 @@ class Floor{
         this.programInfo = twgl.createProgramInfo(gl, [vs, fs]);
         this.shadowProgramInfo = twgl.createProgramInfo(gl, [shadowVs, shadowFs]);
 
-
-
         this.bufferInfo = twgl.primitives.createPlaneBufferInfo(gl, size, size);
        
         this.model = m4.scaling([size, 1, size]);
-
-        const tex = twgl.createTexture(gl, {
-          min: gl.NEAREST,
-          mag: gl.NEAREST,
-          src: [
-            255, 255, 255, 255,
-            192, 192, 192, 255,
-            192, 192, 192, 255,
-            255, 255, 255, 255,
-          ],
-        });
         
         this.uniforms = {
             size: size,
