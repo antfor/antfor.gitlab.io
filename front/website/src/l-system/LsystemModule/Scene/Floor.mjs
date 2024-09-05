@@ -6,6 +6,7 @@ const m4 = twgl.m4;
 
 const vs = `
 #version 300 es
+
 uniform mat4 u_MVP;
 uniform mat4 u_NormalMatrix;
 uniform mat4 u_LightMatrix;
@@ -86,6 +87,7 @@ void main() {
 //ShadowProgram
 const shadowVs = `
 #version 300 es
+
 uniform mat4 u_MVP;
 uniform float posY;
 
