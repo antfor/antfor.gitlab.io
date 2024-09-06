@@ -52,7 +52,13 @@ void main() {
   vec4 depth = texture(shadowMapTex, shadowMapCoord.xy);
   float shadowCoeff = 1. - smoothstep(0.002, 0.003, shadowMapCoord.z - depth.r);\n\
 
-  outColor = vec4(defuse * shadowCoeff, v_color.a);
+
+  if(depth.r + 0.002< shadowMapCoord.z ){
+    outColor = vec4(vec3(0.0,1.0,0.0),1.0);
+    return;
+  }
+  outColor = vec4(vec3(1.0,1.0,1.0),1.0);
+  //outColor = vec4(defuse * shadowCoeff, v_color.a);
   //outColor = vec4(a_normal * shadowCoeff, v_color.a);
   //outColor = vec4(depth.xyz, v_color.a);
 }
