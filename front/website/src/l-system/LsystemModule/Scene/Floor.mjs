@@ -115,7 +115,7 @@ void main() {
 
 class Floor{
 
-    constructor(gl, size = 1, grid = 2, shadowMapTex=null){
+    constructor(gl, size = 1, grid = 2, posY = -6.5, shadowMapTex=null){
         this.programInfo = twgl.createProgramInfo(gl, [vs, fs]);
         this.shadowProgramInfo = twgl.createProgramInfo(gl, [shadowVs, shadowFs]);
 
@@ -126,7 +126,7 @@ class Floor{
         this.uniforms = {
             size: size,
             scale: grid,
-            posY: -6.5,
+            posY: posY,
             shadowMapTex: shadowMapTex,
         };
         
