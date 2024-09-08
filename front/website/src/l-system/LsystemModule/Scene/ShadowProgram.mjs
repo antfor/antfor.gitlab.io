@@ -1,6 +1,54 @@
 import * as twgl from 'twgl.js';
 
 
+
+const borderVs = `
+#version 300 es
+
+in vec4 position;
+in vec2 texcoord;
+
+out vec2 uv;
+
+void main() {
+
+  gl_Position = position;
+  uv = texcoord;
+  
+}
+`;
+const borderFs = `
+#version 300 es
+precision highp float;
+
+in vec2 uv;
+
+out vec4 outColor;
+
+void main() {
+
+  vec2 insideBottomLeft = step(vec2(0.01), uv);
+  vec2 insideTopRight   = step(uv, vec2(0.99));
+  vec2 insideBottomLeftTopRight = insideBottomLeft * insideTopRight;
+  float inside = insideBottomLeftTopRight.x * insideBottomLeftTopRight.y;
+
+  
+  outColor = mix(vec4(vec3(-1),1.0), vec4(vec3(0),0), inside);
+  //outColor = mix(vec4(1.0, 0.0, 0.0, 1.0),vec4(0.0, 1.0, 0.0, 0.0), inside);
+}
+`;
+
+const shadowFs = `
+#version 300 es
+precision highp float;
+
+out vec4 outColor;
+
+void main() {
+  outColor = vec4(vec3(gl_FragCoord.z), 1.0);
+}
+`;
+
 const m4 = twgl.m4;
 
 
@@ -38,10 +86,18 @@ class ShadowProgram{
 
       gl.bindTexture(gl.TEXTURE_2D, null);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+      this.createFullFaceQuad(gl);
       
     }
 
     resize(gl, width, height){
+
+    }
+
+    createShadowProgram(gl, vs, fs = shadowFs){
+      return twgl.createProgramInfo(gl, [vs, fs]);
+
     }
     
     getViewProjection(lightPos = this.lightPos){
@@ -65,7 +121,30 @@ class ShadowProgram{
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
       drawScene(viewProjection, true);
+      this.drawBorder(gl); //Because Clamp to border does not exist in webgl2
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    }
+
+    createFullFaceQuad(gl){
+      this.programInfo = twgl.createProgramInfo(gl, [borderVs, borderFs]);
+ 
+      const arrays = {
+        position: { numComponents: 3, data: [-1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0]},
+        texcoord: { numComponents: 2, data: [ 0, 0,     1, 0,      0, 1,     0, 1,    1, 0,     1, 1]},
+      };
+      this.bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
+    }
+
+    drawBorder(gl){
+      gl.disable(gl.DEPTH_TEST);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+      gl.useProgram(this.programInfo.program);
+      twgl.setBuffersAndAttributes(gl, this.programInfo, this.bufferInfo);
+      twgl.drawBufferInfo(gl, this.bufferInfo);
+      gl.disable(gl.BLEND);
+      gl.enable(gl.DEPTH_TEST);
     }
 }
 

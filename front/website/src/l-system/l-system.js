@@ -54,7 +54,7 @@ let fps_frames = 0;
 let time_prev = 0;
 
 let shadowMap = new ShadowProgram(gl, sunPosition, 1024, 1024);
-const floor = new Floor(gl, 10, 4, -49, shadowMap.shadowMap_texture);
+const floor = new Floor(gl, 100, 50, -49, shadowMap.shadowMap_texture);
 const hej = new DrawFractal(gl, fractal, step, primitives, sunPosition, shadowMap.shadowMap_texture);
 hej.build(gl, iterations);
 
