@@ -51,16 +51,9 @@ void main() {
 
   vec4 depth = texture(shadowMapTex, shadowMapCoord.xy);
   float shadowCoeff = 1. - smoothstep(0.002, 0.003, shadowMapCoord.z - depth.r);\n\
+  shadowCoeff = depth.r <= 0.0 ? 1.0 : shadowCoeff;
 
-
-  if(depth.r + 0.002< shadowMapCoord.z ){
-    outColor = vec4(vec3(0.0,1.0,0.0),1.0);
-    return;
-  }
-  outColor = vec4(vec3(1.0,1.0,1.0),1.0);
-  //outColor = vec4(defuse * shadowCoeff, v_color.a);
-  //outColor = vec4(a_normal * shadowCoeff, v_color.a);
-  //outColor = vec4(depth.xyz, v_color.a);
+  outColor = vec4(v_color.rgb * 0.7 + 0.3 * defuse * shadowCoeff, v_color.a);
 }
 `;
 
@@ -87,7 +80,6 @@ out vec4 outColor;
 
 void main() {
   outColor = vec4(vec3(gl_FragCoord.z), 1.0);
-  //outColor = vec4(1.0,1.0,1.0,1.0);
 }
 `;
 
