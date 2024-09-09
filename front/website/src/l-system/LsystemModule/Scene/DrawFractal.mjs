@@ -4,30 +4,31 @@ const vs = `
 #version 300 es
 
 uniform mat4 u_viewProjection;
-uniform float step;
 uniform mat4 u_LightMatrix;
+uniform mat4 transform;
+uniform float step;
 
-in vec4 instanceColor;
+in vec3 instanceColor;
 in mat4 instanceWorld;
 in vec4 position;
 in vec3 normal;
 
 
 out vec3 v_normal;
-out vec4 v_color;
+out vec3 v_color;
 out vec3 shadowMapCoord;
 
 void main() {
   vec4 pos = position;
   pos.y += step/2.0;
-  v_color = instanceColor;
+  v_color = instanceColor; //vec3(1.0);
   v_normal = (instanceWorld * vec4(normal, 0)).xyz;
 
   vec4 lightPos = u_LightMatrix * instanceWorld * pos;
   vec3 lightPosDNC = lightPos.xyz / lightPos.w;
   shadowMapCoord = vec3(0.5) + lightPosDNC * 0.5;
 
-  gl_Position = u_viewProjection * instanceWorld * pos;
+  gl_Position = u_viewProjection * transform * instanceWorld * pos;
   
 }
 `;
@@ -39,7 +40,7 @@ uniform sampler2D shadowMapTex;
 uniform vec3 u_lightDir;
 
 in vec3 v_normal;
-in vec4 v_color;
+in vec3 v_color;
 in vec3 shadowMapCoord;
 
 out vec4 outColor;
@@ -50,10 +51,14 @@ void main() {
   vec3 defuse = v_color.rgb * light;
 
   vec4 depth = texture(shadowMapTex, shadowMapCoord.xy);
-  float shadowCoeff = 1. - smoothstep(0.002, 0.003, shadowMapCoord.z - depth.r);\n\
+  float shadowCoeff = 1. - smoothstep(0.003, 0.004, shadowMapCoord.z - depth.r);\n\
   shadowCoeff = depth.r <= 0.0 ? 1.0 : shadowCoeff;
+  //if(depth.r +0.003 < shadowMapCoord.z){
+  //outColor = vec4(0.0,1.0,0.0, 1.0);
+  //return;
+  //}
 
-  outColor = vec4(v_color.rgb * 0.7 + 0.3 * defuse * shadowCoeff, v_color.a);
+  outColor = vec4(v_color.rgb * 0.7 + 0.3 * defuse * shadowCoeff, 1.0);
 }
 `;
 
@@ -61,6 +66,7 @@ const shadowVs = `
 #version 300 es
 
 uniform mat4 u_viewProjection;
+uniform mat4 transform;
 uniform float step;
 
 in mat4 instanceWorld;
@@ -69,7 +75,7 @@ in vec4 position;
 void main() {
   vec4 pos = position;
   pos.y += step/2.0;
-  gl_Position = u_viewProjection * instanceWorld * pos;
+  gl_Position = u_viewProjection * transform * instanceWorld * pos;
 }
 `;
 const shadowFs = `
@@ -87,7 +93,7 @@ const m4 = twgl.m4;
 const v3 = twgl.v3;
 
 class DrawFractal {
-  constructor(gl, fractal, step, primitives, sunPosition, shadowMapTex=null) {
+  constructor(gl, fractal, step, height, floor, thickness, primitives, sunPosition, shadowMapTex=null) {
       
     this.programInfo = twgl.createProgramInfo(gl, [vs, fs]);
     this.shadowProgramInfo = twgl.createProgramInfo(gl, [shadowVs, shadowFs]);
@@ -100,6 +106,9 @@ class DrawFractal {
         shadowMapTex: shadowMapTex,
     };
 
+    this.thickness = thickness;
+    this.floor = floor;
+    this.height = height;
     this.arrays = primitives;
 
   }
@@ -110,10 +119,10 @@ class DrawFractal {
 
   build(gl, iterations){
 
-    this.instanceWorlds = this.fractal.buildParametic(iterations);
+    this.instanceWorlds = this.fractal.build(iterations);
     this.numInstances = this.instanceWorlds.length / 16;
     this.instanceColors = this.fractal.state.colors; //get colors from fractal
-
+   
     Object.assign(this.arrays, {
       instanceWorld: {
         numComponents: 16,
@@ -142,11 +151,23 @@ class DrawFractal {
     
   }
 
+  scaleFractal(){
+    let [minY,maxY,diff] = this.fractal.getY();
+    const height = this.height;
+    const scale = diff > height ? height*1.0/diff : 1.0;
+    const transform = m4.scaling([scale,scale,scale]);
+    m4.translate(transform,[0,-minY,0],transform);
+    const floor = (this.floor + this.thickness)*1.0/scale;
+    m4.translate(transform, [0, floor,0], transform);
+    this.uniforms.transform = transform;
+  }
+
   drawFractal(gl, viewProjection, programInfo=this.programInfo) {
 
     gl.useProgram(programInfo.program);
 
     this.uniforms.u_viewProjection = viewProjection;
+    this.scaleFractal();
 
     const vertexArrayInfo = twgl.createVertexArrayInfo(gl, programInfo, this.bufferInfo);
     twgl.setBuffersAndAttributes(gl, programInfo, vertexArrayInfo);

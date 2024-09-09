@@ -15,20 +15,20 @@ class Fractal {
         parametic ||= rule.valuFunction;
       }
 
-      /*
+      
      if(parametic){
         this.build = (i,a= this.axiom) => this.buildParametic(i,a);
-        this.buildParametic = undefined;
       }else{
-        this.build = (i,a= this.axiom) =>  this.build(i,a);
-        this.buildParametic = undefined;
+        this.build = (i,a= this.axiom) =>  this.buildNonParametic(i,a); 
       }
-      */
   
     }
+
+    getY(){
+      return [this.state.minY, this.state.maxY, this.state.maxY - this.state.minY];
+    }
   
-  
-    build(iteration, soucre = this.axiom){
+    buildNonParametic(iteration, soucre = this.axiom){
   
       if(iteration <= 0){
   
