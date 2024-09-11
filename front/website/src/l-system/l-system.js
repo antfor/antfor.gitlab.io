@@ -1,63 +1,66 @@
-import { FractalFactory } from './LsystemModule/FractalFactory.mjs';
-import { createTetrahedron } from './PrimitivesModule/Primitives.mjs';
 import { Floor } from './LsystemModule/Scene/Floor.mjs';
 import { ShadowProgram } from './LsystemModule/Scene/ShadowProgram.mjs';
 import { DrawFractal } from './LsystemModule/Scene/DrawFractal.mjs';
 import * as twgl from 'twgl.js';
-
+import { getOptions, getIteration } from './LsystemModule/FractalOptions.mjs';
 "use strict";
 
-  const m4 = twgl.m4;
-  const v3 = twgl.v3;
+const m4 = twgl.m4;
 
-  let iterations =  1;
+let fractal;
 
-  let s = 1.0;
-  let step = 60.0;
-  let thickness = step/8.0;
-  //thickness = 5.0;
-
-
-  let factory = new FractalFactory();
-
-  
-
-  //
-  
-  iterations =  9;
-  step = 4.0;
-  thickness = step/8.0;
-
-  //let fractalObject = factory.parametricTree([s, s, s], step);
-  //let fractalObject = factory.sympodialTreeA([s, s, s], step); // step 15   it 14 thickness 0
-  //let fractalObject = factory.bushCCol([s, s, s], step); // step 4   it 4 thickness 0
-  //let fractalObject = factory.dragon([s, s, s], step); // step 4   it 12  
-  //const primitives = twgl.primitives.createCylinderVertices(thickness,step,9,1);
-  //const primitiveOffset = step;
-  
-
-  iterations = 1;
-  step = 50;
-  let fractalObject = factory.sierpinskitetrahedron([s, s, s], step);
-  const primitives = createTetrahedron(step); 
-  const primitiveOffset = 0;
-  thickness = step * Math.sqrt(2.0/3.0)*(0.5**iterations);
-
-//settings
-// min max iterations, step 
-// give to this
-// thickness,primitiveOffset,primitives, fractalObject,iterations
-
-const offset = -40;
-const height = 60;
 const gl = document.getElementById("l").getContext("webgl2");
 const sunPosition = [0, 40, -200];
-let shadowMap = new ShadowProgram(gl, sunPosition, 1024, 1024);
+const shadowMap = new ShadowProgram(gl, sunPosition, 1024, 1024);
+const offset = -40;
 const floor = new Floor(gl, 100, 50, offset, shadowMap.shadowMap_texture);
-const fractal = new DrawFractal(gl, fractalObject, primitiveOffset, height, offset, thickness, primitives, sunPosition, shadowMap.shadowMap_texture);
-fractal.build(gl, iterations);
-  
+const height = 60;
 
+
+let updateFractalB = false;
+let updateIterationB = false;
+let fractalBuilt = false;
+
+let iteration;
+let fractalKey;
+
+export function updateFractal(key){
+  if(key !== fractalKey){
+    updateFractalB = true;
+    fractalBuilt = false;
+  
+    fractalKey = key;
+    iteration = getIteration(key);
+  }
+  return iteration;
+}
+
+
+export function updateIteration(i){
+  if(i !== iteration || !fractalBuilt){
+    updateIterationB = true;
+    fractalBuilt = true;
+
+    iteration = i;
+  }
+
+}
+
+function newFractal(){
+
+  let option = getOptions(fractalKey);
+
+  fractal = new DrawFractal(gl, option.fractal, option.primitiveOffset, height, offset, option.thickness, option.primitives, sunPosition, shadowMap.shadowMap_texture);
+
+}
+
+function newIteration(){
+    const dir = fractal.fractal.state.dir; //todo fix
+    fractal.clear(gl);
+    fractal.fractal.state.dir = dir;
+    fractal.build(gl, iteration);
+ 
+}
 
 const fpsElem = document.querySelector("#fps");
 let fps_time = 0;
@@ -111,7 +114,20 @@ function glSettings(gl){
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 }
 
+
 function render(time) {
+
+  if(updateFractalB){
+    console.log("new fractal");
+    newFractal(); 
+    updateFractalB = false;
+  }
+  if(updateIterationB){
+    console.log("new iteration");
+    newIteration(); 
+    updateIterationB = false;
+  }
+
   let timeMS = time;
   time *= 0.001;
   FPS(timeMS);         
@@ -136,10 +152,10 @@ function scene(viewProjection, drawShadowMap=false){
 
   const lightMatrix = shadowMap.getViewProjection();
   floor.draw(gl, viewProjection, drawShadowMap, lightMatrix);
-  fractal.draw(gl, viewProjection, drawShadowMap, lightMatrix);
+  if(fractalBuilt)
+    fractal.draw(gl, viewProjection, drawShadowMap, lightMatrix);
 }
 
-
+//updateFractal(); //todo remove
 requestAnimationFrame(render);
-
 

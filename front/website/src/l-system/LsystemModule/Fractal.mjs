@@ -9,6 +9,7 @@ class Fractal {
       this.axiom = axiom;
       this.rules = new Map();
       this.state = new State(angle, scale ,step);
+      this.stateSettings = [angle, scale, step];
       let parametic = false;
       for (let rule of rules) {
         this.rules.set(rule.pred, rule);
@@ -22,6 +23,10 @@ class Fractal {
         this.build = (i,a= this.axiom) =>  this.buildNonParametic(i,a); 
       }
   
+    }
+
+    clear(){
+      this.state.reset(...this.stateSettings);
     }
 
     getY(){
