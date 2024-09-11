@@ -93,7 +93,7 @@ const m4 = twgl.m4;
 const v3 = twgl.v3;
 
 class DrawFractal {
-  constructor(gl, fractal, step, height, floor, thickness, primitives, sunPosition, shadowMapTex=null) {
+  constructor(gl, fractal, step, height, floor, thicknessFunc, primitives, sunPosition, shadowMapTex=null) {
       
     this.programInfo = twgl.createProgramInfo(gl, [vs, fs]);
     this.shadowProgramInfo = twgl.createProgramInfo(gl, [shadowVs, shadowFs]);
@@ -106,7 +106,7 @@ class DrawFractal {
         shadowMapTex: shadowMapTex,
     };
 
-    this.thickness = thickness;
+    this.thicknessFunc = thicknessFunc;
     this.floor = floor;
     this.height = height;
     this.arrays = primitives;
@@ -122,7 +122,8 @@ class DrawFractal {
     this.instanceWorlds = this.fractal.build(iterations);
     this.numInstances = this.instanceWorlds.length / 16;
     this.instanceColors = this.fractal.state.colors; //get colors from fractal
-   
+    this.thickness = this.thicknessFunc(iterations);
+
     Object.assign(this.arrays, {
       instanceWorld: {
         numComponents: 16,
@@ -138,6 +139,18 @@ class DrawFractal {
 
     this.bufferInfo = twgl.createBufferInfoFromArrays(gl, this.arrays);
 
+  }
+
+  clear(gl){
+    if(this.bufferInfo){
+      for (const attrib of Object.values(this.bufferInfo.attribs)) {
+        gl.deleteBuffer(attrib.buffer);
+      }
+      if (this.bufferInfo.indices) {
+        gl.deleteBuffer(this.bufferInfo.indices);
+      }
+      this.fractal.clear();
+    }
   }
 
   draw(gl, viewProjection, drawShadowMap=false, lightMatrix=undefined) {

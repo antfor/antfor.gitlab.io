@@ -7,7 +7,10 @@
     <link rel="icon" type="image/x-icon" href="/images/favicon.png">
 
    
-    <script src="/src/l-system/l-system.js" type="module"></script>
+    <script type="module" src="/src/l-system/l-system.js"></script>
+    <script type="module" src="/src/l-system/FractalSettings.jsx"></script>
+    <script type="module" src="/src/components/navbar/navbar.jsx"></script>
+   
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!-- Bootstrap CSS -->
@@ -26,10 +29,9 @@
 
     <div>fps: <span id="fps"></span></div>
 
+    <div id="navbar" active=""></div>
     <canvas id="l" style="height: 512px; width: 512px;" class="l-sys"></canvas>
-    <button id ="plus_button" type="button" class="btn btn-light"> <i class="fa-solid fa-magnifying-glass"></i> </button>
-    <button id ="minus_button" type="button" class="btn btn-light"> <i class="fa-solid fa-magnifying-glass"></i> </button>
-
+    <div id="Lsystem"></div>
   
     </body>
   </html>
