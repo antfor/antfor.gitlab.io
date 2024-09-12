@@ -1,0 +1,30 @@
+
+
+.container{
+    position: absolute;
+    left:0;
+    top: 0;
+    height: 50%;
+    width: 100%;
+    padding-left: 10%;
+
+}
+.opacity50 {
+    background-color: rgba(61, 66, 66, 0.5);
+    display: inline-block;
+    padding: 5px;
+    font-weight: bold;
+}
+
+.button{
+    min-width: 4em;
+    max-width: 4em;
+    margin: 2px;
+}
+
+.m2{
+    max-width: 5em;
+    min-width: 5em;
+    width: 5em;
+
+}
