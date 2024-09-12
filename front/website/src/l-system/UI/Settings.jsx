@@ -1,9 +1,11 @@
-import FormSelect from 'react-bootstrap/FormSelect'
+import FormSelect from 'react-bootstrap/FormSelect';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
+import InputGroup from 'react-bootstrap/InputGroup';
 import Card from 'react-bootstrap/Card';
 import { getFractals, getIteration, getOptions } from "../LsystemModule/FractalOptions.mjs";
+import styles from './settings.module.css';
 
 const fractals = getFractals();
 
@@ -31,7 +33,7 @@ function IteraionDropDown(options, iteration, setIterations){
     const length = {length: options.maxIterations - options.minIterations + 1};
     const iterations = Array.from(length, (_, i) => i + options.minIterations);
     return (
-        <FormSelect onChange={onChange} value={iteration}>
+        <FormSelect className={styles.m2} onChange={onChange} value={iteration}>
             {iterations.map((i) => {
                 return <option key={i} value={i}>{i}</option>
             })}
@@ -45,10 +47,12 @@ function Buttons(options, iteraion, setIterations){
     const disableMax = iteraion >= options.maxIterations;
 
     return (
-        <Stack direction="horizontal">
+        <Stack direction="horizontal" gap="3">
             {IteraionDropDown(options, iteraion, setIterations)}
-            <Button disabled={disableMin} variant="outline-danger" onClick={() => setIterations(iteraion-1)}>-</Button>
-            <Button disabled={disableMax} variant="outline-primary" onClick={() => setIterations(iteraion+1)}>+</Button>
+            <InputGroup className="btn-group">
+                <Button disabled={disableMin} variant="outline-danger" className={styles.button} onClick={() => setIterations(iteraion-1)}>-</Button>
+                <Button disabled={disableMax} variant="outline-primary" className={styles.button} onClick={() => setIterations(iteraion+1)}>+</Button>
+            </InputGroup>
         </Stack>
     );
 }
@@ -58,8 +62,7 @@ export function Settings(fractal, setFractal, iteraion, setIterations) {
     const options = getOptions(fractal);
 
     return (
-        <Card>
-            <Card.Title>Settings</Card.Title>
+        <Card className={styles.opacity50}>
             <Card.Body>
                 <Form>
                     <Form.Group className="mb-3">

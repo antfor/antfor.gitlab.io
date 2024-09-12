@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { getDefault, getDefaultIterations } from "./LsystemModule/FractalOptions.mjs";
 import { useState,useEffect } from 'react';
 import { updateFractal,updateIteration} from './l-system.js';
-import { Settings } from './UI/Settings.jsx';
+import { OffCanvas } from './UI/Offcanvas.jsx';
 
 
 export function FractalSettings(){
@@ -20,8 +20,7 @@ export function FractalSettings(){
 
     return (
         <div>
-            <h1>Fractal Canvas</h1>
-            {Settings(fractalKey, setFractalKey, iteration, setIteration)}
+            {OffCanvas(fractalKey, setFractalKey, iteration, setIteration)}
         </div>
     );
 }

@@ -61,7 +61,7 @@ function newIteration(){
     fractal.build(gl, iteration);
  
 }
-
+/*
 const fpsElem = document.querySelector("#fps");
 let fps_time = 0;
 let fps_frames = 0;
@@ -77,7 +77,7 @@ function FPS(timeMS){
     fps_time = fps_frames = 0;               
   } 
 }
-
+*/
 function getViewProjection(time){
   
   const fov = 30 * Math.PI / 180;
@@ -130,7 +130,7 @@ function render(time) {
 
   let timeMS = time;
   time *= 0.001;
-  FPS(timeMS);         
+  //FPS(timeMS);         
 
   shadowMap.draw(scene, gl);
 
