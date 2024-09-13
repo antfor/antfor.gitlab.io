@@ -2,7 +2,7 @@ import { Floor } from './LsystemModule/Scene/Floor.mjs';
 import { ShadowProgram } from './LsystemModule/Scene/ShadowProgram.mjs';
 import { DrawFractal } from './LsystemModule/Scene/DrawFractal.mjs';
 import * as twgl from 'twgl.js';
-import { getOptions, getIteration } from './LsystemModule/FractalOptions.mjs';
+import { getOptions} from './LsystemModule/FractalOptions.mjs';
 "use strict";
 
 const m4 = twgl.m4;
@@ -26,13 +26,12 @@ let fractalKey;
 
 export function updateFractal(key){
   if(key !== fractalKey){
-    updateFractalB = true;
     fractalBuilt = false;
-  
+    updateFractalB = true;
+    
     fractalKey = key;
-    iteration = getIteration(key);
+    iteration = -1;
   }
-  return iteration;
 }
 
 

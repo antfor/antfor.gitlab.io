@@ -1,12 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
 import { getDefault, getDefaultIterations } from "./LsystemModule/FractalOptions.mjs";
 import { useState,useEffect } from 'react';
 import { updateFractal,updateIteration} from './l-system.js';
 import { OffCanvas } from './UI/Offcanvas.jsx';
 
 
-export function FractalSettings(){
+function FractalSettings(){
 
     const defaultFrac = getDefault();
     const defaultIterations = getDefaultIterations();
@@ -16,7 +14,7 @@ export function FractalSettings(){
     console.log(fractalKey, iteration);
     
     useEffect(() => {updateFractal(fractalKey)},[fractalKey]);
-    useEffect(() => {updateIteration(iteration)},[iteration]);
+    useEffect(() => {updateIteration(iteration)},[iteration,fractalKey]);
 
     return (
         <div>
@@ -25,10 +23,4 @@ export function FractalSettings(){
     );
 }
 
-const root = document.getElementById("Lsystem");
-
-ReactDOM.createRoot(root).render(
-  <React.StrictMode>
-    <FractalSettings></FractalSettings>
-  </React.StrictMode>
-)
+export default FractalSettings;
