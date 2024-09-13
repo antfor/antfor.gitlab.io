@@ -9,7 +9,7 @@ import styles from './settings.module.css';
 
 const fractals = getFractals();
 
-function DropDown(fractal, setFractal, setIterations){
+function DropDown(fractal, setFractal, setIterations, disabled){
 
     const onChange = (e) =>{
         const newFractal = e.target.value;
@@ -18,7 +18,7 @@ function DropDown(fractal, setFractal, setIterations){
     }; 
 
     return (
-        <FormSelect onChange={onChange} value={fractal}>
+        <FormSelect disabled={disabled} onChange={onChange} value={fractal}>
             {fractals.map((f) => {
                 return <option key={f} value={f}>{f}</option>
             })}
@@ -26,14 +26,14 @@ function DropDown(fractal, setFractal, setIterations){
     );
 }
 
-function IteraionDropDown(options, iteration, setIterations){
+function IteraionDropDown(options, iteration, setIterations, disabled){
 
-    const onChange = (e) => setIterations(e.target.value);
+    const onChange = (e) => setIterations(Number(e.target.value));
 
     const length = {length: options.maxIterations - options.minIterations + 1};
     const iterations = Array.from(length, (_, i) => i + options.minIterations);
     return (
-        <FormSelect className={styles.m2} onChange={onChange} value={iteration}>
+        <FormSelect disabled={disabled} className={styles.m2} onChange={onChange} value={iteration}>
             {iterations.map((i) => {
                 return <option key={i} value={i}>{i}</option>
             })}
@@ -41,14 +41,14 @@ function IteraionDropDown(options, iteration, setIterations){
     );
 }
 
-function Buttons(options, iteraion, setIterations){
+function Buttons(options, iteraion, setIterations, disabled){
 
-    const disableMin = iteraion <= options.minIterations;
-    const disableMax = iteraion >= options.maxIterations;
+    const disableMin = disabled || iteraion <= options.minIterations;
+    const disableMax = disabled || iteraion >= options.maxIterations;
 
     return (
         <Stack direction="horizontal" gap="3">
-            {IteraionDropDown(options, iteraion, setIterations)}
+            {IteraionDropDown(options, iteraion, setIterations, disabled)}
             <InputGroup className="btn-group">
                 <Button disabled={disableMin} variant="outline-danger" className={styles.button} onClick={() => setIterations(iteraion-1)}>-</Button>
                 <Button disabled={disableMax} variant="outline-primary" className={styles.button} onClick={() => setIterations(iteraion+1)}>+</Button>
@@ -57,21 +57,21 @@ function Buttons(options, iteraion, setIterations){
     );
 }
 
-export function Settings(fractal, setFractal, iteraion, setIterations) {
+export function Settings(fractal, setFractal, iteraion, setIterations, disabled) {
 
     const options = getOptions(fractal);
 
     return (
-        <Card className={styles.opacity50}>
+        <Card data-bs-theme="dark" className={styles.opacity50}>
             <Card.Body>
                 <Form>
                     <Form.Group className="mb-3">
                         <Form.Label>Fractal</Form.Label>
-                        {DropDown(fractal, setFractal, setIterations)}
+                        {DropDown(fractal, setFractal, setIterations, disabled)}
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Iterations</Form.Label>
-                        {Buttons(options, iteraion, setIterations)}
+                        {Buttons(options, iteraion, setIterations, disabled)}
                     </Form.Group>
                 </Form>
             </Card.Body>
