@@ -139,7 +139,7 @@ function render(time) {
   
   scene(viewProjection);
   //const size = 50;
-  //let rojection = m4.ortho(-size, size, -size, size, 0.5, 10000);  //todo scale to fit scene
+  //let rojection = m4.ortho(-size, size, -size-size/2, size+size/2, 0.5, 1000);  //todo scale to fit scene
   //let iew = m4.lookAt(sunPosition, [0,0,0], [0,1,0]); //todo add light direction
   //let iewRojection = m4.multiply(rojection, iew);
   //scene(iewRojection);

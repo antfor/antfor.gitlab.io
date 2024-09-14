@@ -102,7 +102,7 @@ class ShadowProgram{
     
     getViewProjection(lightPos = this.lightPos){
       const size = 50;
-      const projection = m4.ortho(-size, size, -size, size, 0.5, 1000);  //todo scale to fit scene
+      const projection = m4.ortho(-size, size, -size*1.5, size*1.5, 0.5, 1000);  //todo scale to fit scene
       const view = m4.lookAt(lightPos, [0,0,0], [0,1,0]); //todo add light direction
 
       return m4.multiply(projection, view);

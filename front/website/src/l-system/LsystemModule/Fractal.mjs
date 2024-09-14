@@ -48,7 +48,7 @@ class Fractal {
           if(r.succ === undefined){
             r.func(this.state);
           }else{
-            this.build(iteration-1, r.succ);
+            this.buildNonParametic(iteration-1, r.succ);
           }
         }
       }
