@@ -11,19 +11,28 @@ class FractalFactory {
     }
   
     dragon(scale = [1,1,1], step = 1.0){
-      let axiom = "f";
-      let rf = new Rule("f", "f+y+", forward);
-      let ry = new Rule("y", "-f-y", forward);
+      let axiom = "Rf";
+      let rf = new Rule("f", "f+y+", forwardColor);
+      let ry = new Rule("y", "-f-y", forwardColor);
       let rp = new Rule("+", undefined, turnRight);
       let rm = new Rule("-", undefined, turnLeft);
+      let cr = new Rule("R", undefined, s => color(s,[1,0,0]));
+      return new Fractal(axiom, 90, scale, step, rf, ry, rp, rm, cr);
   
-      return new Fractal(axiom, 90, scale, step, rf, ry, rp, rm);
-  
+    }
+
+    kochSnowflake(scale = [1,1,1], step = 1.0){
+      let axiom = "*F--F--F";
+      let rf = new Rule("F", "F+F--F+F", forwardColor);
+      let rp = new Rule("+", undefined, turnRight);
+      let rm = new Rule("-", undefined, turnLeft);
+      let rt = new Rule("*", undefined,s => yaw(s, 30));
+      return new Fractal(axiom, 60, scale, step, rf, rp, rm, rt);
     }
   
     bushC(scale = [1,1,1], step = 1.0){
       let axiom = "F";
-      let rf = new Rule("F", "FF-[-F+F+F]+[+F-F-F]", forward);
+      let rf = new Rule("F", "FF-[-F+F+F]+[+F-F-F]", forwardColor);
       let rp = new Rule("+", undefined, turnRight);
       let rm = new Rule("-", undefined, turnLeft);
       let rs = new Rule("[", undefined, push);
@@ -166,7 +175,7 @@ class FractalFactory {
       let a = Math.sqrt(3)/6 /Math.sqrt(2/3);
       let b = 0.5/Math.sqrt(2/3);
       let c = 1/Math.sqrt(3)/Math.sqrt(2/3);
-      let axiom = "S1F";
+      let axiom = "YS1F";
       let rF = new Rule("F", "F[AF][BF][CF]f", forwardColor);
       let rS = new Rule("S", (v) => ['S', v/2], (s,v) => scaleVal(s,[v,v,v]), true);
       let rf = new Rule("f", "ff", translate);
@@ -175,9 +184,10 @@ class FractalFactory {
       let rC = new Rule("C", "CC", s => translateVec(s, [0,0, c]));
       let rp = new Rule("[", undefined, push);
       let re = new Rule("]", undefined, pop);
+      let cy = new Rule("Y", undefined, s => color(s,[246/255,	178/255,	107/255]));
       let step = L * Math.sqrt(2/3);
 
-      let frac = new Fractal(axiom, 0, scale, step, rF, rA, rB, rC, rp, re, rf, rS);
+      let frac = new Fractal(axiom, 0, scale, step, rF, rA, rB, rC, rp, re, rf, rS, cy);
       frac.state.dir = [0,-1,0]; //todo fix in a better way
       return frac;
     }

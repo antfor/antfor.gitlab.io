@@ -26,11 +26,28 @@ function dragon(step=4, thickness = step/8.0){
         primitiveOffset: step,
         thickness: (i) => thickness,
         
-        minIterations: 0,
+        minIterations: 1,
         maxIterations: 12,
         defultIterations: 4,
     };
 } 
+
+options.set("KochSnowflake", kochSnowflake);
+function kochSnowflake(step=4, thickness = step/8.0){
+
+    return {
+        fractal: factory.kochSnowflake(scale, step),
+        primitives: linePrim(step, thickness),
+        primitiveOffset: step,
+        thickness: (i) => thickness,
+
+        minIterations: 0,
+        maxIterations: 4,
+        defultIterations: 2,
+    };
+}
+
+
 
 options.set("Bush_C", bushCCol);
 function bushCCol(step=4, thickness = step/8.0){
@@ -61,6 +78,38 @@ function sympodialTreeA(step=15, thickness = step/8.0){
         minIterations: 1,
         maxIterations: 13,
         defultIterations: 10,
+    };
+}
+
+options.set("ternaryTree_A", ternaryTreeA);
+function ternaryTreeA(step=4, thickness = step*4){
+    
+    return {
+        fractal: factory.ternaryTreeA(scale, step),
+    
+        primitives: linePrim(step, thickness),
+        primitiveOffset: step,
+        thickness: (i) => 0,
+        
+        minIterations: 1,
+        maxIterations: 7,
+        defultIterations: 4,
+    };
+}
+
+options.set("parametricTree", parametricTree);
+function parametricTree(step=4, thickness = step/8.0){
+    
+    return {
+        fractal: factory.parametricTree(scale, step),
+    
+        primitives: linePrim(step, thickness),
+        primitiveOffset: step,
+        thickness: (i) => 0,
+        
+        minIterations: 1,
+        maxIterations: 10,
+        defultIterations: 5,
     };
 }
 
