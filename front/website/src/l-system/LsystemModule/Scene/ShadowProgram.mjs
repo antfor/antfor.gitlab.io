@@ -6,35 +6,31 @@ const borderVs = `
 #version 300 es
 
 in vec4 position;
-in vec2 texcoord;
-
-out vec2 uv;
 
 void main() {
 
   gl_Position = position;
-  uv = texcoord;
-  
 }
 `;
 const borderFs = `
 #version 300 es
 precision highp float;
 
-in vec2 uv;
+uniform vec2 resolution;
 
 out vec4 outColor;
 
 void main() {
 
-  vec2 insideBottomLeft = step(vec2(0.01), uv);
-  vec2 insideTopRight   = step(uv, vec2(0.99));
+  vec2 uv = gl_FragCoord.xy;
+  vec2 insideBottomLeft = step(vec2(1.0), uv);
+  vec2 insideTopRight   = step(uv, resolution-1.0);
   vec2 insideBottomLeftTopRight = insideBottomLeft * insideTopRight;
   float inside = insideBottomLeftTopRight.x * insideBottomLeftTopRight.y;
 
   
-  outColor = mix(vec4(vec3(-1),1.0), vec4(vec3(0),0), inside);
-  //outColor = mix(vec4(1.0, 0.0, 0.0, 1.0),vec4(0.0, 1.0, 0.0, 0.0), inside);
+  outColor = mix(vec4(vec3(0.0),1.0), vec4(vec3(0),0), inside);
+  //outColor = mix(vec4(1.0, 0.0, 0.0, 1.0),vec4(0.0, 1.0, 0.0, 1.0), inside);
 }
 `;
 
@@ -88,11 +84,19 @@ class ShadowProgram{
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
       this.createFullFaceQuad(gl);
+      this.uniforms = {
+        resolution: [this.width, this.height]
+      };
       
     }
 
     resize(gl, width, height){
+      this.width = width;
+      this.height = height;
 
+      this.uniforms = {
+        resolution: [this.width, this.height]
+      };
     }
 
     createShadowProgram(gl, vs, fs = shadowFs){
@@ -102,7 +106,7 @@ class ShadowProgram{
     
     getViewProjection(lightPos = this.lightPos){
       const size = 50;
-      const projection = m4.ortho(-size, size, -size*1.5, size*1.5, 0.5, 1000);  //todo scale to fit scene
+      const projection = m4.ortho(-size, size, -size*0.5, size*1.5, 0.5, 1000);  //todo scale to fit scene
       const view = m4.lookAt(lightPos, [0,0,0], [0,1,0]); //todo add light direction
 
       return m4.multiply(projection, view);
@@ -130,8 +134,8 @@ class ShadowProgram{
  
       const arrays = {
         position: { numComponents: 3, data: [-1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0]},
-        texcoord: { numComponents: 2, data: [ 0, 0,     1, 0,      0, 1,     0, 1,    1, 0,     1, 1]},
       };
+      
       this.bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
     }
 
@@ -141,8 +145,12 @@ class ShadowProgram{
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
       gl.useProgram(this.programInfo.program);
+
       twgl.setBuffersAndAttributes(gl, this.programInfo, this.bufferInfo);
+      twgl.setUniforms(this.programInfo, this.uniforms);
+      
       twgl.drawBufferInfo(gl, this.bufferInfo);
+
       gl.disable(gl.BLEND);
       gl.enable(gl.DEPTH_TEST);
     }

@@ -80,7 +80,7 @@ void main() {
   float shadowCoeff = 1. - smoothstep(0.002, 0.003, shadowMapCoord.z - depth.r);\n\
   shadowCoeff = depth.r <= 0.0 ? 1.0 : shadowCoeff;
 
- // outColor = vec4(diffuseColor);
+  //outColor = vec4(depth);
   outColor = vec4(diffuseColor.xyz * 0.7 + 0.3 * diffuseColor.xyz * shadowCoeff,1.0);
 }
 `;
