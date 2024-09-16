@@ -5,11 +5,11 @@ import {State} from './State.mjs';
 
 class Fractal {
 
-    constructor(axiom, angle, scale, step, ...rules) {
+    constructor(axiom, angle, scale, step, dir, ...rules) {
       this.axiom = axiom;
       this.rules = new Map();
-      this.state = new State(angle, scale ,step);
-      this.stateSettings = [angle, scale, step];
+      this.state = new State(angle, scale ,step, dir);
+      this.stateSettings = [angle, scale, step, dir];
       let parametic = false;
       for (let rule of rules) {
         this.rules.set(rule.pred, rule);

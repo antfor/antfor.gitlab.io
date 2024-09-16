@@ -54,9 +54,7 @@ function newFractal(){
 }
 
 function newIteration(){
-    const dir = fractal.fractal.state.dir; //todo fix
     fractal.clear(gl);
-    fractal.fractal.state.dir = dir;
     fractal.build(gl, iteration);
  
 }
