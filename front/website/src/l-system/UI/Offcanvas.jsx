@@ -1,8 +1,8 @@
 import { Settings } from './Settings.jsx';
-import styles from './settings.module.css';
+import styles from './CSS/settings.module.css';
 import Button from 'react-bootstrap/Button';
 import { useState } from 'react';
-import './hamburger.css';
+import './CSS/hamburger.css';
 
 
 function HamburgerButton(show, setShow){

@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import FractalSettings from './FractalSettings.jsx';
+import FractalSettings from './UI/FractalSettings.jsx';
 
 
-const root = document.getElementById("Lsystem");
+const root = document.getElementById("Settings");
 
 ReactDOM.createRoot(root).render(
   <React.StrictMode>

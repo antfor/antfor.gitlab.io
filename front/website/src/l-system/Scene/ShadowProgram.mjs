@@ -101,32 +101,14 @@ class ShadowProgram{
 
     createShadowProgram(gl, vs, fs = shadowFs){
       return twgl.createProgramInfo(gl, [vs, fs]);
-
     }
     
     getViewProjection(lightPos = this.lightPos){
       const size = 50;
-      const projection = m4.ortho(-size, size, -size*0.5, size*1.5, 0.5, 1000);  //todo scale to fit scene
-      const view = m4.lookAt(lightPos, [0,0,0], [0,1,0]); //todo add light direction
+      const projection = m4.ortho(-size, size, -size*0.5, size*1.5, 0.5, 1000);
+      const view = m4.lookAt(lightPos, [0,0,0], [0,1,0]);
 
       return m4.multiply(projection, view);
-    }
-
-
-    draw(drawScene, gl){
-
-      let viewProjection = this.getViewProjection();
-
-      gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
-      gl.viewport(0, 0, this.width, this.height);
-      gl.enable(gl.DEPTH_TEST);
-      gl.enable(gl.CULL_FACE);
-      gl.clearColor(1.0, 1.0, 1.0, 1.0);
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-      drawScene(viewProjection, true);
-      this.drawBorder(gl); //Because Clamp to border does not exist in webgl2
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 
     createFullFaceQuad(gl){
@@ -154,6 +136,23 @@ class ShadowProgram{
       gl.disable(gl.BLEND);
       gl.enable(gl.DEPTH_TEST);
     }
+
+    draw(drawScene, gl){
+
+      let viewProjection = this.getViewProjection();
+
+      gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
+      gl.viewport(0, 0, this.width, this.height);
+      gl.enable(gl.DEPTH_TEST);
+      gl.enable(gl.CULL_FACE);
+      gl.clearColor(1.0, 1.0, 1.0, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+      drawScene(viewProjection, true);
+      this.drawBorder(gl); //Because Clamp to border does not exist in webgl2
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    }
+
 }
 
 export {ShadowProgram};

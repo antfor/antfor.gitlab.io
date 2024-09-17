@@ -1,7 +1,7 @@
-import { getDefault, getDefaultIterations } from "./LsystemModule/FractalOptions.mjs";
+import { getDefault, getDefaultIterations } from "../Fractal/FractalOptions.mjs";
 import { useState,useEffect } from 'react';
-import { updateFractal,updateIteration} from './l-system.js';
-import { OffCanvas } from './UI/Offcanvas.jsx';
+import { updateFractal,updateIteration} from '../scene.js';
+import { OffCanvas } from './Offcanvas.jsx';
 
 
 function FractalSettings(){
@@ -10,8 +10,6 @@ function FractalSettings(){
     const defaultIterations = getDefaultIterations();
     let [fractalKey, setFractalKey] = useState(defaultFrac);
     let [iteration, setIteration] = useState(defaultIterations); 
-
-    console.log(fractalKey, iteration);
     
     useEffect(() => {updateFractal(fractalKey)},[fractalKey]);
     useEffect(() => {updateIteration(iteration)},[iteration,fractalKey]);

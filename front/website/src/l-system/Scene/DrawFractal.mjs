@@ -121,7 +121,7 @@ class DrawFractal {
 
     this.instanceWorlds = this.fractal.build(iterations);
     this.numInstances = this.instanceWorlds.length / 16;
-    this.instanceColors = this.fractal.state.colors; //get colors from fractal
+    this.instanceColors = this.fractal.state.colors;
     this.thickness = this.thicknessFunc(iterations);
 
     Object.assign(this.arrays, {
