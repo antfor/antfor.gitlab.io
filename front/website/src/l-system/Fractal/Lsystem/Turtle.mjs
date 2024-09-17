@@ -44,8 +44,8 @@ function push(state){
   
   function forwardColorVal(state, val){
     forwardVal(state, val);
-    //state.pushColor(...state.color);
-    state.pushColor(rand(0,1),rand(0,1),rand(0,1));
+    state.pushColor(...state.color);
+    //state.pushColor(rand(0,1),rand(0,1),rand(0,1));
   }
   
   function forwardColor(state){
