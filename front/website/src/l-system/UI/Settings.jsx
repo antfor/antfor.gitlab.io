@@ -4,8 +4,8 @@ import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Card from 'react-bootstrap/Card';
-import { getFractals, getIteration, getOptions } from "../LsystemModule/FractalOptions.mjs";
-import styles from './settings.module.css';
+import { getFractals, getIteration, getOptions } from "../Fractal/FractalOptions.mjs";
+import styles from './CSS/settings.module.css';
 
 const fractals = getFractals();
 

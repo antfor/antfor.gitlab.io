@@ -1,6 +1,6 @@
 import * as twgl from 'twgl.js';
-import { FractalFactory } from './FractalFactory.mjs';
-import { createTetrahedron } from './PrimitivesModule/Primitives.mjs';
+import { FractalFactory } from './Lsystem/FractalFactory.mjs';
+import { createTetrahedron } from './Primitives/Primitives.mjs';
 
 const scale = [1, 1, 1];
 
@@ -28,7 +28,7 @@ function dragon(step=4, thickness = step/8.0){
         
         minIterations: 1,
         maxIterations: 12,
-        defultIterations: 4,
+        defultIterations: 8,
     };
 } 
 

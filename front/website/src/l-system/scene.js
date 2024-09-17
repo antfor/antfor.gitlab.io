@@ -1,15 +1,15 @@
-import { Floor } from './LsystemModule/Scene/Floor.mjs';
-import { ShadowProgram } from './LsystemModule/Scene/ShadowProgram.mjs';
-import { DrawFractal } from './LsystemModule/Scene/DrawFractal.mjs';
+import { Floor } from './Scene/Floor.mjs';
+import { ShadowProgram } from './Scene/ShadowProgram.mjs';
+import { DrawFractal } from './Scene/DrawFractal.mjs';
 import * as twgl from 'twgl.js';
-import { getOptions} from './LsystemModule/FractalOptions.mjs';
+import { getOptions} from './Fractal/FractalOptions.mjs';
 "use strict";
 
 const m4 = twgl.m4;
 
 let fractal;
 
-const gl = document.getElementById("l").getContext("webgl2");
+const gl = document.getElementById("Background").getContext("webgl2");
 const sunPosition = [0, 40, -200];
 const shadowMap = new ShadowProgram(gl, sunPosition, 1024, 1024);
 const offset = -40;
@@ -58,8 +58,8 @@ function newIteration(){
     fractal.build(gl, iteration);
  
 }
-/*
-const fpsElem = document.querySelector("#fps");
+
+//const fpsElem = document.querySelector("#fps");
 let fps_time = 0;
 let fps_frames = 0;
 let time_prev = 0;
@@ -70,11 +70,11 @@ function FPS(timeMS){
   fps_frames += 1;                             
   if (fps_time > 1000.0) { 
     let fps = 1000 * fps_frames / fps_time;
-    fpsElem.textContent = fps.toFixed(1);  
+    //fpsElem.textContent = fps.toFixed(1);  
     fps_time = fps_frames = 0;               
   } 
 }
-*/
+
 function getViewProjection(time){
   
   const fov = 30 * Math.PI / 180;
@@ -83,12 +83,12 @@ function getViewProjection(time){
   const zFar = 10000;
   const projection = m4.perspective(fov, aspect, zNear, zFar);
   
-  const radius =  300;//5000;
+  const radius =  300;
   const speed = time * .1;
   const eye = [
     Math.sin(Math.PI + speed) * radius, 
-     0,//-Math.sin(speed * 3) * 30, 
-    -radius,//Math.cos(Math.PI + speed) * radius,
+     0,
+    -radius,
     ];
   const target = [0, 0, 0];
   const up = [0, 1, 0];
@@ -96,6 +96,14 @@ function getViewProjection(time){
   const view = m4.inverse(camera);
 
   return m4.multiply(projection, view);
+}
+
+function shadowScene(){
+  const size = 50;
+  let projection = m4.ortho(-size, size, -size*0.5, size*1.5, 0.5, 1000);
+  let view = m4.lookAt(sunPosition, [0,0,0], [0,1,0]); 
+  let viewProjection = m4.multiply(projection, view);
+  scene(viewProjection);
 }
 
 function glSettings(gl){
@@ -106,8 +114,6 @@ function glSettings(gl){
   gl.enable(gl.DEPTH_TEST);
   gl.enable(gl.CULL_FACE);
   gl.clearColor(0.384314, 0.454902, 0.494118, 1);
-  // gl.clearColor(0.3, 0.3, 0.3, 1);
-  // gl.clearColor(0.9, 0.9, 0.9, 1);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 }
 
@@ -115,12 +121,10 @@ function glSettings(gl){
 function render(time) {
 
   if(updateFractalB){
-    console.log("new fractal");
     newFractal(); 
     updateFractalB = false;
   }
   if(updateIterationB){
-    console.log("new iteration");
     newIteration(); 
     updateIterationB = false;
   }
@@ -136,11 +140,7 @@ function render(time) {
   const viewProjection = getViewProjection(time);
   
   scene(viewProjection);
-  //const size = 50;
-  //let rojection = m4.ortho(-size, size, -size*0.5, size*1.5, 0.5, 1000);  //todo scale to fit scene
-  //let iew = m4.lookAt(sunPosition, [0,0,0], [0,1,0]); //todo add light direction
-  //let iewRojection = m4.multiply(rojection, iew);
-  //scene(iewRojection);
+  //shadowScene();
   
   requestAnimationFrame(render);
 }
