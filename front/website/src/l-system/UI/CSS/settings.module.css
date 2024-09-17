@@ -1,0 +1,57 @@
+
+:root {
+    --background-color: rgba(66, 66, 66, 0.5);
+    --border-color: #323636;
+}
+
+.showButton{
+    margin: 0;
+    background-color: var(--background-color);
+    border-color: var(--border-color);
+    border-left: none;
+    border-radius: 0 50% 50% 0%;
+}
+
+
+.container{
+    position: absolute;
+    left: 0%;
+    top: 0;
+    height: 50%;
+
+    transition: .5s ease-in-out;
+}
+
+.container.close{
+    left: -273px;
+}
+
+.opacity50 {
+    background-color: var(--background-color);
+    display: inline-block;
+    padding: 5px;
+    font-weight: bold;
+    z-index:2;
+
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.button{
+    min-width: 4em;
+    max-width: 4em;
+    margin: 2px;
+}
+
+.m2{
+    max-width: 5em;
+    min-width: 5em;
+    width: 5em;
+
+}
+
+@media screen and (max-height:576px) {
+    .container{
+        height: 100%;
+    }
+}

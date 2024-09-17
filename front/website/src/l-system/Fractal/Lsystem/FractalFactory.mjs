@@ -10,29 +10,38 @@ class FractalFactory {
      
     }
   
-    dragon(scale = [1,1,1], step = 1.0){
-      let axiom = "f";
-      let rf = new Rule("f", "f+y+", forward);
-      let ry = new Rule("y", "-f-y", forward);
+    dragon(scale = [1,1,1], step = 1.0, dir = [0,1,0]){
+      let axiom = "Rf";
+      let rf = new Rule("f", "f+y+", forwardColor);
+      let ry = new Rule("y", "-f-y", forwardColor);
       let rp = new Rule("+", undefined, turnRight);
       let rm = new Rule("-", undefined, turnLeft);
-  
-      return new Fractal(axiom, 90, scale, step, rf, ry, rp, rm);
+      let cr = new Rule("R", undefined, s => color(s,[1,0,0]));
+      return new Fractal(axiom, 90, scale, step, dir, rf, ry, rp, rm, cr);
   
     }
+
+    kochSnowflake(scale = [1,1,1], step = 1.0, dir = [0,1,0]){
+      let axiom = "*F--F--F";
+      let rf = new Rule("F", "F+F--F+F", forwardColor);
+      let rp = new Rule("+", undefined, turnRight);
+      let rm = new Rule("-", undefined, turnLeft);
+      let rt = new Rule("*", undefined,s => yaw(s, 30));
+      return new Fractal(axiom, 60, scale, step, dir, rf, rp, rm, rt);
+    }
   
-    bushC(scale = [1,1,1], step = 1.0){
+    bushC(scale = [1,1,1], step = 1.0, dir = [0,1,0]){
       let axiom = "F";
-      let rf = new Rule("F", "FF-[-F+F+F]+[+F-F-F]", forward);
+      let rf = new Rule("F", "FF-[-F+F+F]+[+F-F-F]", forwardColor);
       let rp = new Rule("+", undefined, turnRight);
       let rm = new Rule("-", undefined, turnLeft);
       let rs = new Rule("[", undefined, push);
       let rl = new Rule("]", undefined, pop);
   
-      return new Fractal(axiom, 22.5, scale, step, rf, rp, rm, rs, rl);
+      return new Fractal(axiom, 22.5, scale, step, dir, rf, rp, rm, rs, rl);
     }
   
-    bushCParCOl(scale = [1,1,1], step = 1.0){
+    bushCParCOl(scale = [1,1,1], step = 1.0, dir = [0,1,0]){
       let axiom = "F";
       let rf = new Rule("F", ['C',[140/255, 80/255, 60/255],..."FFC",[24/255, 180/255, 24/255],..."-[-F+F+F]C",[48/255, 220/255, 48/255],..."+[+F-F-F]"], forwardColor);
       let rc = new Rule("C", undefined, color, true);
@@ -41,10 +50,10 @@ class FractalFactory {
       let rs = new Rule("[", undefined, push);
       let rl = new Rule("]", undefined, pop);
   
-      return new Fractal(axiom, 22.5, scale, step, rf, rp, rm, rc, rs, rl);
+      return new Fractal(axiom, 22.5, scale, step, dir, rf, rp, rm, rc, rs, rl);
     }
   
-    bushCCol(scale = [1,1,1], step = 1.0){
+    bushCCol(scale = [1,1,1], step = 1.0, dir = [0,1,0]){
       let axiom = "F";
       let rf = new Rule("F", "BFF-G[-F+F+F]+L[+F-F-F]", forwardColor);
       let rp = new Rule("+", undefined, turnRight);
@@ -55,10 +64,10 @@ class FractalFactory {
       let rs = new Rule("[", undefined, push);
       let rl = new Rule("]", undefined, pop);
   
-      return new Fractal(axiom, 22.5, scale, step, rf, rp, rm, rs, rl, rB, rG, rL);
+      return new Fractal(axiom, 22.5, scale, step, dir, rf, rp, rm, rs, rl, rB, rG, rL);
     }
   
-    parametricTree(scale = [1,1,1], step = 1.0){
+    parametricTree(scale = [1,1,1], step = 1.0, dir = [0,1,0]){
     
       let axiom = "BA";
       let R = 1.456;
@@ -76,10 +85,10 @@ class FractalFactory {
       let rL = new Rule("L", undefined, s => color(s,[48/255, 220/255, 48/255]));
       
   
-      return new Fractal(axiom, 85, scale, step, rA, rF, rs, rl,rp,rm,rB,rG, rL);
+      return new Fractal(axiom, 85, scale, step, dir, rA, rF, rs, rl,rp,rm,rB,rG, rL);
     }
   
-    treeTernary(scale = [1,1,1], step = 1.0, lr, vr, d1, d2, a, T, e){
+    treeTernary(scale = [1,1,1], step = 1.0, dir = [0,1,0], lr, vr, d1, d2, a, T, e){
   
       let axiom = ['B','!',1,'F',200,'/', 45,'A'];
       let rA = new Rule("A",['!',vr,'F',50,'[','&',a,'F',50,'A',']','/',d1,'[','&',a,'F',50,'A',']','/',d2,'[','&',a,'F',50,'A',']'],(s) => {});
@@ -92,10 +101,10 @@ class FractalFactory {
       let rB = new Rule("B", undefined, s => color(s,[140/255, 80/255, 60/255]));
       let rG = new Rule("G", undefined, s => color(s,[24/255, 180/255, 24/255]));
   
-      return new Fractal(axiom, 0, scale, step, rA, rF, rw, rs, rl, rp, rm, rB, rG);
+      return new Fractal(axiom, 0, scale, step, dir, rA, rF, rw, rs, rl, rp, rm, rB, rG);
     }
   
-    ternaryTreeA(scale = [1,1,1], step = 1.0){
+    ternaryTreeA(scale = [1,1,1], step = 1.0, dir = [0,1,0]){
       let d1 =94.74;
       let d2 =132.63;
       let a = 18.95;
@@ -103,10 +112,10 @@ class FractalFactory {
       let vr = 1.732;
       let T = [0,-1,0];
       let e =0.22;
-      return this.treeTernary(scale, step, lr, vr, d1, d2, a, T, e);
+      return this.treeTernary(scale, step, dir, lr, vr, d1, d2, a, T, e);
     }
   
-    ternaryTreeD(scale = [1,1,1], step = 1.0){
+    ternaryTreeD(scale = [1,1,1], step = 1.0, dir = [0,1,0]){
       let d1 =180.0;
       let d2 =252.0;
       let a = 36.0;
@@ -114,10 +123,10 @@ class FractalFactory {
       let vr = 1.732;
       let T = [-0.51,0.77,-0.19];
       let e =0.4;
-      return this.treeTernary(scale, step, lr, vr, d1, d2, a, T, e);
+      return this.treeTernary(scale, step, dir, lr, vr, d1, d2, a, T, e);
     }
   
-    ternaryTreeT(scale = [1,1,1], step = 1.0){
+    ternaryTreeT(scale = [1,1,1], step = 1.0, dir = [0,1,0]){
       let d1 =120.0;
       let d2 =120.0;
       let a = 90.0;
@@ -125,10 +134,10 @@ class FractalFactory {
       let vr = 1.732;
       let T = [0,-1,0];
       let e =1.0;
-      return this.treeTernary(scale, step, lr, vr, d1, d2, a, T, e);
+      return this.treeTernary(scale, step, dir, lr, vr, d1, d2, a, T, e);
     }
   
-    sympodialTree(scale = [1,1,1], step = 1.0, r1,r2,a1,a2,wr=0.707){
+    sympodialTree(scale = [1,1,1], step = 1.0, dir = [0,1,0], r1,r2,a1,a2,wr=0.707){
   
       let axiom = ['A', [1,1]];
       //A,B,F,!,-,+,/,&,[,],$
@@ -147,26 +156,26 @@ class FractalFactory {
       let rV = new Rule("$", undefined, vert); 
   
   
-      return new Fractal(axiom, 0, scale, step, rA, rB, rF, rw, rs, rl, rr, rp, rm, radd, rV);
+      return new Fractal(axiom, 0, scale, step, dir, rA, rB, rF, rw, rs, rl, rr, rp, rm, radd, rV);
   
     }
   
-    sympodialTreeA(scale = [1,1,1], step = 1.0){
+    sympodialTreeA(scale = [1,1,1], step = 1.0, dir = [0,1,0]){
   
       let r1 = 0.9;
       let r2 = 0.7;
       let a1 = 5;
       let a2 = 65;
       let wr = 0.707;
-      return this.sympodialTree(scale, step, r1, r2, a1, a2, wr);
+      return this.sympodialTree(scale, step, dir, r1, r2, a1, a2, wr);
     }
 
-    sierpinskitetrahedron(scale = [1,1,1], L = 1.0){
+    sierpinskitetrahedron(scale = [1,1,1], L = 1.0, dir = [0,-1,0]){
 
       let a = Math.sqrt(3)/6 /Math.sqrt(2/3);
       let b = 0.5/Math.sqrt(2/3);
       let c = 1/Math.sqrt(3)/Math.sqrt(2/3);
-      let axiom = "S1F";
+      let axiom = "YS1F";
       let rF = new Rule("F", "F[AF][BF][CF]f", forwardColor);
       let rS = new Rule("S", (v) => ['S', v/2], (s,v) => scaleVal(s,[v,v,v]), true);
       let rf = new Rule("f", "ff", translate);
@@ -175,11 +184,10 @@ class FractalFactory {
       let rC = new Rule("C", "CC", s => translateVec(s, [0,0, c]));
       let rp = new Rule("[", undefined, push);
       let re = new Rule("]", undefined, pop);
+      let cy = new Rule("Y", undefined, s => color(s,[246/255,	178/255,	107/255]));
       let step = L * Math.sqrt(2/3);
-
-      let frac = new Fractal(axiom, 0, scale, step, rF, rA, rB, rC, rp, re, rf, rS);
-      frac.state.dir = [0,-1,0]; //todo fix in a better way
-      return frac;
+   
+      return new Fractal(axiom, 0, scale, step, dir, rF, rA, rB, rC, rp, re, rf, rS, cy);
     }
   
   }

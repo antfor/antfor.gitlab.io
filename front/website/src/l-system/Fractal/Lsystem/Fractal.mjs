@@ -5,30 +5,35 @@ import {State} from './State.mjs';
 
 class Fractal {
 
-    constructor(axiom, angle, scale, step, ...rules) {
+    constructor(axiom, angle, scale, step, dir, ...rules) {
       this.axiom = axiom;
       this.rules = new Map();
-      this.state = new State(angle, scale ,step);
+      this.state = new State(angle, scale ,step, dir);
+      this.stateSettings = [angle, scale, step, dir];
       let parametic = false;
       for (let rule of rules) {
         this.rules.set(rule.pred, rule);
         parametic ||= rule.valuFunction;
       }
 
-      /*
+      
      if(parametic){
         this.build = (i,a= this.axiom) => this.buildParametic(i,a);
-        this.buildParametic = undefined;
       }else{
-        this.build = (i,a= this.axiom) =>  this.build(i,a);
-        this.buildParametic = undefined;
+        this.build = (i,a= this.axiom) =>  this.buildNonParametic(i,a); 
       }
-      */
   
     }
+
+    clear(){
+      this.state.reset(...this.stateSettings);
+    }
+
+    getY(){
+      return [this.state.minY, this.state.maxY, this.state.maxY - this.state.minY];
+    }
   
-  
-    build(iteration, soucre = this.axiom){
+    buildNonParametic(iteration, soucre = this.axiom){
   
       if(iteration <= 0){
   
@@ -43,7 +48,7 @@ class Fractal {
           if(r.succ === undefined){
             r.func(this.state);
           }else{
-            this.build(iteration-1, r.succ);
+            this.buildNonParametic(iteration-1, r.succ);
           }
         }
       }
