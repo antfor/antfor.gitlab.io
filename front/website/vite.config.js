@@ -11,7 +11,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         cv: resolve(__dirname, 'cv.html'),
-        lsys: resolve(__dirname, 'l-system/index.html'),
+        lsys: resolve(__dirname, 'projects/l-system.html'),
         calc: resolve(__dirname, 'projects/calculator.html'),
       },
     },
