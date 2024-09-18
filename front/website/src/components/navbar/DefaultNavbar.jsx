@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import PAGES from './Pages.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGooglePlay } from '@fortawesome/free-brands-svg-icons'
-
+import './hamburger.css';
 
 
 function githubIcon(){
@@ -24,6 +24,18 @@ function setPaddingTop(fixed){
 
 }
 
+function Hamburger(){
+
+  return (
+    <div id="nav-hamburger-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+ );
+}
+
 function MyNavbar(prop) {
 
   const activePage = prop.active;
@@ -36,7 +48,7 @@ function MyNavbar(prop) {
     <Navbar expand="md" fixed={fixed} className="bg-body-tertiary">
     <Container fluid={true}>  
     <Navbar.Brand className="logo" href={activePage===PAGES.HOME? undefined: PAGES.HOME}>Anton Forsberg</Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Toggle aria-controls="basic-navbar-nav"> <Hamburger/> </Navbar.Toggle>
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="me-auto">
           <Nav.Link disabled={activePage===PAGES.HOME} href={PAGES.HOME}>Home</Nav.Link>
