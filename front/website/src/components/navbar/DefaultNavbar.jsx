@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import PAGES from './Pages.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGooglePlay } from '@fortawesome/free-brands-svg-icons'
-import './hamburger.css';
+import './hamburger3.css';
 
 
 function githubIcon(){
@@ -28,7 +28,6 @@ function Hamburger(){
 
   return (
     <div id="nav-hamburger-icon">
-      <span></span>
       <span></span>
       <span></span>
       <span></span>
