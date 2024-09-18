@@ -1,0 +1,68 @@
+:root {
+    --left: 3px;
+    --width: 24px;
+    --gap: 6px;
+    --height: 2px;
+    
+    --top: 6px;
+    --middel: calc(var(--top) + var(--height) + var(--gap));
+    --bottom: calc(var(--middel) + var(--height) + var(--gap));
+}
+
+#nav-hamburger-icon{
+    width: 30px;
+    height: 30px;
+
+    position: relative;
+}
+
+#nav-hamburger-icon span{
+    display: block;
+    position: absolute;
+    left: var(--left);
+    height: var(--height);
+    width: var(--width);
+
+    background: #343738;
+
+    transition: .25s ease-in-out;
+}
+
+.collapsed #nav-hamburger-icon span{
+    background: #575b5e;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-color: #7f8285;
+}
+
+
+.collapsed #nav-hamburger-icon span:nth-child(1) {
+    transform: rotate(0deg);
+    top: var(--top);
+}
+
+.collapsed #nav-hamburger-icon span:nth-child(2) {
+    opacity: 1;
+    width: var(--width);
+}
+
+.collapsed #nav-hamburger-icon span:nth-child(3) {
+    transform: rotate(0deg);
+    top: var(--bottom);
+}
+
+#nav-hamburger-icon span:nth-child(1) {
+    top: var(--middel);
+    transform: rotate(45deg);
+}
+
+#nav-hamburger-icon span:nth-child(2) {
+    top: var(--middel);
+    width: 0%;
+    opacity: 0;
+}
+
+#nav-hamburger-icon span:nth-child(3) {
+    top: var(--middel);
+    transform: rotate(-45deg);
+}
