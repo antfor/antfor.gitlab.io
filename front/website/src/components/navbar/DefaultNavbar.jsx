@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import PAGES from './Pages.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGooglePlay } from '@fortawesome/free-brands-svg-icons'
-import './hamburger3.css';
+import './css/hamburger3.css';
 
 
 function githubIcon(){

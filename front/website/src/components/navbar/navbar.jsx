@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import MyNavbar from './DefaultNavbar.jsx'
-import "./navbar.css"
+import "./css/navbar.css"
 
 
 const navbar = document.getElementById('navbar');
