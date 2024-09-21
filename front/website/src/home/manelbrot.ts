@@ -1,15 +1,17 @@
 import * as twgl from 'twgl.js';
 
-"use strict";
 const vs = `
-    attribute vec4 position;
+    #version 300 es
+
+    in vec4 position;
 
     void main() {
-    gl_Position = position;
+        gl_Position = position;
     }  
 `;
 
 const fs = `
+#version 300 es
 precision highp float;
 
 uniform vec2 resolution;
@@ -17,6 +19,7 @@ uniform float time;
 uniform float animation_time;
 uniform int animation;
 
+out vec4 outColor;
 
 float getTime(){
 
@@ -61,7 +64,7 @@ vec2 translate(){
     return pos;
 }
 
-float smooth(in float l, in vec2 z){
+float smoothIteration(float l, vec2 z){
 
     if( l < 0.0 ) return 0.0;
     
@@ -70,7 +73,7 @@ float smooth(in float l, in vec2 z){
     return sl;
 }
 
-float mandelbrot( in vec2 fragCoord )
+float mandelbrot(vec2 fragCoord)
 {
  
     vec2 p = (fragCoord.xy*2.0 - resolution.xy) * 2.0/ resolution.x;
@@ -100,7 +103,7 @@ float mandelbrot( in vec2 fragCoord )
         } 
     }
     
-    return smooth(l,z);
+    return smoothIteration(l,z);
 
 }
 
@@ -117,14 +120,23 @@ void main()
     col = 0.5 + 0.5*cos( col_scale*l*0.15 + vec3(3.0,3.6,4.0));
 
     //col =  vec3(l/64.0);
-    gl_FragColor = vec4( col, 1.0 );
+    outColor = vec4( col, 1.0 );
 }
 
 `;
-const gl = document.getElementById("c").getContext("webgl");
+
+const myCanvas =  <HTMLCanvasElement>document.getElementById("c");
+const maybeContext = myCanvas.getContext("webgl2");
+let gl:WebGL2RenderingContext;
+if (maybeContext===null) {
+    throw new Error("no webgl 2 context");
+}else{
+    gl = maybeContext;
+}
+
 const programInfo = twgl.createProgramInfo(gl, [vs, fs]);
  
-const arrays = {
+const arrays: twgl.Arrays= {
   position: [-1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0],
 };
 const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
@@ -132,12 +144,12 @@ const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
 let start = 0.0;
 let start_animate = false;
 let animate = false;
-let animation_time = 30.0;
+const  animation_time = 30.0;
 
-let num_animation = 2; 
+const num_animation = 2; 
 let animation = 0;
 
-function render(time){
+function render(time: number):void {
 
     if(start_animate){
         start_animate = false;
@@ -151,7 +163,7 @@ function render(time){
         
         animation = (animation + 1) % num_animation;
         animate = false;
-        toggleZoomButton(false);
+        zoomDone();
         
     }  
     
@@ -160,7 +172,7 @@ function render(time){
     }
 
     const multiplier = 2;
-    twgl.resizeCanvasToDisplaySize(gl.canvas, multiplier);
+    twgl.resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement, multiplier);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     const uniforms = {
@@ -168,8 +180,7 @@ function render(time){
         resolution: [gl.canvas.width, gl.canvas.height],
         animation_time: animation_time,
         animation: animation,
-
-      };
+    };
 
     gl.useProgram(programInfo.program);
     twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
@@ -181,24 +192,23 @@ function render(time){
 
 requestAnimationFrame(render)
 
-//jQuery
-function toggleZoomButton(b){
 
-    $('#zoom_button').prop("disabled", b);
+
+export function zoom():boolean{
+    
+    if(animate) return false;
+
+    start_animate = true;
+    return true;
 }
 
+let zoomListener : (undefined | (() => void))  = undefined;
+export function setZoomListener(listener: () => void){
+    zoomListener = listener;
+}
 
-
-$(function(){
-
-    $('#zoom_button').on('click', function (e) {
-    
-        if(!animate){
-            start_animate = true;
-            toggleZoomButton(true);
-        }
-    
-    });
-        
-    
-});
+function zoomDone(){
+    if(zoomListener){
+        zoomListener();
+    }
+}
