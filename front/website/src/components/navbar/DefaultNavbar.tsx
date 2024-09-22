@@ -1,7 +1,7 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import PAGES from './Pages.js';
+import {PAGES, page} from './Pages.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGooglePlay } from '@fortawesome/free-brands-svg-icons'
 import './css/hamburger3.css';
@@ -18,10 +18,9 @@ function playStoreIcon(){
 const Top = "top";
 const Height = 84; //84.5px
 
-function setPaddingTop(fixed){
-  const offset = fixed === Top ? Height+"px" : "0px";
+function setPaddingTop(fixed:boolean){
+  const offset = fixed ? Height.toString()+"px" : "0px";
   document.body.style.paddingTop = offset;
-
 }
 
 function Hamburger(){
@@ -35,16 +34,20 @@ function Hamburger(){
  );
 }
 
-function MyNavbar(prop) {
+interface props{
+  active: null | page,
+  fixed: boolean
+}
 
-  const activePage = prop.active;
-  const fixed = prop.fixed === "false" ? undefined : Top; 
+export default function DefaultNavbar({active, fixed}:props) {
+
+  const activePage = active;
+  const positon = fixed ? Top : undefined; 
 
   setPaddingTop(fixed);
 
   return (
-
-    <Navbar expand="md" fixed={fixed} className="bg-body-tertiary">
+    <Navbar expand="md" fixed={positon} className="bg-body-tertiary">
     <Container fluid={true}>  
     <Navbar.Brand className="logo" href={activePage===PAGES.HOME? undefined: PAGES.HOME}>Anton Forsberg</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav"> <Hamburger/> </Navbar.Toggle>
@@ -60,5 +63,3 @@ function MyNavbar(prop) {
     </Navbar>
   )
 }
-
-export default MyNavbar;
