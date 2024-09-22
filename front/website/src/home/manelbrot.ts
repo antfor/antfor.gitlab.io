@@ -1,4 +1,3 @@
-import { re } from 'mathjs';
 import * as twgl from 'twgl.js';
 
 const vs = `
