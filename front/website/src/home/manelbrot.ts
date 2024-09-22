@@ -1,3 +1,4 @@
+import { re } from 'mathjs';
 import * as twgl from 'twgl.js';
 
 const vs = `
@@ -187,19 +188,48 @@ function render(time: number):void {
     twgl.setUniforms(programInfo, uniforms);
     twgl.drawBufferInfo(gl, bufferInfo);
 
-	requestAnimationFrame(render)
+
+    if(animate){
+        requestAnimationFrame(render);
+    }else{
+        reqested = false;
+    }
 }
 
-requestAnimationFrame(render)
 
+let reqested = false;
+function requestRender(){
+    if(reqested) return false;
 
+    reqested = true;
+    requestAnimationFrame(render);
+
+    return true;
+}
+requestRender();
+
+function refreshRender(){
+    
+    if(animate || reqested) return;
+
+    render(0);
+}
+
+const resizeObserver = new ResizeObserver(refreshRender);
+resizeObserver.observe(myCanvas);
 
 export function zoom():boolean{
     
     if(animate) return false;
 
-    start_animate = true;
-    return true;
+    
+    const granted = requestRender();
+    if(granted){
+        start_animate = true;
+        return true;
+    }
+        
+    return false;
 }
 
 let zoomListener : (undefined | (() => void))  = undefined;
