@@ -99,7 +99,7 @@ type GL = WebGL2RenderingContext;
 type thiccFunc = (i:number) => number;
 
 
-class DrawFractal {
+export class DrawFractal {
 
   private fractal?: Fractal;
   private height: number;
@@ -204,7 +204,7 @@ class DrawFractal {
 
     if(drawShadowMap){
         this.#drawFractal(gl, viewProjection, this.shadowProgramInfo);
-    }else if(lightMatrix){
+    }else{
         this.uniforms.u_LightMatrix = lightMatrix;
         this.#drawFractal(gl, viewProjection);
     }
@@ -239,5 +239,3 @@ class DrawFractal {
     gl.drawElementsInstanced(gl.TRIANGLES, vertexArrayInfo.numElements, gl.UNSIGNED_SHORT, 0, this.numInstances);
   }
 }
-
-export {DrawFractal};

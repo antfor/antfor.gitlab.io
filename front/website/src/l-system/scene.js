@@ -1,4 +1,4 @@
-import { Floor } from './Scene/Floor.mjs';
+import { Floor } from './Scene/Floor.mts';
 import { ShadowProgram } from './Scene/ShadowProgram.mjs';
 import { DrawFractal } from './Scene/DrawFractal.mts';
 import * as twgl from 'twgl.js';

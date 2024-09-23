@@ -114,9 +114,28 @@ void main() {
 }
 `;
 
-class Floor{
+type GL = WebGL2RenderingContext;
+type Vec3 = twgl.v3.Vec3;
+type Mat4 = twgl.m4.Mat4;
 
-    constructor(gl, size = 1, grid = 2, posY = -6.5, shadowMapTex=null){
+export class Floor{
+
+    programInfo:twgl.ProgramInfo;
+    shadowProgramInfo:twgl.ProgramInfo;
+    bufferInfo:twgl.BufferInfo;
+    model:Vec3;
+    uniforms:{
+        size:number,
+        scale:number,
+        posY:number,
+        shadowMapTex?:WebGLTexture,
+        u_MVP?:Mat4,
+        u_NormalMatrix?:Mat4,
+        u_Model?:Mat4,
+        u_LightMatrix?:Mat4,
+    };
+
+    constructor(gl:GL, size = 1, grid = 2, posY = -6.5, shadowMapTex?:WebGLTexture){
         this.programInfo = twgl.createProgramInfo(gl, [vs, fs]);
         this.shadowProgramInfo = twgl.createProgramInfo(gl, [shadowVs, shadowFs]);
 
@@ -133,7 +152,7 @@ class Floor{
         
     }
     
-    draw(gl, viewProjection, drawShadowMap=false, lightMatrix=undefined){
+    draw(gl:GL, viewProjection:Mat4, drawShadowMap=false, lightMatrix?:Mat4){
 
       if(drawShadowMap){
         this.drawFloor(gl, viewProjection, this.shadowProgramInfo);
@@ -141,10 +160,9 @@ class Floor{
         this.uniforms.u_LightMatrix = lightMatrix;
         this.drawFloor(gl, viewProjection);
       }
-
     }
 
-    drawFloor(gl, viewProjection, programInfo=this.programInfo){
+    drawFloor(gl:GL, viewProjection:Mat4, programInfo=this.programInfo){
 
       gl.useProgram(programInfo.program);
       this.uniforms.u_NormalMatrix = m4.transpose(m4.inverse(this.model));
@@ -156,5 +174,3 @@ class Floor{
       twgl.drawBufferInfo(gl, this.bufferInfo);
     }
 }
-
-export {Floor};
