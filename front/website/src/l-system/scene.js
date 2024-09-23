@@ -1,5 +1,5 @@
 import { Floor } from './Scene/Floor.mts';
-import { ShadowProgram } from './Scene/ShadowProgram.mjs';
+import { ShadowProgram } from './Scene/ShadowProgram.mts';
 import { DrawFractal } from './Scene/DrawFractal.mts';
 import * as twgl from 'twgl.js';
 import { getOptions} from './Fractal/FractalOptions.mts';
@@ -133,7 +133,7 @@ function render(time) {
   time *= 0.001;
   //FPS(timeMS);         
 
-  shadowMap.draw(scene, gl);
+  shadowMap.draw(gl, scene);
 
   glSettings(gl);
 

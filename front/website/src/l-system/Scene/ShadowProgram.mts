@@ -46,60 +46,75 @@ void main() {
 `;
 
 const m4 = twgl.m4;
+type GL = WebGL2RenderingContext;
+type Vec3 = twgl.v3.Vec3;
+type Mat4 = twgl.m4.Mat4;
 
 
 class ShadowProgram{
 
 
-    constructor(gl, lightPos, width=512, height=512){
+    private width:number;
+    private height:number;
+    private lightPos:Vec3;
+    private fb:WebGLFramebuffer | null;
+    private rb:WebGLRenderbuffer | null;
+    readonly shadowMap_texture:WebGLTexture;
+    private programInfo!:twgl.ProgramInfo;
+    private bufferInfo!:twgl.BufferInfo;
+    private uniforms!:{
+      resolution:[number, number]
+    };
+
+
+    constructor(gl:GL, lightPos:Vec3, width=512, height=512){
 
       this.width = width;
       this.height = height;
       this.lightPos = lightPos;
+
       this.fb = gl.createFramebuffer();
+      this.rb = gl.createRenderbuffer();
+      this.shadowMap_texture = gl.createTexture() as WebGLTexture;
+   
+      this.resize(gl, this.width, this.height);
+
+      this.#createFullFaceQuad(gl);
+      
+    }
+
+    resize(gl:GL, width:number, height:number){
+      this.width = width;
+      this.height = height;
+      this.uniforms = {
+        resolution: [this.width, this.height]
+      };
+
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
 
-      var rb = gl.createRenderbuffer();
-      gl.bindRenderbuffer(gl.RENDERBUFFER, rb);
+      gl.bindRenderbuffer(gl.RENDERBUFFER, this.rb);
       gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16 , width, height);
-
       gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT,
-                                gl.RENDERBUFFER, rb);
+                                gl.RENDERBUFFER, this.rb);
 
-      this.shadowMap_texture = gl.createTexture();
+
       gl.bindTexture(gl.TEXTURE_2D, this.shadowMap_texture);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height,
                     0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-
       gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
                               gl.TEXTURE_2D, this.shadowMap_texture, 0);
 
+      gl.bindRenderbuffer(gl.RENDERBUFFER, null);                     
       gl.bindTexture(gl.TEXTURE_2D, null);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-      this.createFullFaceQuad(gl);
-      this.uniforms = {
-        resolution: [this.width, this.height]
-      };
-      
     }
 
-    resize(gl, width, height){
-      this.width = width;
-      this.height = height;
-
-      this.uniforms = {
-        resolution: [this.width, this.height]
-      };
-    }
-
-    createShadowProgram(gl, vs, fs = shadowFs){
+    createShadowProgram(gl:GL, vs:string, fs = shadowFs){
       return twgl.createProgramInfo(gl, [vs, fs]);
     }
     
@@ -111,7 +126,7 @@ class ShadowProgram{
       return m4.multiply(projection, view);
     }
 
-    createFullFaceQuad(gl){
+    #createFullFaceQuad(gl:GL){
       this.programInfo = twgl.createProgramInfo(gl, [borderVs, borderFs]);
  
       const arrays = {
@@ -121,7 +136,7 @@ class ShadowProgram{
       this.bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
     }
 
-    drawBorder(gl){
+    #drawBorder(gl:GL){
       gl.disable(gl.DEPTH_TEST);
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -137,9 +152,9 @@ class ShadowProgram{
       gl.enable(gl.DEPTH_TEST);
     }
 
-    draw(drawScene, gl){
+    draw(gl:GL, drawScene:((v:Mat4, b:boolean)=>void)){
 
-      let viewProjection = this.getViewProjection();
+      const viewProjection = this.getViewProjection();
 
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb);
       gl.viewport(0, 0, this.width, this.height);
@@ -149,7 +164,7 @@ class ShadowProgram{
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
       drawScene(viewProjection, true);
-      this.drawBorder(gl); //Because Clamp to border does not exist in webgl2
+      this.#drawBorder(gl); //Because Clamp to border does not exist in webgl2
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 
