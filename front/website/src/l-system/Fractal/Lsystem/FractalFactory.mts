@@ -14,8 +14,8 @@ class FractalFactory {
       const rp = new Rule("+", undefined, turnRight);
       const rm = new Rule("-", undefined, turnLeft);
       const cr = new Rule("R", undefined, (s:State) => {color(s,[1,0,0])});
+     
       return new Fractal(axiom, 90, scale, step, dir, rf, ry, rp, rm, cr);
-  
     }
 
     kochSnowflake(scale:Vec3 = [1,1,1], step = 1.0, dir:Vec3 = [0,1,0]){
@@ -24,6 +24,7 @@ class FractalFactory {
       const rp = new Rule("+", undefined, turnRight);
       const rm = new Rule("-", undefined, turnLeft);
       const rt = new Rule("*", undefined, (s:State) => {yaw(s, 30)});
+      
       return new Fractal(axiom, 60, scale, step, dir, rf, rp, rm, rt);
     }
   
@@ -107,6 +108,7 @@ class FractalFactory {
       const vr = 1.732;
       const T:Vec3 = [0,-1,0];
       const e =0.22;
+      
       return this.treeTernary(scale, step, dir, lr, vr, d1, d2, a, T, e);
     }
   
@@ -118,6 +120,7 @@ class FractalFactory {
       const vr = 1.732;
       const T:Vec3  = [-0.51,0.77,-0.19];
       const e =0.4;
+      
       return this.treeTernary(scale, step, dir, lr, vr, d1, d2, a, T, e);
     }
   
@@ -129,6 +132,7 @@ class FractalFactory {
       const vr = 1.732;
       const T:Vec3  = [0,-1,0];
       const e =1.0;
+      
       return this.treeTernary(scale, step, dir, lr, vr, d1, d2, a, T, e);
     }
   
@@ -161,6 +165,7 @@ class FractalFactory {
       const a1 = 5;
       const a2 = 65;
       const wr = 0.707;
+     
       return this.sympodialTree(scale, step, dir, r1, r2, a1, a2, wr);
     }
 

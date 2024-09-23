@@ -1,6 +1,6 @@
 import { Floor } from './Scene/Floor.mjs';
 import { ShadowProgram } from './Scene/ShadowProgram.mjs';
-import { DrawFractal } from './Scene/DrawFractal.mjs';
+import { DrawFractal } from './Scene/DrawFractal.mts';
 import * as twgl from 'twgl.js';
 import { getOptions} from './Fractal/FractalOptions.mts';
 "use strict";
