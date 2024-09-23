@@ -1,129 +1,119 @@
-"use strict";
 import * as twgl from 'twgl.js';
+import {State, Vec3} from './State.mts';
 
 
 const m4 = twgl.m4;
 const v3 = twgl.v3;
 
-function push(state){
+function push(state:State){
 
-    let m = state.getMat();
+    const m = state.getMat();
     state.push(...m);
   
 }
   
-  function pop(state){
+  function pop(state:State){
   
     state.pop();
   }
   
-  function forwardVal(state, val){
+  function forwardVal(state:State, val:number){
     
-    state.numInstances += 1;
-    let m = state.getMat();
-    let scale = m4.scaling([state.width, val, state.width]);  //todo scale instead of scale and multiply
+    const m = state.getMat();
+    const scale = m4.scaling([state.width, val, state.width]);  //todo scale instead of scale and multiply
     m4.multiply(m, scale, scale);
     state.save(...scale); 
     m4.translate(m,v3.mulScalar(state.dir, val * state.step),m);
-   // m4.translate(m, [0, state.step * val, 0], m); //state.dir * state.step * val
     state.update(...m);
   }
   
   // F
-  function forward(state){
+  function forward(state:State){
     forwardVal(state, 1);
   }
   
-  function rand(min, max) {
-    if (max === undefined) {
-      max = min;
-      min = 0;
-    }
-    return min + Math.random() * (max - min);
-  }
   
-  function forwardColorVal(state, val){
+  function forwardColorVal(state:State, val:number){
     forwardVal(state, val);
     state.pushColor(...state.color);
-    //state.pushColor(rand(0,1),rand(0,1),rand(0,1));
-  }
+ }
   
-  function forwardColor(state){
+  function forwardColor(state:State){
     forwardColorVal(state, 1);
   }
   
   // f Forward without drawing
-  function translateVal(state, val){
-    let m = state.getMat();
+  function translateVal(state:State, val:number){
+    const m = state.getMat();
     m4.translate(m,v3.mulScalar(state.dir, val * state.step),m);
-    //m4.translate(m, [0, state.step * val, 0], m); //state.dir * state.step * val
     state.update(...m);
   }
   
   // f
-  function translate(state){
+  function translate(state:State){
     translateVal(state, 1);
   }
 
-  function translateVec(state, Vec){
-    let m = state.getMat();
+  function translateVec(state:State, Vec:Vec3){
+    const m = state.getMat();
     v3.mulScalar(Vec, state.step, Vec);
     m4.translate(m, Vec, m);
     state.update(...m);
   }
   
   
-  
   // +-
-  function yaw(state, angle){
-    let m = state.getMat();
+  function yaw(state:State, angle: number){
+    const m = state.getMat();
     m4.rotateZ(m, angle * Math.PI/180.0, m);
     state.update(...m);
   }
   
   // ^& 
-  function pitch(state, angle){
-    let m = state.getMat();
+  function pitch(state:State, angle: number){
+    const m = state.getMat();
     m4.rotateX(m, angle * Math.PI/180.0, m);
     state.update(...m);
   }
   
   // \/
-  function roll(state, angle){
-    let m = state.getMat();
+  function roll(state:State, angle:number){
+    const m = state.getMat();
     m4.rotateY(m, angle * Math.PI/180.0, m);
     state.update(...m);
   }
   
   //|
-  function turnAround(state){
+  function turnAround(state:State){
     yaw(state, 180);
   }
   
   //+
-  function turnRight(state){
+  function turnRight(state:State){
     yaw(state, state.angle);
   }
   
   //-
-  function turnLeft(state){
+  function turnLeft(state:State){
     yaw(state, -state.angle);
   }
   
   //Cn
-  function color(state, RGB){
+  function color(state:State, RGB:Vec3){
     state.color.set(RGB);
   }
   
-  function vert(state){
+  function vert(state:State){
   
-    let m = state.getMat();
-    let H = m4.getAxis(m,1);
+    const m = state.getMat();
+    
+    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+    const H:Vec3 = m4.getAxis(m, 1) as unknown as Vec3; //todo
     v3.normalize(H,H);
-    let V = [0,1,0];
-    let L = v3.cross(H, V);
+    const V = [0,1,0];
+    const L = v3.cross(H, V);
     v3.normalize(L, L);
-    let U = v3.cross(H, L);
+    const U = v3.cross(H, L);
   
     m4.setAxis(m, L, 0, m);
     m4.setAxis(m, U, 2, m);
@@ -132,23 +122,25 @@ function push(state){
   }
   
   //! 
-  function width(state, width){
+  function width(state:State, width:number){
     state.width = width;
   }
   
-  function tf(T, e, f, state, val){
+  function tf(T:Vec3, e:number, f:(state:State, val:number)=>void, state:State, val:number){
     
     tropismVal(T, e, f, state, val);
   
   }
   
   //f foward function
-  function tropismVal(T, e, f, state, val){
+  function tropismVal(T:Vec3, e:number, f:(state:State, val:number)=>void, state:State, val:number){
   
-    f(state, val);
-   
+    e = 1;
+    f(state, val*e);
+    v3.cross(T, T);
+    /*
     let m = state.getMat();
-    let H = m4.getAxis(m,1);
+    let H = m4.getAxis(m,1); //todo returns vioid
     let axis = v3.cross(H, T);
     let angle = v3.length(axis)*e;
   
@@ -165,11 +157,11 @@ function push(state){
       state.update(...m);
     }
     //f(state, val);
-    
+    */
   }
   
-  function scaleVal(state, scaleVec){
-    let m = state.getMat();
+  function scaleVal(state:State, scaleVec:Vec3){
+    const m = state.getMat();
     m4.scale(m, scaleVec, m);
     state.update(...m);
   }
