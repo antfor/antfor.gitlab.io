@@ -1,4 +1,5 @@
 import * as twgl from 'twgl.js';
+import { Fractal } from '../Fractal/Fractal.types.mts';
 
 const vs = `
 #version 300 es
@@ -91,9 +92,37 @@ void main() {
 
 const m4 = twgl.m4;
 const v3 = twgl.v3;
+type Vec3 = twgl.v3.Vec3;
+type Mat4 = twgl.m4.Mat4;
+type Arrays = twgl.Arrays;
+type GL = WebGL2RenderingContext;
+type thiccFunc = (i:number) => number;
+
 
 class DrawFractal {
-  constructor(gl, fractal, step, height, floor, thicknessFunc, primitives, sunPosition, shadowMapTex=null) {
+
+  private fractal?: Fractal;
+  private height: number;
+  private floor: number;
+  private thicknessFunc: thiccFunc;
+  private arrays: Arrays;
+  private uniforms: {
+    u_lightDir: Vec3;
+    step: number;
+    shadowMapTex: WebGLTexture;
+    u_viewProjection?: Mat4;
+    u_LightMatrix?: Mat4;
+    transform?: Mat4;
+  };
+  private programInfo: twgl.ProgramInfo;
+  private shadowProgramInfo: twgl.ProgramInfo;
+  private bufferInfo?: twgl.BufferInfo;
+  private instanceWorlds?: number[];
+  private numInstances: number;
+  private instanceColors?: number[];
+  private thickness: number;
+
+  constructor(gl:GL, fractal:Fractal, step:number, height:number, floor:number, thicknessFunc:thiccFunc, primitives:Arrays, sunPosition:Vec3, shadowMapTex:WebGLTexture) {
       
     this.programInfo = twgl.createProgramInfo(gl, [vs, fs]);
     this.shadowProgramInfo = twgl.createProgramInfo(gl, [shadowVs, shadowFs]);
@@ -110,14 +139,19 @@ class DrawFractal {
     this.floor = floor;
     this.height = height;
     this.arrays = primitives;
+    this.numInstances = 0;
+    this.thickness = 0;
 
   }
 
-  setFractal(fractal) {
+  setFractal(fractal: Fractal){
     this.fractal = fractal;
   }
 
-  build(gl, iterations){
+  build(gl:GL, iterations:number) {
+
+    if(!this.fractal)
+      return
 
     this.instanceWorlds = this.fractal.build(iterations);
     this.numInstances = this.instanceWorlds.length / 16;
@@ -141,31 +175,45 @@ class DrawFractal {
 
   }
 
-  clear(gl){
+  clear(gl:GL) {
     if(this.bufferInfo){
-      for (const attrib of Object.values(this.bufferInfo.attribs)) {
-        gl.deleteBuffer(attrib.buffer);
+
+      if(this.bufferInfo.attribs){
+        for (const attrib of Object.values(this.bufferInfo.attribs)) {
+          gl.deleteBuffer(attrib.buffer);
+        }
       }
+
+      if(this.bufferInfo.indices){
+        gl.deleteBuffer(this.bufferInfo.indices);
+      }
+      
       if (this.bufferInfo.indices) {
         gl.deleteBuffer(this.bufferInfo.indices);
       }
+
+      this.bufferInfo = undefined;
+    }
+
+    if(this.fractal){
       this.fractal.clear();
     }
   }
 
-  draw(gl, viewProjection, drawShadowMap=false, lightMatrix=undefined) {
+  draw(gl:GL, viewProjection:Mat4, drawShadowMap=false, lightMatrix?:Mat4) {
 
     if(drawShadowMap){
-        this.drawFractal(gl, viewProjection, this.shadowProgramInfo);
-    }else{
+        this.#drawFractal(gl, viewProjection, this.shadowProgramInfo);
+    }else if(lightMatrix){
         this.uniforms.u_LightMatrix = lightMatrix;
-        this.drawFractal(gl, viewProjection);
+        this.#drawFractal(gl, viewProjection);
     }
-    
   }
 
-  scaleFractal(){
-    let [minY,maxY,diff] = this.fractal.getY();
+  #scaleFractal(){
+    if(!this.fractal)
+      return;
+    const [minY, ,diff] = this.fractal.getY();
     const height = this.height;
     const scale = diff > height ? height*1.0/diff : 1.0;
     const transform = m4.scaling([scale,scale,scale]);
@@ -175,19 +223,21 @@ class DrawFractal {
     this.uniforms.transform = transform;
   }
 
-  drawFractal(gl, viewProjection, programInfo=this.programInfo) {
+  #drawFractal(gl:GL, viewProjection:Mat4, programInfo=this.programInfo) {
+
+    if(!this.bufferInfo || !this.fractal)
+      return;
 
     gl.useProgram(programInfo.program);
 
     this.uniforms.u_viewProjection = viewProjection;
-    this.scaleFractal();
+    this.#scaleFractal();
 
     const vertexArrayInfo = twgl.createVertexArrayInfo(gl, programInfo, this.bufferInfo);
     twgl.setBuffersAndAttributes(gl, programInfo, vertexArrayInfo);
     twgl.setUniforms(programInfo, this.uniforms);
     gl.drawElementsInstanced(gl.TRIANGLES, vertexArrayInfo.numElements, gl.UNSIGNED_SHORT, 0, this.numInstances);
   }
-
 }
 
 export {DrawFractal};

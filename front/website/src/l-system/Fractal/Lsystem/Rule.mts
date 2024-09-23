@@ -1,13 +1,16 @@
 import {State, Vec3} from './State.mts';
 
+//pred
 export type value = number | number[] | Vec3;
 type predElem = string | value;
 export type pred = string | predElem[];
 
+//succ
 export type valuFunction = ((val:value) => pred)
 type succElem = pred | undefined | valuFunction;
 export type succ = succElem | succElem[];
 
+//func
 export type func = ((state:State, val?:value) => void);
 
 
