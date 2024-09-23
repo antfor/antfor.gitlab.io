@@ -1,16 +1,30 @@
 
 import * as twgl from 'twgl.js';
-"use strict";
+
 
 const m4 = twgl.m4;
+export type Vec3 = [number,number,number];
+type stack = number[]
 
-class State{
 
-    constructor(angle, scale, step, dir = [0,1,0]) {
+export class State{
+
+    public dir!: Float32Array;
+    public angle!: number;
+    public step!: number;
+    public width!: number;
+    public stack!: stack;
+    public saveStates!: stack;
+    public color!: Float32Array;
+    public colors!: stack;
+    public minY!: number;
+    public maxY!: number;
+
+    constructor(angle:number, scale:Vec3, step:number, dir:Vec3 = [0,1,0]) {
       this.reset(angle, scale, step, dir);
     }
   
-    update(...mat){
+    update(...mat:stack){
       this.stack.splice(-mat.length,mat.length,...mat);
     }
   
@@ -18,11 +32,11 @@ class State{
       this.stack.splice(-n);
     }
   
-    push(...mat){
+    push(...mat:stack){
       this.stack.push(...mat);
     }
   
-    pushColor(...col){
+    pushColor(...col:stack){
       this.colors.push(...col);
     }
   
@@ -30,7 +44,7 @@ class State{
       return this.stack.slice(-n);
     }
   
-    save(...mat){
+    save(...mat:stack){
       this.saveStates.push(...mat);
       this.minY = Math.min(this.minY, mat[13]);
       this.maxY = Math.max(this.maxY, mat[13]);
@@ -43,14 +57,9 @@ class State{
       this.width = 1.0;
       this.stack = [...m4.scaling(scale)];
       this.saveStates = [];
-      this.numInstances = 0;
       this.color = new Float32Array([0,0.5,0.5]);
       this.colors = [];
       this.minY = Number.POSITIVE_INFINITY;
       this.maxY = Number.NEGATIVE_INFINITY;
     }
-  }
-
-
-
-  export {State};
+}

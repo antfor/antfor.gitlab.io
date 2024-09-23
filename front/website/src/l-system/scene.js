@@ -2,7 +2,7 @@ import { Floor } from './Scene/Floor.mjs';
 import { ShadowProgram } from './Scene/ShadowProgram.mjs';
 import { DrawFractal } from './Scene/DrawFractal.mjs';
 import * as twgl from 'twgl.js';
-import { getOptions} from './Fractal/FractalOptions.mjs';
+import { getOptions} from './Fractal/FractalOptions.mts';
 "use strict";
 
 const m4 = twgl.m4;
