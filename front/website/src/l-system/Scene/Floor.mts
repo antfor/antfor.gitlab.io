@@ -120,11 +120,11 @@ type Mat4 = twgl.m4.Mat4;
 
 export class Floor{
 
-    programInfo:twgl.ProgramInfo;
-    shadowProgramInfo:twgl.ProgramInfo;
-    bufferInfo:twgl.BufferInfo;
-    model:Vec3;
-    uniforms:{
+    private programInfo:twgl.ProgramInfo;
+    private shadowProgramInfo:twgl.ProgramInfo;
+    private bufferInfo:twgl.BufferInfo;
+    private model:Vec3;
+    private uniforms:{
         size:number,
         scale:number,
         posY:number,
@@ -155,14 +155,14 @@ export class Floor{
     draw(gl:GL, viewProjection:Mat4, drawShadowMap=false, lightMatrix?:Mat4){
 
       if(drawShadowMap){
-        this.drawFloor(gl, viewProjection, this.shadowProgramInfo);
+        this.#drawFloor(gl, viewProjection, this.shadowProgramInfo);
       }else{
         this.uniforms.u_LightMatrix = lightMatrix;
-        this.drawFloor(gl, viewProjection);
+        this.#drawFloor(gl, viewProjection);
       }
     }
 
-    drawFloor(gl:GL, viewProjection:Mat4, programInfo=this.programInfo){
+    #drawFloor(gl:GL, viewProjection:Mat4, programInfo=this.programInfo){
 
       gl.useProgram(programInfo.program);
       this.uniforms.u_NormalMatrix = m4.transpose(m4.inverse(this.model));
