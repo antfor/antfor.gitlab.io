@@ -1,25 +1,29 @@
 import { round } from 'mathjs'
-import { simplifyValue } from './utils/parse.js';
+import { simplifyValue } from './utils/parse.mjs';
+import {ChartOptions, TooltipItem, ChartTypeRegistry} from 'chart.js';
 
-function sumDatapoints(dataPoints){
-    return dataPoints.reduce((acc, val) => acc + val.raw, 0);
+
+type tooltipItem = TooltipItem<keyof ChartTypeRegistry>;
+
+function sumDatapoints(dataPoints: tooltipItem[]): number{
+    return dataPoints.reduce((acc, val) => acc + (val.raw as number), 0);
 }
 
-function percentOfTotal(value, total){
+function percentOfTotal(value:number, total:number): string {
     if(total == 0){
-        return 0;
+        return '0';
     }
-    return round(value/total*100, 0);
+    return round(value/total*100, 0).toString();
 }
 
-function getLabel(context){
+function getLabel(context:tooltipItem):string{
             
-    var label = context.dataset.label || '';
+    let label = context.dataset.label || '';
     if (label) {
         label += ': ';
 
-        if (context.parsed.y !== null) {
-            let value = context.parsed.y;
+        if (context.parsed.y && context.chart.tooltip) {
+            const value = context.parsed.y;
 
             const dataPoints = context.chart.tooltip.dataPoints;
             const total = sumDatapoints(dataPoints);
@@ -37,9 +41,9 @@ function getLabel(context){
     return label;
 }
 
-export function getOptions(labelX="År"){
+export function getOptions(labelX="År"): ChartOptions<'bar'>{
 
-    let options = {
+    const options: ChartOptions<'bar'>= {
         plugins: {
         title: {
             display: false,
@@ -48,9 +52,9 @@ export function getOptions(labelX="År"){
         
         tooltip: {
             callbacks: {
-                title: (ttItem) => labelX+`: ${ttItem[0].label}`,
-                label: getLabel,
-                afterBody: (ttItem) => (`Totalt: ${simplifyValue(sumDatapoints(ttItem),0)} kr (100%)`)
+                title: (ttItems) => labelX+`: ${ttItems[0].label}`,
+                label: (ttItem) => getLabel(ttItem),
+                afterBody: (ttItems) => (`Totalt: ${simplifyValue(sumDatapoints(ttItems),0)} kr (100%)`)
             }
         }, 
         },

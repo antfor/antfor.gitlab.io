@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import Card from 'react-bootstrap/Card';
-import { IntrestChart} from './barchart/IntrestChart.jsx'
+import { IntrestChart} from './barchart/IntrestChart.tsx'
 import './calculator.css'
 
 
@@ -22,8 +22,9 @@ function container(){
     );
 }
 
-ReactDOM.createRoot(chart).render(
-  <React.StrictMode>
-    {container()}
-  </React.StrictMode>
-)
+if(chart)
+  ReactDOM.createRoot(chart).render(
+    <React.StrictMode>
+      {container()}
+    </React.StrictMode>
+  )

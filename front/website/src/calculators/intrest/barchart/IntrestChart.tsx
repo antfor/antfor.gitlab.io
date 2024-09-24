@@ -9,16 +9,16 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { useState } from 'react';
-import { calcSavings, Interval } from './utils/intrest.js';
-import { SettingsComponent } from './settings/Settings.jsx';
+import { calcSavings, Interval} from './utils/intrest.mts';
+import { SettingsComponent } from './settings/Settings.tsx';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Result from './results/Resultat.jsx';
+import Result from './results/Resultat.tsx';
 import styles from'./intrest.module.css';
-import { parseFloatSafe } from './utils/parse.js';
-import { getModel } from './model.js';
-import { getOptions } from './options.js';
+import { parseFloatSafe } from './utils/parse.mts';
+import { getModel } from './model.mts';
+import { getOptions } from './options.mts';
 
 
 ChartJS.register(
@@ -30,8 +30,11 @@ ChartJS.register(
   Legend
 );
 
-function getIntervalMap() {
-  const map = new Map();
+export type {Interval}
+export type IntervalMap = Map<Interval,string>
+
+function getIntervalMap():IntervalMap {
+  const map = new Map<Interval,string>();
   map.set(Interval.Year, "År");
   map.set(Interval.HalfYear, "Halvår");
   map.set(Interval.Quarter, "Kvartal");
@@ -39,13 +42,24 @@ function getIntervalMap() {
   return map;
 }
 
-function defultSettings(){
+export type Settings = {
+  intrest: string, //value
+  startMoney: string,
+  monthlySaving: string,
+  time: string,
+  Interval: Interval,
+  intrestBreakdown: boolean,
+  intrestOnIntrestBreakdown: boolean,
+  accBreakdown: boolean,
+};
+
+function defultSettings():Settings {
   return   {
     intrest: "7",
     startMoney: "5000",
     monthlySaving: "100",
     time: "20",
-    Interval: Interval.Year.toString(),
+    Interval: Interval.Year,
     intrestBreakdown: false,
     intrestOnIntrestBreakdown: false,
     accBreakdown: false,
@@ -56,14 +70,19 @@ function IntrestChart(){
  
     const [settings, setSettings] = useState(defultSettings());
    
-    let dataPoints = calcSavings(...[settings.startMoney, settings.monthlySaving, settings.intrest, settings.time, settings.Interval].map(parseFloatSafe));
-    let model = getModel(dataPoints, settings);
+    const dataPoints = calcSavings(parseFloatSafe(settings.startMoney),
+                                   parseFloatSafe(settings.monthlySaving), 
+                                   parseFloatSafe(settings.intrest), 
+                                   parseFloatSafe(settings.time), 
+                                   settings.Interval);
+
+    const model = getModel(dataPoints, settings);
 
     const intervalMap = getIntervalMap();
-    const intervlLabel = intervalMap.get(parseFloatSafe(settings.Interval, Interval.Annually));
+    const intervlLabel = intervalMap.get(settings.Interval);
 
-    let last = parseFloatSafe(settings.time);
-    let total = dataPoints.totalSavings[last];
+    const last = parseFloatSafe(settings.time);
+    const total = dataPoints.totalSavings[last];
 
     return (
       <Container>
@@ -76,7 +95,7 @@ function IntrestChart(){
               {Result(model.datasets, total, last, dataPoints)}
             </Row>
           </Col>
-          <Col xl={3} className="col-xl-3" >{SettingsComponent(settings, setSettings, intervalMap)}</Col>
+          <Col xl={3} className="col-xl-3" >{SettingsComponent({settings, setSettings, intervalMap})}</Col>
         </Row>
         <br className='d-xl-none'/>
         <Row className='d-xl-none'>{Result(model.datasets, total, last, dataPoints)}</Row>

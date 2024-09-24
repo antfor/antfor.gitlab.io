@@ -1,10 +1,12 @@
 import { Doughnut } from 'react-chartjs-2';
 import styles from './result.module.css';
-import { simplifyValue } from '../utils/parse';
+import { simplifyValue } from '../utils/parse.mts';
+import { Dataset } from '../model.mts';
 import {
     Chart as ChartJS,
     ArcElement,
     Tooltip,
+    ChartOptions,
   } from 'chart.js';
 
   ChartJS.register(
@@ -12,7 +14,7 @@ import {
     ArcElement,
   );
   
-const options ={
+const options: ChartOptions<'doughnut'> ={
   plugins: {
     tooltip: {
       callbacks: {
@@ -23,7 +25,7 @@ const options ={
   maintainAspectRatio: false,
 }
 
-export function DoughnutChart(datasets, last, tot){
+export function DoughnutChart(datasets:Dataset[], last:number, tot:number){
 
  
     const percent = datasets.map((dataset) => (dataset.data[last]*100.0/tot));
