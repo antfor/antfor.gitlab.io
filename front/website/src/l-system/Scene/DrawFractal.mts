@@ -1,5 +1,5 @@
 import * as twgl from 'twgl.js';
-import { Fractal } from '../Fractal/Fractal.types.mts';
+import { Fractal } from '../Fractal/FractalOptions.mts';
 
 const vs = `
 #version 300 es

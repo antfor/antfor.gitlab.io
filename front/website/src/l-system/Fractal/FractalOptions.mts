@@ -1,7 +1,8 @@
 import * as twgl from 'twgl.js';
-import { FractalFactory, Fractal } from './Lsystem/FractalFactory.mts';
+import { FractalFactory, Fractal as TFractal } from './Lsystem/FractalFactory.mts';
 import { createTetrahedron } from './Primitives/Primitives.mts';
 
+export type Fractal = TFractal;
 type Vec3 = [number, number, number];
 const scale:Vec3 = [1, 1, 1];
 
@@ -28,7 +29,7 @@ export enum Fractals{
     TETRAHEDRON = "Tetrahedron",
 }
 
-interface FractalOptions{
+export interface FractalOptions{
     readonly fractal: Fractal;
     readonly primitives: twgl.Arrays;
     readonly primitiveOffset: number;
