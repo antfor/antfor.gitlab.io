@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import DefaultNavbar from './DefaultNavbar.tsx'
-import {PAGES, page} from './Pages.js';
+import {PAGES, page} from './Pages.mts';
 import "./css/navbar.css"
 
 const navbar = document.getElementById('navbar');
