@@ -2,14 +2,16 @@ import { Floor } from './Scene/Floor.mts';
 import { ShadowProgram } from './Scene/ShadowProgram.mts';
 import { DrawFractal } from './Scene/DrawFractal.mts';
 import * as twgl from 'twgl.js';
-import { getOptions} from './Fractal/FractalOptions.mts';
-"use strict";
+import { getOptions, Fractals } from './Fractal/FractalOptions.mts';
 
 const m4 = twgl.m4;
+type Mat4 = twgl.m4.Mat4;
+type GL = WebGL2RenderingContext;
 
-let fractal;
+let fractal:DrawFractal;
 
-const gl = document.getElementById("Background").getContext("webgl2");
+const canvas = document.getElementById("Background") as HTMLCanvasElement;
+const gl:GL = canvas.getContext("webgl2") as GL;
 const sunPosition = [0, 40, -200];
 const shadowMap = new ShadowProgram(gl, sunPosition, 1024, 1024);
 const offset = -40;
@@ -21,10 +23,10 @@ let updateFractalB = false;
 let updateIterationB = false;
 let fractalBuilt = false;
 
-let iteration;
-let fractalKey;
+let iteration: number;
+let fractalKey: Fractals;
 
-export function updateFractal(key){
+export function updateFractal(key: Fractals){
   if(key !== fractalKey){
     fractalBuilt = false;
     updateFractalB = true;
@@ -35,50 +37,32 @@ export function updateFractal(key){
 }
 
 
-export function updateIteration(i){
+export function updateIteration(i:number){
   if(i !== iteration || !fractalBuilt){
     updateIterationB = true;
     fractalBuilt = true;
 
     iteration = i;
   }
-
 }
 
 function newFractal(){
 
-  let option = getOptions(fractalKey);
-
-  fractal = new DrawFractal(gl, option.fractal, option.primitiveOffset, height, offset, option.thickness, option.primitives, sunPosition, shadowMap.shadowMap_texture);
-
+  const option = getOptions(fractalKey);
+  if(option)
+    fractal = new DrawFractal(gl, option.fractal, option.primitiveOffset, height, offset, option.thickness, option.primitives, sunPosition, shadowMap.shadowMap_texture);
 }
 
 function newIteration(){
     fractal.clear(gl);
     fractal.build(gl, iteration);
- 
 }
 
-//const fpsElem = document.querySelector("#fps");
-let fps_time = 0;
-let fps_frames = 0;
-let time_prev = 0;
-function FPS(timeMS){
-  const deltaTime = timeMS - time_prev;         
-  time_prev = timeMS;                           
-  fps_time += deltaTime;                       
-  fps_frames += 1;                             
-  if (fps_time > 1000.0) { 
-    let fps = 1000 * fps_frames / fps_time;
-    //fpsElem.textContent = fps.toFixed(1);  
-    fps_time = fps_frames = 0;               
-  } 
-}
-
-function getViewProjection(time){
+function getViewProjection(time:number){
   
   const fov = 30 * Math.PI / 180;
-  const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+  const canvas = gl.canvas as HTMLCanvasElement;
+  const aspect = canvas.clientWidth / canvas.clientHeight;
   const zNear = 0.5;
   const zFar = 10000;
   const projection = m4.perspective(fov, aspect, zNear, zFar);
@@ -98,17 +82,18 @@ function getViewProjection(time){
   return m4.multiply(projection, view);
 }
 
+// @ts-expect-error debug function
 function shadowScene(){
   const size = 50;
-  let projection = m4.ortho(-size, size, -size*0.5, size*1.5, 0.5, 1000);
-  let view = m4.lookAt(sunPosition, [0,0,0], [0,1,0]); 
-  let viewProjection = m4.multiply(projection, view);
+  const projection = m4.ortho(-size, size, -size*0.5, size*1.5, 0.5, 1000);
+  const view = m4.lookAt(sunPosition, [0,0,0], [0,1,0]); 
+  const viewProjection = m4.multiply(projection, view);
   scene(viewProjection);
 }
 
-function glSettings(gl){
+function glSettings(gl:GL){
   const multiplier = 2;
-  twgl.resizeCanvasToDisplaySize(gl.canvas, multiplier);
+  twgl.resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement, multiplier);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
   gl.enable(gl.DEPTH_TEST);
@@ -118,7 +103,7 @@ function glSettings(gl){
 }
 
 
-function render(time) {
+function render(time:number) {
 
   if(updateFractalB){
     newFractal(); 
@@ -128,10 +113,8 @@ function render(time) {
     newIteration(); 
     updateIterationB = false;
   }
-
-  let timeMS = time;
+        
   time *= 0.001;
-  //FPS(timeMS);         
 
   shadowMap.draw(gl, scene);
 
@@ -142,10 +125,11 @@ function render(time) {
   scene(viewProjection);
   //shadowScene();
   
+  
   requestAnimationFrame(render);
 }
 
-function scene(viewProjection, drawShadowMap=false){
+function scene(viewProjection:Mat4, drawShadowMap=false){
 
   const lightMatrix = shadowMap.getViewProjection();
   floor.draw(gl, viewProjection, drawShadowMap, lightMatrix);
