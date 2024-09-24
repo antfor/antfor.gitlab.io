@@ -8,7 +8,7 @@ const m4 = twgl.m4;
 type Mat4 = twgl.m4.Mat4;
 type GL = WebGL2RenderingContext;
 
-let fractal:DrawFractal;
+let fractal:DrawFractal|undefined;
 
 const canvas = document.getElementById("Background") as HTMLCanvasElement;
 const gl:GL = canvas.getContext("webgl2") as GL;
@@ -40,7 +40,6 @@ export function updateFractal(key: Fractals){
 export function updateIteration(i:number){
   if(i !== iteration || !fractalBuilt){
     updateIterationB = true;
-    fractalBuilt = true;
 
     iteration = i;
   }
@@ -54,8 +53,11 @@ function newFractal(){
 }
 
 function newIteration(){
+  if(fractal){
     fractal.clear(gl);
     fractal.build(gl, iteration);
+    fractalBuilt = true;
+  }
 }
 
 function getViewProjection(time:number){
@@ -133,7 +135,7 @@ function scene(viewProjection:Mat4, drawShadowMap=false){
 
   const lightMatrix = shadowMap.getViewProjection();
   floor.draw(gl, viewProjection, drawShadowMap, lightMatrix);
-  if(fractalBuilt)
+  if(fractalBuilt && fractal)
     fractal.draw(gl, viewProjection, drawShadowMap, lightMatrix);
 }
 
