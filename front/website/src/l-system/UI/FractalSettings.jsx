@@ -1,6 +1,6 @@
 import { getDefault, getDefaultIterations } from "../Fractal/FractalOptions.mts";
 import { useState,useEffect } from 'react';
-import { updateFractal,updateIteration} from '../scene.js';
+import { updateFractal,updateIteration} from '../scene.ts';
 import { OffCanvas } from './Offcanvas.jsx';
 
 
