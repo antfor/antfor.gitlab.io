@@ -1,18 +1,19 @@
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { simplifyValue } from '../utils/parse.js';
+import { simplifyValue } from '../utils/parse.mjs';
 import styles from './result.module.css'; 
 import { DoughnutChart } from './DoughnutChart.jsx';
 import { Total } from './Total.jsx';
+import { Dataset } from '../model.mts';
+import { Savings } from '../utils/intrest.mts';
 
 
-
-function getColor(dataset){
+function getColor(dataset:Dataset){
     return ({color:  dataset.backgroundColor});
 }
   
 
-function paragraph(dataset, index, tot){
+function paragraph(dataset:Dataset, index:number, tot:number){
     const label = dataset.label;
     const value = dataset.data[index];
     const data = simplifyValue(value, 0);
@@ -34,12 +35,12 @@ function emptyResult(){
     );
 }
 
-function Brake(arr){
+function Brake(arr:Dataset[]){
     if(arr.length!==0)
         return <br className='d-md-none'/>;
 }
 
-export default function Result(datasets, total, index, dataPoints){
+export default function Result(datasets:Dataset[], total:number, index:number, dataPoints:Savings){
     
     
     if(datasets.length == 0){
