@@ -4,10 +4,10 @@ import DefaultNavbar from './DefaultNavbar.tsx'
 import {PAGES, page} from './Pages.js';
 import "./css/navbar.css"
 
-const navbar = document.getElementById('navbar') as HTMLElement;
+const navbar = document.getElementById('navbar');
 
 
-function getActive(): page | null{
+function getActive(navbar:HTMLElement): page | null{
   const active = navbar.getAttribute("active");
   
   if(active === null){
@@ -23,14 +23,15 @@ function getActive(): page | null{
  
 }
 
-function getFixed(): boolean{
+function getFixed(navbar:HTMLElement): boolean{
   const fixed = navbar.getAttribute("fixed");
 
   return fixed === "true";
 }
 
-ReactDOM.createRoot(navbar).render(
-  <React.StrictMode>
-    <DefaultNavbar active={getActive()} fixed={getFixed()}/>
-  </React.StrictMode>
-)
+if(navbar)
+  ReactDOM.createRoot(navbar).render(
+    <React.StrictMode>
+      <DefaultNavbar active={getActive(navbar)} fixed={getFixed(navbar)}/>
+    </React.StrictMode>
+  )

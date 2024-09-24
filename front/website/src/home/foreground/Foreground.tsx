@@ -7,11 +7,12 @@ import WelcomePill from './WelcomePill';
 
 
 
-const navbar = document.getElementById('foreground') as HTMLElement;
+const foreground = document.getElementById('foreground');
 
-ReactDOM.createRoot(navbar).render(
-  <React.StrictMode>
-    <WelcomePill/>
-    <ZoomButton/>
-  </React.StrictMode>
-)
+if(foreground)
+  ReactDOM.createRoot(foreground).render(
+    <React.StrictMode>
+      <WelcomePill/>
+      <ZoomButton/>
+    </React.StrictMode>
+  )
