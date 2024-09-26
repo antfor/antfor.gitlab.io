@@ -5,13 +5,13 @@
 .card-body {
   padding-bottom: 3px;
   padding-top: 3px;
-  }
+}
 
 .card-header {
   font-weight: bold;
   padding-top: 2px;
   padding-bottom: 2px;
-  }
+}
 
 #hideNav{
   min-height: 100vh;
