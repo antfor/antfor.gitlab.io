@@ -16,10 +16,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Result from './results/Resultat.tsx';
 import styles from'./intrest.module.css';
-import { parseFloatSafe } from './utils/parse.mts';
 import { getModel } from './model.mts';
 import { getOptions } from './options.mts';
-
+import { defultIntrestSettings, intrestSettings, defultBreakdownSettings, breakdownSettings, updateIntrestSettings, updateBreakdownSettings} from './settings/defultSettings.ts';
 
 ChartJS.register(
   CategoryScale,
@@ -30,7 +29,8 @@ ChartJS.register(
   Legend
 );
 
-export type {Interval}
+type key<T> = keyof T;
+export type {Interval, breakdownSettings, intrestSettings};
 export type IntervalMap = Map<Interval,string>
 
 function getIntervalMap():IntervalMap {
@@ -42,66 +42,49 @@ function getIntervalMap():IntervalMap {
   return map;
 }
 
-export type Settings = {
-  intrest: string, //value
-  startMoney: string,
-  monthlySaving: string,
-  time: string,
-  Interval: Interval,
-  intrestBreakdown: boolean,
-  intrestOnIntrestBreakdown: boolean,
-  accBreakdown: boolean,
-};
-
-function defultSettings():Settings {
-  return   {
-    intrest: "7",
-    startMoney: "5000",
-    monthlySaving: "100",
-    time: "20",
-    Interval: Interval.Year,
-    intrestBreakdown: false,
-    intrestOnIntrestBreakdown: false,
-    accBreakdown: false,
-  };
-}
-
 function IntrestChart(){
  
-    const [settings, setSettings] = useState(defultSettings());
-   
-    const dataPoints = calcSavings(parseFloatSafe(settings.startMoney),
-                                   parseFloatSafe(settings.monthlySaving), 
-                                   parseFloatSafe(settings.intrest), 
-                                   parseFloatSafe(settings.time), 
-                                   settings.Interval);
+  const [intrestSettings, setIntrest] = useState(defultIntrestSettings());
+  const [breakdownSettings, setBreakdown] = useState(defultBreakdownSettings());
 
-    const model = getModel(dataPoints, settings);
+  
+  const dataPoints = calcSavings(intrestSettings.startMoney.getNumber(),
+                                  intrestSettings.monthlySaving.getNumber(),
+                                  intrestSettings.intrest.getNumber(),
+                                  intrestSettings.time.getNumber(),
+                                  intrestSettings.Interval);
 
-    const intervalMap = getIntervalMap();
-    const intervlLabel = intervalMap.get(settings.Interval);
+  const last = intrestSettings.time.getNumber();                              
+  const model = getModel(dataPoints, last, breakdownSettings);
 
-    const last = parseFloatSafe(settings.time);
-    const total = dataPoints.totalSavings[last];
+  const intervalMap = getIntervalMap();
+  const intervlLabel = intervalMap.get(intrestSettings.Interval);
 
-    return (
-      <Container>
-        <Row>
-          <Col xl={9} className={"col-xl-9"} >
-            <Row className={styles.chart} >  
-              <Bar options={getOptions(intervlLabel)} data={model}/>
-            </Row>
-            <Row className={"d-none d-xl-block"}>
-              {Result(model.datasets, total, last, dataPoints)}
-            </Row>
-          </Col>
-          <Col xl={3} className="col-xl-3" >{SettingsComponent({settings, setSettings, intervalMap})}</Col>
-        </Row>
-        <br className='d-xl-none'/>
-        <Row className='d-xl-none'>{Result(model.datasets, total, last, dataPoints)}</Row>
-      </Container>
+  const total = dataPoints.totalSavings[last];
 
-    );
+  
+  const updateIntrest = (k:key<intrestSettings>, v:(string|Interval)) => {updateIntrestSettings(setIntrest,k,v)};
+  const updateBreakdown = (k:key<breakdownSettings>, v:boolean) => {updateBreakdownSettings(setBreakdown,k,v)};
+
+  return (
+    <Container>
+      <Row>
+        <Col xl={9} className={"col-xl-9"} >
+          <Row className={styles.chart} >  
+            <Bar options={getOptions(intervlLabel)} data={model}/>
+          </Row>
+          <Row className={"d-none d-xl-block"}>
+            {Result(model.datasets, total, last, dataPoints)}
+          </Row>
+        </Col>
+        <Col xl={3} className="col-xl-3" >
+          <SettingsComponent {...{intrestSettings, updateIntrest, breakdownSettings, updateBreakdown, intervalMap}} />
+        </Col>
+      </Row>
+      <br className='d-xl-none'/>
+      <Row className='d-xl-none'>{Result(model.datasets, total, last, dataPoints)}</Row>
+    </Container>
+  );
 }
 
 

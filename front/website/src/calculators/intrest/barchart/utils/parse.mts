@@ -16,7 +16,7 @@ function addBackZeros(value:string, decimals:number){
 }
 
 
-function toNumber(value:string){
+function toNumber(value:string){//todo handle negative numbers
 
     value = value.replace(',', '.');
     value = value.replace(/[^0-9.]/g, '');
