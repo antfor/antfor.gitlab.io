@@ -1,6 +1,5 @@
-import { parseFloatSafe } from './utils/parse.mts';
 import { Savings } from './utils/intrest.mts';
-import { Settings } from './IntrestChart.tsx';
+import { breakdownSettings } from './IntrestChart.tsx';
 
 
 function totalIntrest(data:Savings):Dataset[]{
@@ -94,19 +93,19 @@ function removeEmpty(data:Dataset[]){
 }
 
   
-function getDatasets(data:Savings, settings:Settings):Dataset[]{
-  const iiB = settings.intrestOnIntrestBreakdown;
-  const intrest = settings.intrestBreakdown ? intrestBreakdown(data, iiB): totalIntrest(data);
-  const acc = settings.accBreakdown ? accBreakdown(data): totalDeposit(data);
+function getDatasets(data:Savings, bs:breakdownSettings):Dataset[]{
+  const iiB = bs.intrestOnIntrestBreakdown;
+  const intrest = bs.intrestBreakdown ? intrestBreakdown(data, iiB): totalIntrest(data);
+  const acc = bs.accBreakdown ? accBreakdown(data): totalDeposit(data);
   
   return removeEmpty(acc.concat(intrest));
 }
 
 
-function getTime(T:string){
-  const N = parseFloatSafe(T);
+function getTime(N:number){
   return Array.from({ length: N + 1 }, (_, i) => i);
 }
+
 export type Dataset= {
   label: string,
   data: number[],
@@ -118,9 +117,9 @@ export type Model = {
   labels: number[],
   datasets: Dataset[],
 };
-export function getModel(data:Savings, settings:Settings):Model{
+export function getModel(data:Savings, time:number, bs:breakdownSettings):Model{
   return {
-    labels: getTime(settings.time),
-    datasets: getDatasets(data, settings),
+    labels: getTime(time),
+    datasets: getDatasets(data, bs),
   };
 }

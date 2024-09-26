@@ -2,87 +2,83 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Stack from 'react-bootstrap/Stack';
 import styles from './settings.module.css'; 
-import { max,min } from 'mathjs';
-import {toNumber, formatValue, parseFloatSafe} from '../utils/parse.mts'
 import Button from 'react-bootstrap/Button';
-import { Settings, Interval, IntervalMap } from '../IntrestChart.tsx';
+import { Interval, IntervalMap } from '../IntrestChart.tsx';
+import { Value, intrestSettings,breakdownSettings } from './defultSettings.ts';
 
-const Any = "any";
+type key<T> = keyof T
+type change = (v:string) => void;
 
-function Buttons(startValue:string, minVal:number, maxVal:(typeof Any|number), change:React.ChangeEventHandler<HTMLInputElement>, step:number){
+function Buttons({value, change}:{value:Value, change:change}){
 
-    const value = parseFloatSafe(startValue);
-    const minMaxAny = (mmfun:(a0:number,a1:number)=>number,mmval:(typeof Any|number),val:number) => mmval === Any ? val : mmfun(mmval,val);
-    const onClick = (v:number) => { //todo fix do not do e.target.value in Xform
-        const event = {
-            target: {
-                value: minMaxAny(max, minVal, minMaxAny(min, maxVal, v)).toString()
-            }
-        } as React.ChangeEvent<HTMLInputElement>;
-        change(event);
-    };
+   const val = value.getNumber();
+   const step = value.step;
+   const minVal = value.minCoarseControl;
+   const maxVal = value.maxFineControl;
+   const onClick = (v:number) => {change(v.toString())};
     
     return(
         <InputGroup className="btn-group">
-                <Button disabled={value===minVal} variant="outline-danger"  className={styles.button} onClick={()=>{onClick(value-step)}}>-</Button>
-                <Button disabled={value===maxVal} variant="outline-primary" className={styles.button} onClick={()=>{onClick(value+step)}}>+</Button>
+                <Button disabled={val===minVal} variant="outline-danger"  className={styles.button} onClick={()=>{onClick(val-step)}}>-</Button>
+                <Button disabled={val===maxVal} variant="outline-primary" className={styles.button} onClick={()=>{onClick(val+step)}}>+</Button>
         </InputGroup>
     );
 }
 
+function SliderForm({value, decimals, style, change}:{value:Value, decimals:number, style:string, change:change}){
 
-function SliderForm(startValue:string, min:number, max:number, change:React.ChangeEventHandler<HTMLInputElement>, step=1, style=styles.m2, maxControl:(typeof Any|number)=max, stepControl=step){
-
+    const onChange = (e:React.ChangeEvent<HTMLInputElement>) => {change(e.target.value)};
+    const startValue = value.getFormatValue(decimals);
+    const min = value.minCoarseControl;
+    const max = value.maxCoarseControl;
+    const step = value.step;
+   
     return(
         <Stack gap={2}>
             <Stack direction="horizontal" gap={3}>
-                   <Form.Control className={style} type="text" inputMode="decimal" pattern="[0-9]*.?[0-9]*" value={startValue} min={min} max={maxControl} step={stepControl} onChange={change} />
-                   {Buttons(startValue, min, maxControl, change, step)}
+                   <Form.Control className={style} type="text" inputMode="decimal" value={startValue} onChange={onChange} />
+                   <Buttons value={value} change={change}/>
             </Stack>
-            <Form.Range value={parseFloatSafe(startValue)} min={min} max={max} step={step} onChange={change} /> 
+            <Form.Range value={value.getNumber()} min={min} max={max} step={step} onChange={onChange} /> 
         </Stack>
     );
 }
 
-function RäntaForm(intrest:string, setIntrest:(v:string) => void){
-
-    const startValue = formatValue(intrest, 2);
-    return(SliderForm(startValue, 0, 20, (e) => {setIntrest(toNumber(e.target.value))}, 0.1, styles.m3, Any, 0.01));
+type keyIntrest = keyof intrestSettings;
+interface propsIntrestForm{
+    settings: intrestSettings,
+    keyIntrest: keyIntrest,
+    decimals:number,
+    style:string,
+    change:(k:keyIntrest, v:string) => void,
 }
+function IntrestForms({settings,keyIntrest,decimals,style,change}:propsIntrestForm){
+   
+    const value = settings[keyIntrest] as Value;
+    const props = {value, decimals, style, change:(v:string) => {change(keyIntrest, v)}};
 
-function StartForm(startMoney:string, setStartMoney:(v:string) => void){
+    return(
+        <SliderForm {...props}/>
+    );
 
-    const startValue = formatValue(startMoney, 2);
-    return(SliderForm(startValue, 0, 10000, (e) => {setStartMoney(toNumber(e.target.value))}, 100, styles.m4, Any));   
-}
-
-function SparForm(spar:string, setSpar:(v:string) => void){
-
-    const startValue = formatValue(spar, 2);
-    return(SliderForm(startValue, 0, 10000, (e) => {setSpar(toNumber(e.target.value))}, 100, styles.m4, Any));
-}
-
-function TidForm(time:string, setTime:(v:string) => void){
-
-    let startValue = "";
-    if(time !== "")
-        startValue  = min(Number(formatValue(time, 0)),100).toString();
     
-    return(SliderForm(startValue, 0, 30, (e) => {setTime(toNumber(e.target.value))}, 1, styles.m2, 100));
 }
 
 interface propsBreakDown{
-    setIntrestBreakDown: (v:boolean) => void,
-    setAccBreakDown: (v:boolean) => void,
-    setIIBreakDown: (v:boolean) => void,
-    settings: Settings,
+    settings: breakdownSettings,
+    setSettings: (k:key<breakdownSettings>,v:boolean) => void,
 }
-function BreakDownToggle({setIntrestBreakDown, setAccBreakDown, setIIBreakDown, settings}:propsBreakDown){
+function BreakDownToggle({settings, setSettings}:propsBreakDown){
 
     const type = 'checkbox';
     const ib = settings.intrestBreakdown;
     const ab = settings.accBreakdown;
     const iib = settings.intrestOnIntrestBreakdown;
+
+    const key_ib = "intrestBreakdown";
+    const key_ab = "accBreakdown";
+    const key_iib = "intrestOnIntrestBreakdown";
+
     return(
         <InputGroup className="xs-auto">
 
@@ -94,7 +90,7 @@ function BreakDownToggle({setIntrestBreakDown, setAccBreakDown, setIIBreakDown, 
                     checked={ib}
                     id={`intrest`}
                     label={`info ränta`}
-                    onChange={(e) => {setIntrestBreakDown(e.target.checked)}}
+                    onChange={(e) => {setSettings(key_ib,e.target.checked)}}
                 />
                 <Form.Check 
                     type={type}
@@ -102,7 +98,7 @@ function BreakDownToggle({setIntrestBreakDown, setAccBreakDown, setIIBreakDown, 
                     disabled={!ib}
                     id={`intrestIntrest`}
                     label={`info ränta på ränta`}
-                    onChange={(e) => {setIIBreakDown(e.target.checked)}}
+                    onChange={(e) => {setSettings(key_iib,e.target.checked)}}
                 />
             </Stack>
             <br/>
@@ -111,7 +107,7 @@ function BreakDownToggle({setIntrestBreakDown, setAccBreakDown, setIIBreakDown, 
                 checked={ab}
                 id={`acc`}
                 label={`info insättning`}
-                onChange={(e) => {setAccBreakDown(e.target.checked)}}
+                onChange={(e) => {setSettings(key_ab,e.target.checked)}}
             />
         
         </div>
@@ -137,53 +133,60 @@ function DropdownInterval({iMap, change}:{iMap: IntervalMap, change: (v:Interval
 
 interface propsFormGroup{
     label: string | React.JSX.Element,
-    form: React.JSX.Element,
+    children: React.JSX.Element,
 }
-
-function FormGroup({label, form}:propsFormGroup){
+function FormGroup({label, children}:propsFormGroup){
     return(
         <Form.Group>
             <Form.Label>{label}</Form.Label>
-            {form}
+            {children}
         </Form.Group>
     );
 }
 
+
 interface propsSettings{
-    settings: Settings,
-    setSettings: React.Dispatch<React.SetStateAction<Settings>>,
+    intrestSettings: intrestSettings,
+    breakdownSettings: breakdownSettings
+    updateIntrest: (k:key<intrestSettings>,v:(string|Interval) ) => void,
+    updateBreakdown: (k:key<breakdownSettings>,v:boolean) => void,
     intervalMap: IntervalMap,
 }
+function SettingsComponent({intrestSettings, updateIntrest, breakdownSettings, updateBreakdown, intervalMap}:propsSettings){
 
-function SettingsComponent({settings, setSettings, intervalMap}:propsSettings){
+    type formProps = {keyIntrest:keyIntrest, decimals:number, style:string};
+    const intrest:formProps = {keyIntrest:"intrest", style: styles.m3, decimals:2};
+    const startMoney:formProps = {keyIntrest:"startMoney", style: styles.m4, decimals:2};
+    const monthlySaving:formProps = {keyIntrest:"monthlySaving", style: styles.m4, decimals:2};
+    const time:formProps = {keyIntrest:"time", style: styles.m2, decimals:0};
     
-    const setRänta = (v:string) => {setSettings(prev => ({...prev, intrest: v}))};
-    const setStart = (v:string) => {setSettings(prev => ({...prev, startMoney: v}))};
-    const setSpar = (v:string) => {setSettings(prev => ({...prev, monthlySaving: v}))};
-    const setTid = (v:string) => {setSettings(prev => ({...prev, time: v}))};
-    const setCompoundRate = (v:Interval) => {setSettings(prev => ({...prev, Interval: v}))};
+    const getFormProps = (fp:formProps) => ({settings: intrestSettings, change: updateIntrest, ...fp});
 
-    const setIntrestBreakDown = (v:boolean) => {setSettings(prev => ({...prev, intrestBreakdown: v}))};
-    const setAccBreakDown = (v:boolean) => {setSettings(prev => ({...prev, accBreakdown: v}))};
-    const setIIBreakDown = (v:boolean) => {setSettings(prev => ({...prev, intrestOnIntrestBreakdown: v}))};
+    const setInterval = (i:Interval) => {updateIntrest("Interval",i)};
 
     return (
         <Form>
-            {FormGroup({label:"Ränta per år (%)",form:RäntaForm(settings.intrest, setRänta)})}
+            <FormGroup label="Ränta per år (%)">
+                <IntrestForms {...getFormProps(intrest)}/>
+            </FormGroup>
             <br/>
-            {FormGroup({label:"Startbelopp (kr)", form:StartForm(settings.startMoney, setStart)})}
+            <FormGroup label="Startbelopp (kr)">
+                <IntrestForms {...getFormProps(startMoney)}/>
+            </FormGroup>
             <br/>
-            {FormGroup({label:"Månadssparande (kr/mån)", form:SparForm(settings.monthlySaving, setSpar)})}
+            <FormGroup label="Månadssparande (kr/mån)">
+                <IntrestForms {...getFormProps(monthlySaving)}/>
+            </FormGroup>
             <br/>
-            {FormGroup({label:DropdownInterval({iMap:intervalMap, change:setCompoundRate}), form:TidForm(settings.time, setTid)})}
+            <FormGroup label={DropdownInterval({iMap:intervalMap, change:setInterval})}>
+                <IntrestForms {...getFormProps(time)}/>
+            </FormGroup>
             <br/>
-            {FormGroup({label:"Breakdown", form:BreakDownToggle({setIntrestBreakDown, setAccBreakDown, setIIBreakDown, settings})})}
+            <FormGroup label="Breakdown">
+                <BreakDownToggle settings={breakdownSettings} setSettings={updateBreakdown}/>
+            </FormGroup>
       </Form>
     )
 }
 
 export {SettingsComponent};
-
-
-
-
