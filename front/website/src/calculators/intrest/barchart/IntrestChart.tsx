@@ -61,10 +61,11 @@ function IntrestChart(){
   const intervlLabel = intervalMap.get(intrestSettings.Interval);
 
   const total = dataPoints.totalSavings[last];
-
   
   const updateIntrest = (k:key<intrestSettings>, v:(string|Interval)) => {updateIntrestSettings(setIntrest,k,v)};
   const updateBreakdown = (k:key<breakdownSettings>, v:boolean) => {updateBreakdownSettings(setBreakdown,k,v)};
+
+  const result = <Result {...{datasets:model.datasets, total, index:last, dataPoints}} />;
 
   return (
     <Container>
@@ -74,7 +75,7 @@ function IntrestChart(){
             <Bar options={getOptions(intervlLabel)} data={model}/>
           </Row>
           <Row className={"d-none d-xl-block"}>
-            {Result(model.datasets, total, last, dataPoints)}
+            {result}
           </Row>
         </Col>
         <Col xl={3} className="col-xl-3" >
@@ -82,7 +83,9 @@ function IntrestChart(){
         </Col>
       </Row>
       <br className='d-xl-none'/>
-      <Row className='d-xl-none'>{Result(model.datasets, total, last, dataPoints)}</Row>
+      <Row className='d-xl-none'>
+        {result}
+      </Row>
     </Container>
   );
 }

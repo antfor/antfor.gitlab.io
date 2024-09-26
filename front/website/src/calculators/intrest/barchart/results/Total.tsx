@@ -21,7 +21,7 @@ function getColor(value:number,total:number){
 }
 
 
-function paragraph(label:string, value:number, total:number){
+function Paragraph(label:string, value:number, total:number){
 
     const percent = simplifyValue(value*100.0/total, 0);
     const data = simplifyValue(value, 0);
@@ -42,7 +42,12 @@ function totalPrincipal(dataPoints:Savings, index:number){
     return p + ip + iip;
 }
 
-export function Total(dataPoints:Savings, total:number, index:number){
+interface props{
+    dataPoints:Savings,
+    total:number,
+    index:number
+}
+export function Total({dataPoints, total, index}:props){
    
     const totalFromPrincipal = totalPrincipal(dataPoints, index);
     const totalFromMonthly = total - totalFromPrincipal;
@@ -53,8 +58,8 @@ export function Total(dataPoints:Savings, total:number, index:number){
 
     return(
         <Row>
-            {paragraph("Totalt startbelopp", totalFromPrincipal, total)}
-            {paragraph("Totalt månadssparande", totalFromMonthly, total)}
+            {Paragraph("Totalt startbelopp", totalFromPrincipal, total)}
+            {Paragraph("Totalt månadssparande", totalFromMonthly, total)}
         </Row>
     );
 }

@@ -13,7 +13,7 @@ function getColor(dataset:Dataset){
 }
   
 
-function paragraph(dataset:Dataset, index:number, tot:number){
+function Paragraph(dataset:Dataset, index:number, tot:number){
     const label = dataset.label;
     const value = dataset.data[index];
     const data = simplifyValue(value, 0);
@@ -26,7 +26,7 @@ function paragraph(dataset:Dataset, index:number, tot:number){
 }
   
 
-function emptyResult(){
+function EmptyResult(){
     return(
         <div>
             <h2>Resultat</h2>
@@ -40,11 +40,17 @@ function Brake(arr:Dataset[]){
         return <br className='d-md-none'/>;
 }
 
-export default function Result(datasets:Dataset[], total:number, index:number, dataPoints:Savings){
+interface props{
+    datasets:Dataset[],
+    total:number,
+    index:number,
+    dataPoints:Savings
+}
+export default function Result({datasets, total, index, dataPoints}:props){
     
     
     if(datasets.length == 0){
-        return (emptyResult());
+        return <EmptyResult/>;
     }
 
     const acc = datasets.filter((dataset) => !dataset.intrest);
@@ -59,18 +65,18 @@ export default function Result(datasets:Dataset[], total:number, index:number, d
                     <p>Slutsumma: {simplifyValue(total,0)} kr (100%)</p>
                     {Brake(intrestIntrest)}
                     <Row>
-                        {intrestIntrest.map((dataset) => paragraph(dataset, index, total))}
+                        {intrestIntrest.map((dataset) => Paragraph(dataset, index, total))}
                     </Row>
                     {Brake(intrest)}
                     <Row>
-                        {intrest.map((dataset) => paragraph(dataset, index, total))}
+                        {intrest.map((dataset) => Paragraph(dataset, index, total))}
                     </Row>
                     {Brake(acc)}
                     <Row>
-                        {acc.map((dataset) => paragraph(dataset, index, total))}
+                        {acc.map((dataset) => Paragraph(dataset, index, total))}
                     </Row>
                     <br/>
-                    {Total(dataPoints, total, index)}
+                    <Total {...{dataPoints, total, index}} />
                 </Col>
 
                 <Col xl={3} className='col-xl'>
