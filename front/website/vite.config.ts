@@ -6,13 +6,17 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
 
+  server: {
+    host: 'local.anton-forsberg.com',
+  },
+
   build: {
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
         cv: resolve(__dirname, 'cv.html'),
         lsys: resolve(__dirname, 'projects/l-system.html'),
-        calc: resolve(__dirname, 'projects/calculator.html'),
+        calc: resolve(__dirname, 'projects/intrest.html'),
       },
     },
   },

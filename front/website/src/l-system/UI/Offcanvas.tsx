@@ -36,8 +36,8 @@ export function OffCanvas({fractalKey, setFractalKey, iteration, setIteration}:p
     
     return (
         <div className={`d-flex align-items-center ${closed} ${styles.container}`}>
-             {Settings({fractal:fractalKey, setFractal:setFractalKey, iteration, setIterations:setIteration, disabled:!show})}
-             {HamburgerButton({show, setShow})}
+             <Settings {...{fractal:fractalKey, setFractal:setFractalKey, iteration, setIterations:setIteration, disabled:!show}} />
+             <HamburgerButton show={show} setShow={setShow}/>
         </div>
     );
 }
