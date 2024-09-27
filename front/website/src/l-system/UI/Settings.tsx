@@ -17,7 +17,7 @@ interface dropProps {
     disabled: boolean;
 }
 
-function DropDown({fractal, setFractal, setIterations, disabled}:dropProps){
+function FractalDropDown({fractal, setFractal, setIterations, disabled}:dropProps){
 
     const onChange = (e:React.ChangeEvent<HTMLSelectElement>) =>{
         const newFractal = e.target.value as Fractals;
@@ -72,7 +72,7 @@ function Buttons({options, iteration, setIterations, disabled}:buttonProps){
 
     return (
         <Stack direction="horizontal" gap={3} >
-            {IteraionDropDown({options, iteration, setIterations, disabled})}
+            <IteraionDropDown {...{options, iteration, setIterations, disabled}} />
             <InputGroup className="btn-group">
                 <Button disabled={disableMin} variant="outline-danger" className={styles.button} onClick={() => {setIterations(iteration-1);}}>-</Button>
                 <Button disabled={disableMax} variant="outline-primary" className={styles.button} onClick={() => {setIterations(iteration+1);}}>+</Button>
@@ -98,11 +98,11 @@ export function Settings({fractal, setFractal, iteration, setIterations, disable
                 <Form>
                     <Form.Group className="mb-3">
                         <Form.Label>Fractal</Form.Label>
-                        {DropDown({fractal, setFractal, setIterations, disabled})}
+                        <FractalDropDown {...{fractal, setFractal, setIterations, disabled}} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Iterations</Form.Label>
-                        {Buttons({options, iteration, setIterations, disabled})}
+                        <Buttons {...{options, iteration, setIterations, disabled}} />
                     </Form.Group>
                 </Form>
             </Card.Body>

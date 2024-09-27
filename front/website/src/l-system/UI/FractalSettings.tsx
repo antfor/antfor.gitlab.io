@@ -15,9 +15,7 @@ function FractalSettings(){
     useEffect(() => {updateIteration(iteration)},[iteration,fractalKey]);
 
     return (
-        <div>
-            {OffCanvas({fractalKey, setFractalKey, iteration, setIteration})}
-        </div>
+        <OffCanvas {...{fractalKey, setFractalKey, iteration, setIteration}} />
     );
 }
 

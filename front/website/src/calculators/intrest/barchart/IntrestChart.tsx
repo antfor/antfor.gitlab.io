@@ -8,7 +8,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { calcSavings, Interval} from './utils/intrest.mts';
 import { SettingsComponent } from './settings/Settings.tsx';
 import Container from 'react-bootstrap/Container';
@@ -48,11 +48,11 @@ function IntrestChart(){
   const [breakdownSettings, setBreakdown] = useState(defultBreakdownSettings());
 
   
-  const dataPoints = calcSavings(intrestSettings.startMoney.getNumber(),
+  const dataPoints = useMemo( () => calcSavings(intrestSettings.startMoney.getNumber(),
                                   intrestSettings.monthlySaving.getNumber(),
                                   intrestSettings.intrest.getNumber(),
                                   intrestSettings.time.getNumber(),
-                                  intrestSettings.Interval);
+                                  intrestSettings.Interval), [intrestSettings]);
 
   const last = intrestSettings.time.getNumber();                              
   const model = getModel(dataPoints, last, breakdownSettings);
