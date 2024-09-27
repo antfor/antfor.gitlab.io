@@ -1,7 +1,11 @@
+:root{
+  --alpha: 0.5;
+}
+
 .helloCard{
 
   margin-left: 10%;
-  opacity: 0.5;
+  --bs-bg-opacity: var(--alpha);
 }
 
 .foreground {
@@ -19,11 +23,14 @@
   right:   12pt;
   bottom:   12pt;
   z-index: 2;
-  opacity: 0.5;
-
+  opacity: var(--alpha);
 }
 
 .jump {
     --fa-animation-iteration-count: 2;
     --fa-animation-delay : 2s;
+}
+
+.txt{
+  font-size: 14pt;
 }
