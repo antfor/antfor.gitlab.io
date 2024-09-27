@@ -1,0 +1,29 @@
+.helloCard{
+
+  margin-left: 10%;
+  opacity: 0.5;
+}
+
+.foreground {
+  position: absolute;
+  left:0;
+  top: 0;
+  z-index:1;
+  height: 50%;
+  width: 100%;
+
+}
+
+.zoomButton {
+  position: absolute;
+  right:   12pt;
+  bottom:   12pt;
+  z-index: 2;
+  opacity: 0.5;
+
+}
+
+.jump {
+    --fa-animation-iteration-count: 2;
+    --fa-animation-delay : 2s;
+}
