@@ -9,13 +9,13 @@ before_script:
   #Website
   - cd ./front/website    
   - rm -rf dist    
-  - CI=false npm ci
+  - CI=false npm install
   - cd ../..
 
   #RCC
   - cd ./front/rcc    # enter the React app directory
   - rm -rf build     # remove the existing build
-  - CI=false npm ci     # install required packages
+  - CI=false npm install     # install required packages
   - cd ../..
 
   #Compress
