@@ -13,7 +13,7 @@ function HamburgerButton({show, setShow}: {show:boolean, setShow: setState<boole
     const open = show ? "open": "";
 
     return (
-        <Button onClick={handleToggle} className={styles.showButton} variant="dark" >
+        <Button onClick={handleToggle} className={styles.showButton} variant="dark" aria-label="Hide or show settings">
             <div id="nav-icon1" className={open}>
                 <span></span>
                 <span></span>
