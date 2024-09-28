@@ -1,9 +1,6 @@
-import * as twgl from 'twgl.js';
+import {m4, v3} from 'twgl.js';
 import {State, Vec3} from './State.mts';
 
-
-const m4 = twgl.m4;
-const v3 = twgl.v3;
 
 function push(state:State){
 

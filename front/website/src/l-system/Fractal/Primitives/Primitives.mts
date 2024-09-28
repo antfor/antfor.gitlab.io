@@ -1,7 +1,5 @@
 
-import * as twgl from 'twgl.js';
-
-const v3 = twgl.v3;
+import {v3, Arrays} from 'twgl.js';
 
 type Vec3 = [number,number,number];
 
@@ -15,7 +13,7 @@ function calcNormal(ver1:Vec3, ver2:Vec3, ver3:Vec3):Vec3{
     return N;
 }
 
-function createTetrahedron(L:number):twgl.Arrays{
+function createTetrahedron(L:number):Arrays{
 
     const h = L * Math.sqrt(2/3);
     const p1 = L*Math.sqrt(3)/6;
@@ -33,7 +31,7 @@ function createTetrahedron(L:number):twgl.Arrays{
     const nor4 = calcNormal(ver1,ver2,ver3);
 
 
-    const arrays: twgl.Arrays = {
+    const arrays: Arrays = {
         position: [ver1,ver4,ver2,ver2,ver4,ver3,ver3,ver4,ver1,ver1,ver2,ver3].flat(),
         normal:   [nor1,nor1,nor1,nor2,nor2,nor2,nor3,nor3,nor3,nor4,nor4,nor4].flat(),
         indices:  [0,1,2,3,4,5,6,7,8,9,10,11],

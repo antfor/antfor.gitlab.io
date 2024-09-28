@@ -1,8 +1,7 @@
 
-import * as twgl from 'twgl.js';
+import {m4} from 'twgl.js';
 
 
-const m4 = twgl.m4;
 export type Vec3 = [number,number,number];
 type stack = number[]
 

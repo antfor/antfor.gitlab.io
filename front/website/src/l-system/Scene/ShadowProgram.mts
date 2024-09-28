@@ -1,49 +1,7 @@
 import * as twgl from 'twgl.js';
+import borderVs from './shaders/border/border.vert?raw';
+import borderFs from './shaders/border/border.frag?raw';
 
-
-
-const borderVs = `
-#version 300 es
-
-in vec4 position;
-
-void main() {
-
-  gl_Position = position;
-}
-`;
-const borderFs = `
-#version 300 es
-precision highp float;
-
-uniform vec2 resolution;
-
-out vec4 outColor;
-
-void main() {
-
-  vec2 uv = gl_FragCoord.xy;
-  vec2 insideBottomLeft = step(vec2(1.0), uv);
-  vec2 insideTopRight   = step(uv, resolution-1.0);
-  vec2 insideBottomLeftTopRight = insideBottomLeft * insideTopRight;
-  float inside = insideBottomLeftTopRight.x * insideBottomLeftTopRight.y;
-
-  
-  outColor = mix(vec4(vec3(0.0),1.0), vec4(vec3(0),0), inside);
-  //outColor = mix(vec4(1.0, 0.0, 0.0, 1.0),vec4(0.0, 1.0, 0.0, 1.0), inside);
-}
-`;
-
-const shadowFs = `
-#version 300 es
-precision highp float;
-
-out vec4 outColor;
-
-void main() {
-  outColor = vec4(vec3(gl_FragCoord.z), 1.0);
-}
-`;
 
 const m4 = twgl.m4;
 type GL = WebGL2RenderingContext;
@@ -112,10 +70,6 @@ class ShadowProgram{
       gl.bindRenderbuffer(gl.RENDERBUFFER, null);                     
       gl.bindTexture(gl.TEXTURE_2D, null);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    }
-
-    createShadowProgram(gl:GL, vs:string, fs = shadowFs){
-      return twgl.createProgramInfo(gl, [vs, fs]);
     }
     
     getViewProjection(lightPos = this.lightPos){

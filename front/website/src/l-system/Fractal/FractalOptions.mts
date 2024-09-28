@@ -1,4 +1,4 @@
-import * as twgl from 'twgl.js';
+import {primitives, Arrays} from 'twgl.js';
 import { FractalFactory, Fractal as TFractal } from './Lsystem/FractalFactory.mts';
 import { createTetrahedron } from './Primitives/Primitives.mts';
 
@@ -8,7 +8,7 @@ const scale:Vec3 = [1, 1, 1];
 
 
 function linePrim(step:number , thickness=step/8.0){
-    return twgl.primitives.createCylinderVertices(thickness, step, 9, 1);
+    return primitives.createCylinderVertices(thickness, step, 9, 1);
 }
 
 function tetranPrim(step:number){
@@ -31,7 +31,7 @@ export enum Fractals{
 
 export interface FractalOptions{
     readonly fractal: Fractal;
-    readonly primitives: twgl.Arrays;
+    readonly primitives: Arrays;
     readonly primitiveOffset: number;
     readonly thickness: (i:number) => number;
     readonly minIterations: number;

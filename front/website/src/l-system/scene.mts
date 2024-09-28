@@ -1,11 +1,11 @@
 import { Floor } from './Scene/Floor.mts';
 import { ShadowProgram } from './Scene/ShadowProgram.mts';
 import { DrawFractal } from './Scene/DrawFractal.mts';
-import * as twgl from 'twgl.js';
+import {m4, resizeCanvasToDisplaySize} from 'twgl.js';
 import { getOptions, Fractals } from './Fractal/FractalOptions.mts';
 
-const m4 = twgl.m4;
-type Mat4 = twgl.m4.Mat4;
+
+type Mat4 = m4.Mat4;
 type GL = WebGL2RenderingContext;
 
 let fractal:DrawFractal|undefined;
@@ -95,7 +95,7 @@ function shadowScene(){
 
 function glSettings(gl:GL){
   const multiplier = 2;
-  twgl.resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement, multiplier);
+  resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement, multiplier);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
   gl.enable(gl.DEPTH_TEST);
