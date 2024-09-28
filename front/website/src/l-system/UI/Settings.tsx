@@ -26,7 +26,7 @@ function FractalDropDown({fractal, setFractal, setIterations, disabled}:dropProp
     }; 
 
     return (
-        <FormSelect disabled={disabled} onChange={onChange} value={fractal}>
+        <FormSelect disabled={disabled} onChange={onChange} value={fractal} aria-label="Choose fractal">
             {fractals.map((f) => {
                 return <option key={f} value={f}>{f}</option>
             })}
@@ -51,7 +51,7 @@ function IteraionDropDown({options, iteration, setIterations, disabled}:iteratio
     }
 
     return (
-        <FormSelect disabled={disabled} className={styles.m2} onChange={onChange} value={iteration}>
+        <FormSelect disabled={disabled} className={styles.m2} onChange={onChange} value={iteration} aria-label="Choose number of iterations">
             {iterations.map((i) => {
                 return <option key={i} value={i}>{i}</option>
             })}
@@ -74,8 +74,8 @@ function Buttons({options, iteration, setIterations, disabled}:buttonProps){
         <Stack direction="horizontal" gap={3} >
             <IteraionDropDown {...{options, iteration, setIterations, disabled}} />
             <InputGroup className="btn-group">
-                <Button disabled={disableMin} variant="outline-danger" className={styles.button} onClick={() => {setIterations(iteration-1);}}>-</Button>
-                <Button disabled={disableMax} variant="outline-primary" className={styles.button} onClick={() => {setIterations(iteration+1);}}>+</Button>
+                <Button disabled={disableMin} variant="outline-danger" className={styles.button} onClick={() => {setIterations(iteration-1);}} aria-label="Decrese iteration by one">-</Button>
+                <Button disabled={disableMax} variant="outline-primary" className={styles.button} onClick={() => {setIterations(iteration+1);}} aria-label="Increse iteration by one" >+</Button>
             </InputGroup>
         </Stack>
     );

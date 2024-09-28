@@ -22,7 +22,7 @@ export default function ZoomButton(){
     setZoomListener(handleZoomDone);
 
     return (
-        <Button id="zoom-button" disabled={disabled} onClick={onClick} variant="light" className={`${styles.zoomButton} ${styles.jump}`} >
+        <Button id="zoom-button" aria-label="Zoom button" disabled={disabled} onClick={onClick} variant="light" className={`${styles.zoomButton} ${styles.jump}`} >
            <FontAwesomeIcon icon={faMagnifyingGlass} bounce/>
         </Button>
     );
