@@ -1,4 +1,4 @@
-image: node:latest
+image: node:latest-alpine
  
 cache:
   paths:
@@ -17,6 +17,10 @@ before_script:
   - rm -rf build     # remove the existing build
   - CI=false npm install     # install required packages
   - cd ../..
+
+  #Compress
+  - apk add --no-cache brotli
+  - apk add --no-cache zstd
  
 pages:
   stage: deploy
