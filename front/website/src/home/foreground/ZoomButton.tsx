@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import { zoom, setZoomListener } from '../manelbrot.ts';
+import { zoom, setZoomListener } from '../mandelbrot.ts';
 import styles from './foreground.module.css';
 
 
