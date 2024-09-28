@@ -42,9 +42,10 @@ pages:
     - mkdir -p ./public/projects/rcc
     - mv ./front/rcc/build/* ./public/projects/rcc   # move build contents to new /public directory
     #Compress
-    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec gzip -f -k -v -9 {} \;
+    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec gzip -f -k -9 {} \;
     - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec brotli -f -k -Z {} \;
-    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec zstd -f -k --ultra -22 {} \;
+    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec zstd -f -k --ultra -22 -q {} \;
+    - ls -lh public/*
     - export
   artifacts:
     paths:
