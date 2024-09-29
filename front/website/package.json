@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "profile": "lighthouse --view --chrome-flags='--headless'",
+    "analyze": "vite-bundle-visualizer",
+    "compress": "find dist -type f -regex '.*\\.\\(htm\\|html\\|txt\\|text\\|js\\|xml\\|json\\|mjs\\|svg\\|yaml\\|yml\\|toml\\|css\\)$' -exec brotli -f -k -Z {} \\; && ls -lh dist/*;"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -35,6 +38,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.12",
     "globals": "^15.9.0",
+    "sass-embedded": "^1.79.4",
     "typescript": "^5.6.2",
     "typescript-eslint": "^8.6.0",
     "vite": "^5.4.6"

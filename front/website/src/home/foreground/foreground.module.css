@@ -2,7 +2,7 @@
   --alpha: 0.5;
 }
 
-.helloCard{
+#helloCard{
 
   margin-left: 10%;
   --bs-bg-opacity: var(--alpha);

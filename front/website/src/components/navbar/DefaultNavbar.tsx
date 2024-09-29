@@ -1,3 +1,4 @@
+import "./css/bootstrap.scss";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -5,6 +6,8 @@ import {PAGES, page} from './Pages.mts';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub, faGooglePlay } from '@fortawesome/free-brands-svg-icons'
 import './css/hamburger3.css';
+import navStyles from "./css/navbar.module.css";
+
 
 
 function githubIcon(){
@@ -49,7 +52,7 @@ export default function DefaultNavbar({active, fixed}:props) {
   return (
     <Navbar expand="md" fixed={positon} className="bg-body-tertiary">
     <Container fluid={true}>  
-    <Navbar.Brand className="logo" href={activePage===PAGES.HOME? undefined: PAGES.HOME}>Anton Forsberg</Navbar.Brand>
+    <Navbar.Brand className={navStyles.logo} href={activePage===PAGES.HOME? undefined: PAGES.HOME}>Anton Forsberg</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav"> <Hamburger/> </Navbar.Toggle>
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="me-auto">

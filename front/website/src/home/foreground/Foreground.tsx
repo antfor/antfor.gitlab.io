@@ -1,5 +1,6 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import './bootstrap.scss';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import ZoomButton from './ZoomButton';
 import WelcomePill from './WelcomePill';
 
