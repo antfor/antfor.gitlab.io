@@ -1,3 +1,4 @@
+import "./CSS/bootstrap.scss";
 import { getDefault, getDefaultIterations } from "../Fractal/FractalOptions.mts";
 import { useState,useEffect } from 'react';
 import { updateFractal,updateIteration} from '../scene.mts';
