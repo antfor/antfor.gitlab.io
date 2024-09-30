@@ -1,4 +1,10 @@
-import { floor,round,min } from 'mathjs';
+import { floorDependencies,roundDependencies,minDependencies,create } from 'mathjs/number';
+
+const {floor, round, min} = create( {
+  floorDependencies,
+  roundDependencies,
+  minDependencies,
+});
 
 function simplifyValue(value:number, decimals:number) {
     return new Intl.NumberFormat("en-US", {

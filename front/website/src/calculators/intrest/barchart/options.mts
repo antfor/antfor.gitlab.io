@@ -1,8 +1,10 @@
-import { round } from 'mathjs'
+import { roundDependencies, create } from 'mathjs/number'
 import { simplifyValue } from './utils/parse.mjs';
 import {ChartOptions, TooltipItem, ChartTypeRegistry} from 'chart.js';
 
+const {round} = create({roundDependencies});
 
+  
 type tooltipItem = TooltipItem<keyof ChartTypeRegistry>;
 
 function sumDatapoints(dataPoints: tooltipItem[]): number{
