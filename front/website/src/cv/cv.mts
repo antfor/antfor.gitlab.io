@@ -1,1 +1,1 @@
-import '../bootstrap/cv.scss';
+import 'scss/cv.scss';
