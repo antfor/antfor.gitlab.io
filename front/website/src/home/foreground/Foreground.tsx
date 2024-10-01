@@ -1,4 +1,4 @@
-import '../../bootstrap/home.scss';
+import 'scss/home.scss';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import ZoomButton from './ZoomButton';
