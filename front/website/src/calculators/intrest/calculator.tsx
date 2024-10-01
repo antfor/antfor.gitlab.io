@@ -1,8 +1,9 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import 'scss/intrest.scss';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import Card from 'react-bootstrap/Card';
-import { IntrestChart} from './barchart/IntrestChart.tsx'
-import './calculator.css'
+import { IntrestChart} from './barchart/IntrestChart.tsx';
+import './calculator.css';
 
 
 

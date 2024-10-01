@@ -1,4 +1,3 @@
-import { round } from 'mathjs'
 import { simplifyValue } from './utils/parse.mjs';
 import {ChartOptions, TooltipItem, ChartTypeRegistry} from 'chart.js';
 
@@ -13,7 +12,7 @@ function percentOfTotal(value:number, total:number): string {
     if(total == 0){
         return '0';
     }
-    return round(value/total*100, 0).toString();
+    return Math.round(value/total*100).toString();
 }
 
 function getLabel(context:tooltipItem):string{

@@ -20,4 +20,21 @@ export default defineConfig({
       },
     },
   },
+
+  css :{
+    preprocessorOptions : {
+      scss: {
+        api: "modern-compiler",
+        quietDeps: true,
+      }, 
+    }, 
+  },
+
+  resolve: {
+    alias: {
+      src: "/src",
+      components: "/src/components",
+      scss: "/src/bootstrap"
+    },
+  },
 })
