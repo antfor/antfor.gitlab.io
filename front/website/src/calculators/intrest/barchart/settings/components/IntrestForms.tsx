@@ -4,6 +4,7 @@ import Stack from 'react-bootstrap/Stack';
 import styles from '../settings.module.css'; 
 import Button from 'react-bootstrap/Button';
 import { Value, intrestSettings } from '../defultSettings.ts';
+import { formatValue } from '../../utils/parse.mts';
 
 
 type change = (v:string) => void;
@@ -57,7 +58,7 @@ interface propsIntrestForm{
 export function IntrestForms({settings, keyIntrest, decimals, style, change}:propsIntrestForm){
    
     const value = settings[keyIntrest] as Value;
-    const props = {value, decimals, style, change:(v:string) => {change(keyIntrest, v)}};
+    const props = {value, decimals, style, change:(v:string) => {change(keyIntrest, formatValue(v, decimals))}};
 
     return(
         <SliderForm {...props}/>

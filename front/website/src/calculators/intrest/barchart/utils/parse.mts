@@ -1,10 +1,14 @@
-import { floorDependencies,roundDependencies,minDependencies,create } from 'mathjs/number';
+import { floorDependencies,create } from 'mathjs/number';
 
-const {floor, round, min} = create( {
-  floorDependencies,
-  roundDependencies,
-  minDependencies,
+const {floor} = create( {
+  floorDependencies
 });
+
+
+function round(n:number, d=0){
+    const pow = 10**d;
+    return Math.round(n * pow) / pow;
+}
 
 function simplifyValue(value:number, decimals:number) {
     return new Intl.NumberFormat("en-US", {
@@ -16,8 +20,8 @@ function simplifyValue(value:number, decimals:number) {
 function addBackZeros(value:string, decimals:number){
 
     const decimalsValue = value.toString().split(".")[1].length;
-    const minDecimals = min(decimals, decimalsValue);
-    const zeros = ".".repeat(min(1,minDecimals))+"0".repeat(minDecimals);
+    const minDecimals = Math.min(decimals, decimalsValue);
+    const zeros = ".".repeat(Math.min(1,minDecimals))+"0".repeat(minDecimals);
     return(zeros);
 }
 
