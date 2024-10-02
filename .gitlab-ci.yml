@@ -50,7 +50,10 @@ deploy:staging:
     url: "https://antfor.gitlab.io/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
   script:
     - mkdir public
-    - mv build public
+    - mv build/* public
+    - echo -e "https://antfor.gitlab.io/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
+  variables:    
+    PUBLIC_URL: "/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public"
   artifacts:
     paths:
       - public
@@ -65,7 +68,7 @@ pages:
   environment: Production
   script:
     - mkdir public
-    - mv build public
+    - mv build/* public
   artifacts:
     paths:
       - public
