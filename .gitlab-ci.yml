@@ -28,6 +28,7 @@ build:
     - cd ./front/website  
     - CI=false bun run build
     - cd ../..
+    - mkdir build
     - mv ./front/website/dist/* build  
     #Compress
     - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec gzip -f -k -9 {} \;
@@ -48,6 +49,7 @@ deploy:staging:
     name: dev/$CI_COMMIT_REF_NAME
     url: "https://antfor.gitlab.io/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
   script:
+    - mkdir public
     - mv build public
   artifacts:
     paths:
@@ -62,6 +64,7 @@ pages:
     - build
   environment: Production
   script:
+    - mkdir public
     - mv build public
   artifacts:
     paths:
