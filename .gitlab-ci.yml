@@ -47,11 +47,11 @@ deploy:staging:
     - build
   environment:
     name: dev/$CI_COMMIT_REF_NAME
-    url: "https://antfor.gitlab.io/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
+    url: "https://antfor.gitlab.io/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/"
   script:
     - mkdir public
     - mv build/* public
-    - echo -e "https://antfor.gitlab.io/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
+    - echo -e "https://antfor.gitlab.io/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/"
   variables:    
     PUBLIC_URL: "/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public"
   artifacts:
