@@ -28,14 +28,14 @@ build:
     - cd ./front/website  
     - CI=false bun run build
     - cd ../..
-    - mv ./front/website/dist/* public  
+    - mv ./front/website/dist/* build  
     #Compress
-    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec gzip -f -k -9 {} \;
-    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec brotli -f -k -Z {} \;
-    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec zstd -f -k --ultra -22 -q {} \;
+    - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec gzip -f -k -9 {} \;
+    - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec brotli -f -k -Z {} \;
+    - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec zstd -f -k --ultra -22 -q {} \;
   artifacts:
         paths:
-          - public
+          - build
 
 
 deploy:staging:
@@ -47,8 +47,10 @@ deploy:staging:
   environment:
     name: dev/$CI_COMMIT_REF_NAME
     url: "https://antfor.gitlab.io/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
+  script:
+    - mv build public
   artifacts:
-   paths:
+    paths:
       - public
 
  
@@ -59,7 +61,9 @@ pages:
   dependencies:
     - build
   environment: Production
+  script:
+    - mv build public
   artifacts:
     paths:
-    - public
+      - public
 
