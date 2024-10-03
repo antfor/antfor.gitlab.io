@@ -50,11 +50,11 @@ deploy:staging:
     - build
   environment:
     name: dev/$CI_COMMIT_REF_NAME
-    url: "https://antfor.gitlab.io$PUBLIC_URLindex.html"
+    url: "https://antfor.gitlab.io'$PUBLIC_URL'index.html"
   script:
     - mkdir public
     - mv build/* public
-    - echo -e "https://antfor.gitlab.io$PUBLIC_URLindex.html"
+    - echo -e "https://antfor.gitlab.io'$PUBLIC_URL'index.html"
   artifacts:
     paths:
       - public
