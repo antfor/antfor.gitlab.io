@@ -8,7 +8,14 @@ stages:
 cache:
   paths:
     - ./front/website/node_modules/
- 
+
+variables:    
+     PUBLIC_URL: "/"
+    only: main
+variables:    
+    PUBLIC_URL: "/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/"
+    only: dev
+   
 build:
   stage: build
   only:
@@ -26,7 +33,7 @@ build:
   script:
     #Website
     - cd ./front/website  
-    - CI=false bun run build
+    - CI=false bun run build --base="$PUBLIC_URL"
     - cd ../..
     - mkdir build
     - mv ./front/website/dist/* build  
@@ -47,13 +54,11 @@ deploy:staging:
     - build
   environment:
     name: dev/$CI_COMMIT_REF_NAME
-    url: "https://antfor.gitlab.io/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
+    url: "https://antfor.gitlab.io$PUBLIC_URLindex.html"
   script:
     - mkdir public
     - mv build/* public
-    - echo -e "https://antfor.gitlab.io/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
-  variables:    
-    PUBLIC_URL: "/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/"
+    - echo -e "https://antfor.gitlab.io$PUBLIC_URLindex.html"
   artifacts:
     paths:
       - public
@@ -65,12 +70,12 @@ pages:
     - master
   dependencies:
     - build
-  environment: Production
+  environment: 
+    name: Production
+    url: https://anton-forsberg.com
   script:
     - mkdir public
     - mv build/* public
-  variables:    
-    PUBLIC_URL: "/"
   artifacts:
     paths:
       - public
