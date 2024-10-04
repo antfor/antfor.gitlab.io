@@ -1,11 +1,10 @@
 
 
-const PUBLIC_URL = import.meta.env['BASE_URL'] || '/';
-const PRODUCTION = PUBLIC_URL === '/';
+const VITE_REF_FILE = import.meta.env.VITE_REF_FILE as boolean || false;
 
 export const PAGES = {
-  HOME: PUBLIC_URL  + (PRODUCTION ? "": "index.html"),
-  CV: PUBLIC_URL + (PRODUCTION ? "cv" :  "cv.html"),
+  HOME: (VITE_REF_FILE ? "/index.html" : "/"),
+  CV: (VITE_REF_FILE ?  "/cv.html" : "/cv" ),
   STORE: 'https://play.google.com/store/apps/developer?id=Anton+Forsberg',
   GITHUB: 'https://Github.com/antfor',
 } as const;
