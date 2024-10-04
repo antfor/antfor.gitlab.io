@@ -9,9 +9,15 @@ cache:
   paths:
     - ./front/website/node_modules/
 
-variables:    
-    PUBLIC_URL: "/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/"
-   
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "dev"
+      variables:
+        BUILD_ARGS: --mode staging
+    - when: always
+    
+
 build:
   stage: build
   only:
@@ -29,7 +35,7 @@ build:
   script:
     #Website
     - cd ./front/website  
-    - CI=false bun run build --base="$PUBLIC_URL"
+    - CI=false bun run build $BUILD_ARGS
     - cd ../..
     - mkdir build
     - mv ./front/website/dist/* build  
@@ -48,6 +54,8 @@ deploy:staging:
     - dev
   dependencies:
     - build
+  variables:    
+    PUBLIC_URL: "/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/"
   environment:
     name: dev/$CI_COMMIT_REF_NAME
     url: "https://antfor.gitlab.io'$PUBLIC_URL'index.html"
