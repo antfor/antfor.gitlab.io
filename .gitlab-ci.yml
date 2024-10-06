@@ -1,54 +1,86 @@
-image: node:alpine
+image: oven/bun:alpine
  
+stages:
+    - prepare
+    - build
+    - deploy
+
 cache:
   paths:
-    - ./front/rcc/node_modules/
     - ./front/website/node_modules/
- 
-before_script:
-  #Website
-  - cd ./front/website    
-  - rm -rf dist    
-  - CI=false npm install
-  - cd ../..
 
-  #RCC
-  - cd ./front/rcc    # enter the React app directory
-  - rm -rf build     # remove the existing build
-  - CI=false npm install     # install required packages
-  - cd ../..
 
-  #Compress
-  - apk add --no-cache brotli
-  - apk add --no-cache zstd
- 
-pages:
-  stage: deploy
-  environment: Production
+workflow:
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "dev"
+      variables:
+        BUILD_ARGS: --mode staging --base /-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/
+    - when: always
+    
+
+build:
+  stage: build
+  only:
+    - master
+    - dev
+  before_script:
+    #Website
+    - cd ./front/website    
+    - rm -rf dist    
+    - CI=false bun install
+    - cd ../..
+    #Compress
+    - apk add --no-cache brotli
+    - apk add --no-cache zstd
   script:
     #Website
     - cd ./front/website  
-    - CI=false npm run build
-    - ls
+    - CI=false bun run build $BUILD_ARGS
     - cd ../..
-    - mkdir ./public
-    - mv ./front/website/dist/* ./public  
-    #RCC
-    - cd ./front/rcc
-    - CI=false npm run build     # build the React app, set CI=false because CI=true treats all warnings as errors
-    - ls
-    - cd ../..
-    - ls
-    - mkdir -p ./public/projects/rcc
-    - mv ./front/rcc/build/* ./public/projects/rcc   # move build contents to new /public directory
+    - mkdir build
+    - mv ./front/website/dist/* build  
     #Compress
-    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec gzip -f -k -9 {} \;
-    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec brotli -f -k -Z {} \;
-    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec zstd -f -k --ultra -22 -q {} \;
-    - ls -lh public/*
-    - export
+    - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec gzip -f -k -9 {} \;
+    - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec brotli -f -k -Z {} \;
+    - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec zstd -f -k --ultra -22 -q {} \;
+  artifacts:
+        paths:
+          - build
+
+
+deploy:staging:
+  stage: deploy
+  only:
+    - dev
+  dependencies:
+    - build
+  variables:    
+    PUBLIC_URL: "https://antfor.gitlab.io/-/antfor.gitlab.io/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
+  environment:
+    name: dev/$CI_COMMIT_REF_NAME
+    url: $PUBLIC_URL
+  script:
+    - mkdir public
+    - mv build/* public
+    - echo -e $PUBLIC_URL
   artifacts:
     paths:
-    - public
+      - public
+
+ 
+pages:
+  stage: deploy
   only:
-  - master
+    - master
+  dependencies:
+    - build
+  environment: 
+    name: Production
+    url: https://anton-forsberg.com
+  script:
+    - mkdir public
+    - mv build/* public
+  artifacts:
+    paths:
+      - public
+
