@@ -20,6 +20,7 @@
 
 body {
   background-color: rgb(7.0, 55.0, 99.0);
+  --bs-body-bg: rgb(7.0, 55.0, 99.0);
   justify-content: center;
   align-items: safe center;
   padding-top: 84px;
