@@ -40,9 +40,9 @@ build:
     - mkdir build
     - mv ./front/website/dist/* build  
     #Compress
-    - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec gzip -f -k -9 {} \;
-    - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec brotli -f -k -Z {} \;
-    - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\)$' -exec zstd -f -k --ultra -22 -q {} \;
+    - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\|pdf\)$' -exec gzip -f -k -9 {} \;
+    - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\|pdf\)$' -exec brotli -f -k -Z {} \;
+    - find build -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\|pdf\)$' -exec zstd -f -k --ultra -22 -q {} \;
   artifacts:
         paths:
           - build
