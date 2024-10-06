@@ -7,25 +7,26 @@ body {
 }
 
 body {
-    background-color: rgb(7.0, 55.0, 99.0);
+    background-color: #d1d1d1;
+    --bs-body-bg: #d1d1d1;
     padding-top: 84px;
     overflow: scroll;
-  }
+}
 
 iframe {
     border: none;
     height: 100%;
     width: 100%;
-  }
+}
   
-  #adobe-dc-view {
+#adobe-dc-view {
     width: 21cm;
     max-width: 21cm;
     aspect-ratio: 1/1.4142;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-  }
+}
   
-  .pdf-viewer {
+.pdf-viewer {
     background-color:#d1d1d1; 
     min-height: 100%;
     height: auto;
@@ -33,5 +34,4 @@ iframe {
     padding: 12px;
     display: flex;
     justify-content: center;
-    
-  }
+}

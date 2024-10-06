@@ -2,6 +2,10 @@
 
 This is the repo for my personal website: https://anton-forsberg.com
 
+## CV
+
+https://anton-forsberg.com/cv
+
 ## Projects
 
 ### Compund Intrest Calulator

@@ -12,24 +12,20 @@
     <link rel="stylesheet" type="text/css" href="/src/cv/cv.css" />
 
     <!-- JS -->
-    <script type="module" src="/src/cv/cv.mts"></script>
-    <script type="module" src="/src/components/navbar/Navbar.tsx"></script>
+    <script type="module" src="/src/cv/cv.mts" async></script>
+    <script type="module" src="/src/components/navbar/Navbar.tsx" async></script>
    
   </head>
   <body>
 
     <div id="navbar" active="CV" fixed="true"></div>
 
-    <!-- Google docs viewer Stoped working... sometimes...
-        <iframe title="PDF of my CV" frameborder="0" src="https://docs.google.com/viewer?url=https://anton-forsberg.com/Anton_Forsberg_CV.pdf&embedded=true">Loading...</iframe>
-    --> 
-
     <div class="pdf-viewer"> 
       <div id="adobe-dc-view"></div>
     </div>
   
-    <script src="https://acrobatservices.adobe.com/view-sdk/viewer.js"></script>
-    <script type="text/javascript">
+    <script src="https://acrobatservices.adobe.com/view-sdk/viewer.js" async></script>
+    <script type="text/javascript" async>
       document.addEventListener("adobe_dc_view_sdk.ready", function(){ 
         var adobeDCView = new AdobeDC.View({clientId: "c28f9f5736c045cd92ddd75062d1ecd6", divId: "adobe-dc-view"});
         adobeDCView.previewFile({
