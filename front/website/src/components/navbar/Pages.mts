@@ -11,4 +11,11 @@ export const PAGES = {
 } as const;
 
 export type page = typeof PAGES[keyof typeof PAGES];
- 
+
+
+const PROJECT_URL =  BASE_URL + "projects/";
+
+export const PROJECTS = {
+  INTREST: PROJECT_URL + "intrest#calculator",
+  FRACTAL: PROJECT_URL + "l-system",
+} as const 
