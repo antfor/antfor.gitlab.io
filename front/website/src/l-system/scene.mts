@@ -85,6 +85,7 @@ function getViewProjection(time:number){
 }
 
 // @ts-expect-error debug function
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function shadowScene(){
   const size = 50;
   const projection = m4.ortho(-size, size, -size*0.5, size*1.5, 0.5, 1000);

@@ -1,5 +1,6 @@
 import { floorDependencies,create } from 'mathjs/number';
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
 const {floor} = create( {
   floorDependencies
 });
@@ -19,7 +20,7 @@ function simplifyValue(value:number, decimals:number) {
 
 function addBackZeros(value:string, decimals:number){
 
-    const decimalsValue = value.toString().split(".")[1].length;
+    const decimalsValue = value.split(".")[1].length;
     const minDecimals = Math.min(decimals, decimalsValue);
     const zeros = ".".repeat(Math.min(1,minDecimals))+"0".repeat(minDecimals);
     return(zeros);

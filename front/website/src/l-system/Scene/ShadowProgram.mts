@@ -33,7 +33,7 @@ class ShadowProgram{
 
       this.fb = gl.createFramebuffer();
       this.rb = gl.createRenderbuffer();
-      this.shadowMap_texture = gl.createTexture() as WebGLTexture;
+      this.shadowMap_texture = gl.createTexture();
    
       this.resize(gl, this.width, this.height);
 
