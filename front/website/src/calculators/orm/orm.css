@@ -1,0 +1,160 @@
+:root{
+  --higlight-col:rgba(255, 165, 0, 0.9);
+  --higlight:0 0 10px var(--higlight-col);
+  --snake-col:#bed04a;
+}
+
+::selection{
+  background-color: var(--higlight-col);
+  color: white;
+}
+
+#calculator {
+    font-family: "Oswald", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.snake-col.btn-primary{
+  background-color: var(--snake-col);
+  border-color: var(--snake-col);
+  color: black;
+}
+
+.snake-col.btn-primary:hover {
+  background-color: #a4c837;
+  border-color: #a4c837;
+  color: black;
+}
+
+.snake-col.btn-primary.active,
+.snake-col.btn-primary:active {
+  background-color: #8b9e2d;
+  border-color: #8b9e2d;
+  color: black;
+}
+
+.snake-col.btn-primary:active:focus-visible,
+.snake-col.btn-primary:focus-visible,
+.snake-col.btn-primary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(190, 208, 74, 0.5);
+  outline: none;
+}
+
+b {
+    color: var(--snake-col); 
+}
+
+.metal-mania-regular {
+  font-family: "Metal Mania", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+.oswald-regular {
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/*
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-transform: scale(1.0); 
+    transform: scale(1.0);
+    
+}
+*/
+
+/* Range slider */
+
+.range-wrapper {
+  position: relative;
+  width: 150px;
+
+  --tick-dim: 24px;
+}
+
+
+.track-markers {
+  position: absolute;
+  top: 0px;
+  left: -4px;
+  right: -4px;
+
+  display: flex;
+  justify-content: space-between;
+
+  pointer-events: none;
+}
+
+.track-node {
+  width: calc(var(--tick-dim));
+  height: calc(var(--tick-dim));
+
+  background: #343a40;
+  border-radius: 50%;
+  border-top-left-radius: 10%;
+  border-bottom-right-radius: 10%;
+}
+
+.range-wrapper input[type="range"]::-webkit-slider-thumb {
+  position: relative;
+  z-index: 1;
+}
+.range-wrapper input[type="range"]::-moz-range-thumb {
+  position: relative;
+  z-index: 1;
+}
+
+
+.form-control:focus {
+  border: 2px solid #d46f2e;
+  box-shadow: var(--higlight);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+
+  background: radial-gradient(circle, #ffbb33 0%, #f5a623 50%, #ff5733 100%);
+  border: 2px solid #d46f2e;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+
+  rotate: 45deg;
+
+  background-image:
+    radial-gradient(ellipse at 50% 31%, black 0% 25%, transparent 26%),
+    radial-gradient(ellipse at 50% 69%, black 0% 25%, transparent 26%),
+    radial-gradient(ellipse at 50% 50%, black 0% 25%, transparent 42%),
+    
+    radial-gradient(circle at 50% 50%,
+      #f7d474 0%,
+      #e6b739 30%,
+      #d4931a 55%,
+      #b76f0d 70%,
+      #8a5004 100%
+    );
+ 
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+  box-shadow: var(--higlight);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  border: 2px solid #ff6347;
+  box-shadow: var(--higlight);
+}
+
+input[type="range"]:focus::-moz-range-thumb {
+ 
+  box-shadow: var(--higlight); 
+}
+
+input[type="range"]::-moz-range-thumb:active {
+  border: 2px solid #ff6347;
+  box-shadow: var(--higlight);
+}
+
