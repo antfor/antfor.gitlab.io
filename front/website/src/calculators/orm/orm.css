@@ -101,16 +101,6 @@ input[type=number]::-webkit-outer-spin-button {
   border-bottom-right-radius: 10%;
 }
 
-.range-wrapper input[type="range"]::-webkit-slider-thumb {
-  position: relative;
-  z-index: 1;
-}
-.range-wrapper input[type="range"]::-moz-range-thumb {
-  position: relative;
-  z-index: 1;
-}
-
-
 .form-control:focus {
   border: 2px solid #d46f2e;
   box-shadow: var(--higlight);
@@ -136,7 +126,31 @@ input[type="range"]::-webkit-slider-thumb {
       #b76f0d 70%,
       #8a5004 100%
     );
- 
+}
+
+input[type="range"]::-moz-range-thumb {
+
+  width: 12px;
+  height: 12px;
+
+  background: radial-gradient(circle, #ffbb33 0%, #f5a623 50%, #ff5733 100%);
+  border: 2px solid #d46f2e;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+
+  rotate: 45deg;
+
+  background-image:
+    radial-gradient(ellipse at 50% 31%, black 0% 25%, transparent 26%),
+    radial-gradient(ellipse at 50% 69%, black 0% 25%, transparent 26%),
+    radial-gradient(ellipse at 50% 50%, black 0% 25%, transparent 42%),
+    
+    radial-gradient(circle at 50% 50%,
+      #f7d474 0%,
+      #e6b739 30%,
+      #d4931a 55%,
+      #b76f0d 70%,
+      #8a5004 100%
+    );
 }
 
 input[type="range"]:focus::-webkit-slider-thumb {

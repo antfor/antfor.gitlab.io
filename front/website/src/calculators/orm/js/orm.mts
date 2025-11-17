@@ -4,7 +4,7 @@ const maxReps = 20;
 const minPercantage = 0.5;
 const estimatorFactory = new EstimatorFactory;
 
-type PR = {
+export type PR = {
     weight:number,
     reps:number,
     orm:number,
@@ -18,6 +18,17 @@ export type Result = {
     reps: number[],
     minPRs:PR[],
 };
+
+function round(n:number, d=0){
+    const pow = 10**d;
+    return Math.round(n * pow) / pow;
+}
+
+export function simplifyValue(value:number, decimals:number) {
+    return new Intl.NumberFormat("en-US", {
+      style: "decimal",
+    }).format(round(value, decimals)+0); // +0 to remove -0
+}
 
 
 export function calcOneRepMax(weight:number, reps:number, increment:number=5, formula:FORMULA=FORMULA.BRZYCKI):Result{
