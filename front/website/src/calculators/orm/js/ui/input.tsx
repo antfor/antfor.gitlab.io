@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
@@ -6,54 +7,116 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
 
+const isNaNoE = (value:(number|string)) => isNaN(Number(value)) || value === "";
+const ifIsNum = (n:string,f:(n:number)=>void) => {if(!isNaNoE(n)){f(Number(n))}};
+const onChange = (c:((n:number)=>void)) => (e:React.ChangeEvent<HTMLInputElement>)=>{ifIsNum(e.target.value, c)};
+type Increment = (0|1|1.25|2.5|5);
 
-function Increment(){
+function Increment({increment, setIncrement}:{increment:Increment, setIncrement:((i:Increment)=>void)}){
 
     const values = [0,1,1.25,2.5,5];
-
-    const value = 0;
+    const start  = values.indexOf(increment)===-1 ? 0 : values.indexOf(increment); 
+    console.log(start);
     return(
         <FormGroup>
             <Form.Label >Weight increment:</Form.Label>
              <div className="range-wrapper">
-                <Form.Range min={0} max={values.length-1} step={1}/> 
-                  <div className="track-markers">
-                        {Array.from({ length: values.length }).map((_, i) => (
-                        <div
-                            key={i}
-                            className={`track-node ${i === value ? "active" : ""}`}
-                        />
-                        ))}
-                    </div> 
+            
+                <div className="track-markers">
+                    {values.map((_, i) => (
+                    <div
+                        key={i}
+                        className={`track-node`}
+                    />
+                    ))}
+                </div> 
+                <Form.Range id="increment" onChange={onChange(i => {setIncrement(values[i])})} value={start} min={0} max={values.length-1} step={1}/> 
             </div>
         </FormGroup>
     );
 }
 
+interface FormElements extends HTMLFormControlsCollection {
+  weight: HTMLInputElement,
+  reps: HTMLInputElement
+  increment: HTMLInputElement
+}
+interface InputFormElement extends HTMLFormElement {
+  readonly elements: FormElements
+}
 
-export function Input({increment=1, maxRep=20}:{increment?:number, maxRep?:number}){
+interface input {
+    increment:Increment,
+    Iweight?:number|string,
+    Ireps?:number|string,
+    maxRep?:number, 
+    setIncrement:((i:Increment)=>void),
+    setWeight:((w:number)=>void),
+    setReps:((w:number)=>void),
+}
+
+
+type Maybe<T>=(T|"");
+type Settings = {
+    weight:Maybe<number>,
+    reps:Maybe<number>,
+}
+export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement, setWeight, setReps}:input){
+    
+    const [validated, setValidated] = useState(false);
+
+    const [weight, setInputWeight] = useState(Iweight);
+    const [reps, setInputReps] = useState(Ireps);
+
+    const setInput = (c:((n:string)=>void)) => (e:React.ChangeEvent<HTMLInputElement>)=> {c(e.target.value)};
+
+    const handleSubmit=(e: React.FormEvent<InputFormElement>) => {
+
+        e.preventDefault();
+        const form = e.currentTarget;
+        const weightValue = form.elements.weight.value;
+        const repValue = form.elements.reps.value;
+    
+        if (validWeight(weightValue) && validReps(repValue)) {
+
+            setValidated(false);
+            setWeight(Number(weightValue));
+            setReps(Number(repValue));
+        }else{
+            
+            e.stopPropagation();
+            setValidated(true);
+        }
+        
+    };
+        
+    
+    const validWeight = (w:(number|string)) => !isNaNoE(w) && 1<=Number(w) && Number(w) <= 1000;
+    const validReps = (r:(number|string)) => !isNaNoE(r) && 1 <= Number(r) && Number(r) <= 20;
     
     return(
-        <Stack direction="vertical" gap={3}> 
+        <Form noValidate onSubmit={handleSubmit}> 
         
-            <Stack direction="horizontal" gap={3} className='justify-content-center'> 
+            <Stack direction="horizontal" gap={3} className='justify-content-center align-items-start'> 
             
                 <FormGroup>
                     <Form.Label >Weight:</Form.Label>
-                    <Form.Control type="number" inputMode="decimal" min={1} step={increment} max={1000}/>
+                    <Form.Control id="weight" isInvalid={validated && !validWeight(weight)} type="number" inputMode="decimal" min={0} step={increment} max={100000} onChange={setInput(setInputWeight)}/>
+                    <Form.Control.Feedback type="invalid">Weight ≥ 1kg</Form.Control.Feedback>
                 </FormGroup>
                 <FormGroup>
                     <Form.Label>Reps:</Form.Label>
-                    <Form.Control type="number" inputMode="numeric" min={1} max={maxRep}/>
+                    <Form.Control id="reps" isInvalid={validated && !validReps(reps)} type="number" inputMode="numeric" min={1} max={maxRep} onChange={setInput(setInputReps)}/>
+                    <Form.Control.Feedback type="invalid">Reps: 1-20</Form.Control.Feedback>
                 </FormGroup>
             </Stack>
-
+            <br/>
             <Stack direction="horizontal" gap={3} className='justify-content-around'> 
-                <Increment/>
-                <Button className='snake-col'>Submit</Button>
+                <Increment increment={increment} setIncrement={setIncrement}/>
+                <Button type="submit" className='snake-col'>Submit</Button>
             </Stack>
 
-        </Stack>
+        </Form>
     );
 }
 
