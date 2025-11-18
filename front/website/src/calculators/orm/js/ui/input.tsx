@@ -10,27 +10,35 @@ import Row from 'react-bootstrap/Row';
 const isNaNoE = (value:(number|string)) => isNaN(Number(value)) || value === "";
 const ifIsNum = (n:string,f:(n:number)=>void) => {if(!isNaNoE(n)){f(Number(n))}};
 const onChange = (c:((n:number)=>void)) => (e:React.ChangeEvent<HTMLInputElement>)=>{ifIsNum(e.target.value, c)};
-type Increment = (0|1|1.25|2.5|5);
+//type Increment = (0|1|1.25|2.5|5);
 
-function Increment({increment, setIncrement}:{increment:Increment, setIncrement:((i:Increment)=>void)}){
+function Increment({increment, setIncrement}:{increment:number, setIncrement:((i:number)=>void)}){
 
     const values = [0,1,1.25,2.5,5];
     const start  = values.indexOf(increment)===-1 ? 0 : values.indexOf(increment); 
-    console.log(start);
+    
     return(
         <FormGroup>
             <Form.Label >Weight increment:</Form.Label>
              <div className="range-wrapper">
             
                 <div className="track-markers">
-                    {values.map((_, i) => (
-                    <div
-                        key={i}
-                        className={`track-node`}
-                    />
-                    ))}
+                    {values.map((_, i) => 
+                        <div key={i} className={`track-node`}/>
+                    )}
                 </div> 
-                <Form.Range id="increment" onChange={onChange(i => {setIncrement(values[i])})} value={start} min={0} max={values.length-1} step={1}/> 
+                <Form.Range id="increment" list="values" onChange={onChange(i => {setIncrement(values[i])})} value={start} min={0} max={values.length-1} step={1}/> 
+                <datalist id="values">
+                    <option value="0" label="0kg"></option>
+                    <option value="1" label="1kg"></option>
+                    <option value="1.25" label="1.25kg"></option>
+                    <option value="2.5" label="2.5kg"></option>
+                    <option value="5" label="5kg"></option>
+                </datalist>
+                
+                <Stack direction="horizontal" gap={2} className={`justify-content-between`}>
+                    {/*values.map((v,i) => <h6 key={i}>{v}kg</h6>)*/}
+                </Stack>
             </div>
         </FormGroup>
     );
@@ -46,11 +54,11 @@ interface InputFormElement extends HTMLFormElement {
 }
 
 interface input {
-    increment:Increment,
+    increment:number,
     Iweight?:number|string,
     Ireps?:number|string,
     maxRep?:number, 
-    setIncrement:((i:Increment)=>void),
+    setIncrement:((i:number)=>void),
     setWeight:((w:number)=>void),
     setReps:((w:number)=>void),
 }

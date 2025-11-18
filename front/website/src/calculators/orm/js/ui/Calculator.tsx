@@ -1,11 +1,9 @@
 
-import 'scss/fullBootstrap.scss';
 import {useState} from 'react';
 import Card from 'react-bootstrap/Card';
 import {calcOneRepMax, simplifyValue, Result} from '../orm.mjs';
-import {Input} from '../ui/input.tsx';
-import Form from 'react-bootstrap/Form';
-import {TabelORM, TabelPR} from '../ui/Table.tsx';
+import {Input} from './input.tsx';
+import {TabelORM, TabelPR} from './Table.tsx';
 
 //todo make 1-20 and not 0-19
 type Range<N extends number, Acc extends number[] = []> = 
@@ -15,7 +13,7 @@ type Range<N extends number, Acc extends number[] = []> =
 
 const maxReps = 20;
 type Reps = number;//Range<21>;
-type Increment = (0|1|1.25|2.5|5);
+//type Increment = (0|1|1.25|2.5|5);
 
 type Maybe<T>=(T|"");
 type WeightAndReps ={weight:Maybe<number>, reps:Maybe<number>};
@@ -23,13 +21,13 @@ type WeightAndReps ={weight:Maybe<number>, reps:Maybe<number>};
 type InputData = {
   weight: Maybe<number>,
   reps: Maybe<number>,
-  increment: Increment,
+  increment: number,
 };
 
 const defaultSettings:InputData={
   weight: "",
   reps: "",
-  increment:2.5,
+  increment: 2.5,
 }
 
 function Tables({result}:{result:Result}){
@@ -56,7 +54,7 @@ export function Calculator(){
   const [increment, setIncrement] = useState(defaultSettings.increment);
 
   const [weight, setWeight] = useState(defaultSettings.weight);
-  const [reps, setReps] = useState(defaultSettings.reps);
+  const [reps, setReps] = useState(defaultSettings.reps);  //todo combine
   
   const dataValid = isDataValid(weight, reps);
 
