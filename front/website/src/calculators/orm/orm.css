@@ -20,11 +20,6 @@ body {
   font-style: normal;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-
 .oswald-regular {
   font-family: "Oswald", sans-serif;
   font-optical-sizing: auto;
@@ -76,11 +71,22 @@ b {
 }
 
 #weight{
-  width: 7rem;
+  border-width: 2px;
+  width: 10rem;
 }
 
 #reps{
-  width: 5rem;
+  border-width: 2px;
+  width: 7rem;
+}
+
+.invalid-feedback {
+  display: block; 
+  visibility: hidden;
+}
+
+.is-invalid ~ .invalid-feedback {
+  visibility: visible;
 }
 /*
 input[type=number]::-webkit-inner-spin-button,

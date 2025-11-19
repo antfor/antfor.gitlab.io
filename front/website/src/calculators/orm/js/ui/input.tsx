@@ -10,7 +10,6 @@ import Row from 'react-bootstrap/Row';
 const isNaNoE = (value:(number|string)) => isNaN(Number(value)) || value === "";
 const ifIsNum = (n:string,f:(n:number)=>void) => {if(!isNaNoE(n)){f(Number(n))}};
 const onChange = (c:((n:number)=>void)) => (e:React.ChangeEvent<HTMLInputElement>)=>{ifIsNum(e.target.value, c)};
-//type Increment = (0|1|1.25|2.5|5);
 
 function Increment({increment, setIncrement}:{increment:number, setIncrement:((i:number)=>void)}){
 
@@ -20,7 +19,7 @@ function Increment({increment, setIncrement}:{increment:number, setIncrement:((i
     return(
         <FormGroup>
             <Form.Label >Weight increment:</Form.Label>
-             <div className="range-wrapper">
+            <div className="range-wrapper">
             
                 <div className="track-markers">
                     {values.map((_, i) => 
@@ -30,8 +29,7 @@ function Increment({increment, setIncrement}:{increment:number, setIncrement:((i
                 <Form.Range id="increment" list="rangeLabels" onChange={onChange(i => {setIncrement(values[i])})} value={start} min={0} max={values.length-1} step={1}/> 
                 <datalist id="rangeLabels">
                     {values.map((v,i)=><option value={i} key={i} label={`${v.toString()} kg`}></option>)}
-                </datalist>
-                
+                </datalist>       
             </div>
         </FormGroup>
     );
@@ -91,8 +89,8 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
         
     };
         
-    
-    const validWeight = (w:(number|string)) => !isNaNoE(w) && 1<=Number(w) && Number(w) <= 1000;
+    const maxwWight = 2205;
+    const validWeight = (w:(number|string)) => !isNaNoE(w) && 1<=Number(w) && Number(w) <= maxwWight;
     const validReps = (r:(number|string)) => !isNaNoE(r) && 1 <= Number(r) && Number(r) <= 20;
     
     return(
@@ -103,7 +101,7 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
                 <FormGroup>
                     <Form.Label >Weight:</Form.Label>
                     <Form.Control id="weight" isInvalid={validated && !validWeight(weight)} type="number" inputMode="decimal" min={0} step={increment} max={100000} onChange={setInput(setInputWeight)}/>
-                    <Form.Control.Feedback type="invalid">Weight ≥ 1kg</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">{(isNaNoE(weight) || Number(weight) < 1) ? "Weight ≥ 1kg":`Weight ≤ ${maxwWight.toString()}kg`}</Form.Control.Feedback>
                 </FormGroup>
                 <FormGroup>
                     <Form.Label>Reps:</Form.Label>
