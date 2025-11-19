@@ -27,18 +27,11 @@ function Increment({increment, setIncrement}:{increment:number, setIncrement:((i
                         <div key={i} className={`track-node`}/>
                     )}
                 </div> 
-                <Form.Range id="increment" list="values" onChange={onChange(i => {setIncrement(values[i])})} value={start} min={0} max={values.length-1} step={1}/> 
-                <datalist id="values">
-                    <option value="0" label="0kg"></option>
-                    <option value="1" label="1kg"></option>
-                    <option value="1.25" label="1.25kg"></option>
-                    <option value="2.5" label="2.5kg"></option>
-                    <option value="5" label="5kg"></option>
+                <Form.Range id="increment" list="rangeLabels" onChange={onChange(i => {setIncrement(values[i])})} value={start} min={0} max={values.length-1} step={1}/> 
+                <datalist id="rangeLabels">
+                    {values.map((v,i)=><option value={i} key={i} label={`${v.toString()} kg`}></option>)}
                 </datalist>
                 
-                <Stack direction="horizontal" gap={2} className={`justify-content-between`}>
-                    {/*values.map((v,i) => <h6 key={i}>{v}kg</h6>)*/}
-                </Stack>
             </div>
         </FormGroup>
     );
