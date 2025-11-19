@@ -4,6 +4,34 @@
   --snake-col:#bed04a;
 }
 
+
+html {
+  overflow-y: scroll;
+  font-size: 16px;
+}
+
+body {
+  background-color: #23373a;
+}
+
+.metal-mania-regular {
+  font-family: "Metal Mania", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+.oswald-regular {
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
 ::selection{
   background-color: var(--higlight-col);
   color: white;
@@ -14,6 +42,7 @@
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
+    margin: 16px;
 }
 
 .snake-col.btn-primary{
@@ -38,7 +67,7 @@
 .snake-col.btn-primary:active:focus-visible,
 .snake-col.btn-primary:focus-visible,
 .snake-col.btn-primary:focus {
-  box-shadow: 0 0 0 0.25rem rgba(190, 208, 74, 0.5);
+  box-shadow: 0 0 0 4px rgba(190, 208, 74, 0.5);
   outline: none;
 }
 
@@ -46,20 +75,13 @@ b {
     color: var(--snake-col); 
 }
 
-.metal-mania-regular {
-  font-family: "Metal Mania", system-ui;
-  font-weight: 400;
-  font-style: normal;
+#weight{
+  width: 7rem;
 }
 
-
-.oswald-regular {
-  font-family: "Oswald", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+#reps{
+  width: 5rem;
 }
-
 /*
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
@@ -73,17 +95,33 @@ input[type=number]::-webkit-outer-spin-button {
 
 .range-wrapper {
   position: relative;
-  width: 150px;
 
-  --tick-dim: 24px;
+  --range-width: 10.625rem;
+  --tick-dim: 1.5rem;
+  --tick-dim-half: calc(var(--tick-dim)/2);
+  --thumb-dim: 1rem;
+  --thumb-dim-half: calc(var(--thumb-dim)/2);
+
+  width: var(--range-width);
 }
 
+.range-wrapper datalist {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  writing-mode: vertical-lr;
+  width: calc(var(--range-width));
+}
+
+.range-wrapper datalist option {
+  padding: 0;
+}
 
 .track-markers {
   position: absolute;
   top: 0px;
-  left: -4px;
-  right: -4px;
+  left: calc(var(--thumb-dim-half) - var(--tick-dim-half));
+  right: calc(var(--thumb-dim-half) - var(--tick-dim-half));
 
   display: flex;
   justify-content: space-between;
@@ -108,11 +146,15 @@ input[type=number]::-webkit-outer-spin-button {
 
 input[type="range"]::-webkit-slider-thumb {
 
+  box-sizing: border-box;
+  width: var(--thumb-dim);
+  height: var(--thumb-dim);
+
   background: radial-gradient(circle, #ffbb33 0%, #f5a623 50%, #ff5733 100%);
   border: 2px solid #d46f2e;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 
-  rotate: 45deg;
+  transform: rotate(45deg);
 
   background-image:
     radial-gradient(ellipse at 50% 31%, black 0% 25%, transparent 26%),
@@ -130,14 +172,14 @@ input[type="range"]::-webkit-slider-thumb {
 
 input[type="range"]::-moz-range-thumb {
 
-  width: 12px;
-  height: 12px;
-
+  box-sizing: border-box;
+  width: var(--thumb-dim);
+  height: var(--thumb-dim);
   background: radial-gradient(circle, #ffbb33 0%, #f5a623 50%, #ff5733 100%);
   border: 2px solid #d46f2e;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 
-  rotate: 45deg;
+  transform: rotate(45deg);
 
   background-image:
     radial-gradient(ellipse at 50% 31%, black 0% 25%, transparent 26%),
