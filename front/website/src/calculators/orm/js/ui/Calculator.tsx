@@ -34,7 +34,7 @@ function Tables({result}:{result:Result}){
 
     return(
         <>
-            <h2>Your <b>ORM</b> is: {simplifyValue(result.orm,1)}kg</h2>
+            <h2>Your <b>ORM</b> is: {simplifyValue(result.orm,2)}kg</h2>
             <TabelORM data={result}/>
             <br/>
             <h2>Needed for new <b>ORM</b>:</h2>

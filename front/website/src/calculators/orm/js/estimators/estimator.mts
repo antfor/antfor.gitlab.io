@@ -27,7 +27,7 @@ export class EstimatorFactory{
 }
 
 //--Brzycki---------------------------
-
+//todo add max reps
 const brzyckiEst:OrmEstimator = {
     orm: BrzyckiORM,
     maxRep: BrzyckiMaxRep,
