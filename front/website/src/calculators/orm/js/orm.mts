@@ -30,8 +30,8 @@ export function simplifyValue(value:number, decimals:number) {
     }).format(round(value, decimals)+0); // +0 to remove -0
 }
 
-
-export function calcOneRepMax(weight:number, reps:number, increment:number=5, formula:FORMULA=FORMULA.BRZYCKI):Result{
+//                                                                                           EPLEY   BRZYCKI
+export function calcOneRepMax(weight:number, reps:number, increment:number=5, formula:FORMULA=FORMULA.EPLEY):Result{
     if(1>weight){
         throw new Error("Minimum weight is 1kg");
     }
