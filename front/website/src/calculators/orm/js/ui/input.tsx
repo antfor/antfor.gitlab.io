@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, cloneElement, ReactElement, ReactNode, Children, isValidElement } from 'react';
 import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
-import { FormGroup } from 'react-bootstrap';
+import { FormGroup, Tooltip } from 'react-bootstrap';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import { orm } from '../orm.mts'
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
@@ -72,26 +74,23 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
     const handleSubmit=(e: React.FormEvent<InputFormElement>) => {
 
         e.preventDefault();
-        const form = e.currentTarget;
-        const weightValue = form.elements.weight.value;
-        const repValue = form.elements.reps.value;
     
-        if (validWeight(weightValue) && validReps(repValue)) {
+        if (validWeight && validReps) {
 
             setValidated(false);
-            setWeight(Number(weightValue));
-            setReps(Number(repValue));
-        }else{
+            setWeight(Number(weight));
+            setReps(Number(reps));
             
+        }else{
+
             e.stopPropagation();
             setValidated(true);
         }
-        
     };
         
     const maxwWight = 2205;
-    const validWeight = (w:(number|string)) => !isNaNoE(w) && 1<=Number(w) && Number(w) <= maxwWight;
-    const validReps = (r:(number|string)) => !isNaNoE(r) && 1 <= Number(r) && Number(r) <= 20;
+    const validWeight = !isNaNoE(weight) && 1<=Number(weight) && Number(weight) <= maxwWight;
+    const validReps = !isNaNoE(reps) && 1 <= Number(reps) && Number(reps) <= 20;
     
     return(
         <Form noValidate onSubmit={handleSubmit}> 
@@ -100,12 +99,14 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
             
                 <FormGroup>
                     <Form.Label >Weight:</Form.Label>
-                    <Form.Control id="weight" isInvalid={validated && !validWeight(weight)} type="number" inputMode="decimal" min={0} step={increment} max={100000} onChange={setInput(setInputWeight)}/>
+                    <TriggerRendererProp text={`ORM: ${validWeight && validReps ? orm(Number(weight), Number(reps)) : ""}`} show={validWeight && validReps}>
+                        <Form.Control id="weight" isInvalid={validated && !validWeight} type="number" inputMode="decimal" min={0} step={increment} max={100000} onChange={setInput(setInputWeight)}/>
+                    </TriggerRendererProp>
                     <Form.Control.Feedback type="invalid">{(isNaNoE(weight) || Number(weight) < 1) ? "Weight ≥ 1kg":`Weight ≤ ${maxwWight.toString()}kg`}</Form.Control.Feedback>
                 </FormGroup>
                 <FormGroup>
                     <Form.Label>Reps:</Form.Label>
-                    <Form.Control id="reps" isInvalid={validated && !validReps(reps)} type="number" inputMode="numeric" min={1} max={maxRep} onChange={setInput(setInputReps)}/>
+                    <Form.Control id="reps" isInvalid={validated && !validReps} type="number" inputMode="numeric" min={1} max={maxRep} onChange={setInput(setInputReps)}/>
                     <Form.Control.Feedback type="invalid">Reps: 1-20</Form.Control.Feedback>
                 </FormGroup>
             </Stack>
@@ -119,10 +120,20 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
     );
 }
 
+function TriggerRendererProp({text ,show, children}:{text:string, show:boolean, children:ReactNode}) {
 
-     /*
-                <Form.Select aria-label="Default select example">
-                    <option></option>
-                    {Array.from({ length: maxRep}, (_,i)=> <option key={i+1} value={i+1} >{i+1}</option>)}
-                </Form.Select>
-                */
+    const child = Children.toArray(children).findLast(isValidElement); 
+
+    if(child === undefined)
+        return children;
+
+    return (
+      <OverlayTrigger
+        placement="bottom"
+        overlay={<Tooltip id="orm-auto">{text}</Tooltip>}
+        show={show}
+      >
+        {({ ref }) => cloneElement(child as ReactElement<{ ref?: React.Ref<HTMLElement>}> , { ref })}
+      </OverlayTrigger>
+    );
+}

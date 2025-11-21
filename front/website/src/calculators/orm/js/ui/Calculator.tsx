@@ -5,15 +5,8 @@ import {calcOneRepMax, simplifyValue, Result} from '../orm.mjs';
 import {Input} from './input.tsx';
 import {TabelORM, TabelPR} from './Table.tsx';
 
-//todo make 1-20 and not 0-19
-type Range<N extends number, Acc extends number[] = []> = 
-  Acc['length'] extends N 
-    ? Acc[number] 
-    : Range<N, [...Acc, Acc['length']]>;
 
 const maxReps = 20;
-type Reps = number;//Range<21>;
-//type Increment = (0|1|1.25|2.5|5);
 
 type Maybe<T>=(T|"");
 type WeightAndReps ={weight:Maybe<number>, reps:Maybe<number>};
@@ -63,19 +56,6 @@ export function Calculator(){
   if(dataValid){
     result = calcOneRepMax(Number(weight),Number(reps),increment);
     tables = Tables({result});
-
-    /*
-    console.log("orm");
-    console.log(result.orm);
-    console.log("per");
-    console.log(result.percantage);
-    console.log("weights");
-    console.log(result.weight);
-    console.log("reps");
-    console.log(result.reps);
-    console.log("pr");
-    console.log(result.minPRs);
-    */
   }
   
 

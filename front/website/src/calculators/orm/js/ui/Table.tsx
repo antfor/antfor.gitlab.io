@@ -31,10 +31,6 @@ export function TabelORM({data}:{data:Result}) {
 }
 
 
-function colorDif(){
-    
-}
-
 export function TabelPR({data}:{data:PR[]}) {
 
   const len = data.length;

@@ -88,6 +88,13 @@ b {
 .is-invalid ~ .invalid-feedback {
   visibility: visible;
 }
+
+#orm-auto{
+  --bs-tooltip-bg: var(--snake-col); 
+  --bs-tooltip-color: black;
+  font-weight: bold;
+  font-family: "Oswald", sans-serif;
+}
 /*
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
@@ -112,11 +119,16 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .range-wrapper datalist {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   writing-mode: vertical-lr;
-  width: calc(var(--range-width));
+  --datalist-font: 1rem;
+  font-size: var(--datalist-font);
+  width: calc(var(--range-width) + var(--tick-dim-half) - var(--datalist-font)/4);
+  left: calc(var(--datalist-font)/2 - var(--tick-dim-half));
+
 }
 
 .range-wrapper datalist option {

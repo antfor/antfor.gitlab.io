@@ -30,6 +30,10 @@ export function simplifyValue(value:number, decimals:number) {
     }).format(round(value, decimals)+0); // +0 to remove -0
 }
 
+export function orm(weight:number, reps:number, formula:FORMULA=FORMULA.EPLEY){
+    return simplifyValue(estimatorFactory.estimator(formula).orm(weight,reps), 2);
+}
+
 //                                                                                           EPLEY   BRZYCKI
 export function calcOneRepMax(weight:number, reps:number, increment:number=5, formula:FORMULA=FORMULA.EPLEY):Result{
     if(1>weight){
