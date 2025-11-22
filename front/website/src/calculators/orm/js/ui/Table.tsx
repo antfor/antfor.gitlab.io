@@ -18,15 +18,9 @@ const IsortDown = <FontAwesomeIcon icon={faSortDown}  size="2xs"/>
 
 function getSortIcon(colum:number, sortedColum:number, order:SORTODIR, data: number[][]){
 
-  console.log("new");
-  console.log(colum);
-  console.log(sortedColum);
-  console.log(order);
-  console.log(data);
   if(colum!==sortedColum){
  
     if(order === SORTODIR.ZERO || isEqual(colum,data)){
-      console.log("hej");
       return;
     }
     return Isort;
