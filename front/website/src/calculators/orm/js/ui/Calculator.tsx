@@ -3,7 +3,7 @@ import {useState} from 'react';
 import Card from 'react-bootstrap/Card';
 import {calcOneRepMax, simplifyValue, Result} from '../orm.mjs';
 import {Input} from './input.tsx';
-import {TabelORM, TabelPR} from './Table.tsx';
+import {TabelORM, TabelPR} from './table/Table.tsx';
 
 
 const maxReps = 20;
