@@ -1,6 +1,6 @@
-import {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {Dispatch, SetStateAction, useEffect, useRef, useState} from 'react';
 import Table from 'react-bootstrap/Table';
-import {Result, PR, simplifyValue} from '../orm.mjs';
+import {Result, PR, simplifyValue} from '../../orm.mjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 
@@ -40,7 +40,7 @@ function sortTable(colum:number, order:SORTODIR, data: number[][]){
   if(order === SORTODIR.NONE || order ===  SORTODIR.EQUAL || order === SORTODIR.ZERO)
     return data;
 
-  return data.sort((a, b) => order===SORTODIR.DOWN ? a[colum] - b[colum] : b[colum] - a[colum]);
+  return data.sort((a, b) => order===SORTODIR.UP ? a[colum] - b[colum] : b[colum] - a[colum]);
 }
 
 function getOrder(col: number, values: number[][]) {
@@ -54,8 +54,8 @@ function getOrder(col: number, values: number[][]) {
     const a = values[i][col];
     const b = values[i + 1][col];
 
-    if (a > b) Up = true;
-    else if (a < b) Down = true;
+    if (a < b) Up = true;
+    else if (a > b) Down = true;
 
     if (Up && Down) return SORTODIR.NONE;
   }
@@ -75,7 +75,7 @@ function handleClick(setSorting:reactSet, newCol:number, values:number[][]){
 
   const newOrder = (o:SORTODIR, cOld:number, cNew:number) => cOld === cNew ? toggle(o) : toggle(getOrder(cNew, values)); 
   
-  return () => setSorting((prev) => ({column: newCol, order: newOrder(prev.order, prev.column, newCol)}));
+  return () => {setSorting((prev) => ({column: newCol, order: newOrder(prev.order, prev.column, newCol)}))};
 }
 
 function isEqual(col:number, data: number[][]){
@@ -85,12 +85,8 @@ function isEqual(col:number, data: number[][]){
 
 export function TabelORM({data}:{data:Result}) {
  
-  const [sorting, setSorting] = useState({colum:1, order:SORTODIR.DOWN});
-
-
   const len =Math.min(data.reps.length, Math.min(data.percantage.length, data.weight.length));
 
-  
   return (
     <Table striped bordered hover>
       <thead>
@@ -134,18 +130,16 @@ function tryGetDir(column:number, values:number[][], wanted:SORTODIR){
     return wanted;
 }
 
-function handleEffect(preferdDir:SORTODIR, currentOrder:SORTODIR, values:number[][], setSorting:reactSet){
-    const order = currentOrder;
-    const toggle = (o:SORTODIR) => SORTODIR.UP === o ? SORTODIR.DOWN : SORTODIR.UP;
-    preferdDir = order === SORTODIR.UP || order === SORTODIR.DOWN ? toggle(order) : preferdDir;
+function handleEffect(preferdDir:SORTODIR, data:PR[], setSorting:reactSet){
+    const values = data.map(Object.values) as number[][];
+
     setSorting(prev => ({column:prev.column, order:tryGetDir(prev.column, values, preferdDir)}));
-    return preferdDir;
 }
 
 export function TabelPR({data}:{data:PR[]}) {
 
   const keys = Object.keys(EmptyPR);
-  const values = data.map(Object.values);
+  const values = data.map(Object.values) as number[][];
 
   const orm = keys.indexOf('orm');
   const weight = keys.indexOf('weight');
@@ -153,15 +147,20 @@ export function TabelPR({data}:{data:PR[]}) {
   const dif = keys.indexOf('dif');
 
   const startCol = dif;
-  let preferdDir = SORTODIR.DOWN;
-  const startDir = tryGetDir(startCol, values, preferdDir);
+  const startDir = SORTODIR.UP;
+  const preferdDir = useRef(startDir);
 
-  const [sorting, setSorting] = useState({column:startCol, order:startDir}); 
+
+  const [sorting, setSorting] = useState({column:startCol, order:tryGetDir(startCol, values, startDir)}); 
+    
   useEffect(() => {
-    const order = sorting.order;
-    const toggle = (o:SORTODIR) => SORTODIR.UP === o ? SORTODIR.DOWN : SORTODIR.UP;
-    preferdDir = order === SORTODIR.UP || order === SORTODIR.DOWN ? toggle(order) : preferdDir;
-    setSorting(prev => ({column:prev.column, order:tryGetDir(prev.column, values, preferdDir)}));
+
+    if(sorting.order === SORTODIR.UP || sorting.order === SORTODIR.DOWN)
+      preferdDir.current = sorting.order;
+  }, [sorting.order]);
+
+  useEffect(() => {
+    handleEffect(preferdDir.current, data, setSorting);
   }, [data]);
 
   const getIcon = (c:number) => getSortIcon(c, sorting.column, sorting.order, values);
@@ -182,7 +181,7 @@ export function TabelPR({data}:{data:PR[]}) {
       <tbody>
         {sortedValues.map((pr,i)=>
             <tr key={i}>
-                <td>{simplifyValue(pr[weight],2/*todo need to round up? so you get the record*/)}kg</td> 
+                <td>{simplifyValue(pr[weight],2)}kg{/*todo need to round up? so you get the record*/}</td>
                 <td>{simplifyValue(pr[reps],0)}</td>
                 <td>{simplifyValue(pr[orm],1)}kg</td>
                 <td>+{simplifyValue(pr[dif],2)}kg</td>
