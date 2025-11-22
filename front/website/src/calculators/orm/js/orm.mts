@@ -86,7 +86,6 @@ function minPr(orm:number, ws:number[], rs:number[], ormEst:(w:number, r:number)
 
     const result = PRs.map((pr) =>({ ...pr, dif: pr.orm-orm }));
     const filter = result.filter((v)=>v.reps<maxReps);
-    const sorted = filter.sort((a: { dif: number; }, b: { dif: number; }) => a.dif - b.dif);
 
-    return sorted;
+    return filter;
 }
