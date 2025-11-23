@@ -1,4 +1,4 @@
-import { useState, cloneElement, ReactElement, ReactNode, Children, isValidElement } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Form from 'react-bootstrap/Form';
 import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
@@ -59,7 +59,9 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
 
     const [weight, setInputWeight] = useState(Iweight);
     const [reps, setInputReps] = useState(Ireps);
-
+    
+    const mounted = IsMounted();
+    
     const setInput = (c:((n:string)=>void)) => (e:React.ChangeEvent<HTMLInputElement>)=> {c(e.target.value)};
 
     const handleSubmit=(e: React.FormEvent<InputFormElement>) => {
@@ -81,6 +83,8 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
     const validWeight = !isNaNoE(weight) && 1<=Number(weight) && Number(weight) <= maxwWight;
     const validReps = !isNaNoE(reps) && 1 <= Number(reps) && Number(reps) <= 20;
     
+    const tooltipText = `ORM: ${validWeight && validReps ? orm(Number(weight), Number(reps)) : ""}`;
+
     return(
         <Form noValidate onSubmit={handleSubmit}> 
         
@@ -88,14 +92,22 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
             
                 <FormGroup>
                     <Form.Label >Weight:</Form.Label>
-                    <TriggerRendererProp text={`ORM: ${validWeight && validReps ? orm(Number(weight), Number(reps)) : ""}`} show={validWeight && validReps}>
-                        <Form.Control value={weight} id="weight" isInvalid={validated && !validWeight} type="number" inputMode="decimal" min={0} step={increment} max={100000} onChange={setInput(setInputWeight)}/>
-                    </TriggerRendererProp>
+
+                    <OverlayTrigger
+                        placement="bottom"
+                        overlay={<Tooltip id="orm-auto">{tooltipText}</Tooltip>}
+                        show={mounted && validWeight && validReps}
+                    >
+                        {({ ref }) => 
+                            <Form.Control ref={ref} value={weight} id="weight" isInvalid={validated && !validWeight} type="number" inputMode="decimal" min={0} step={increment} max={100000} onChange={setInput(setInputWeight)}/>}          
+                    </OverlayTrigger>
                     <Form.Control.Feedback type="invalid">{(isNaNoE(weight) || Number(weight) < 1) ? "Weight ≥ 1kg":`Weight ≤ ${maxwWight.toString()}kg`}</Form.Control.Feedback>
                 </FormGroup>
+
                 <FormGroup>
                     <Form.Label>Reps:</Form.Label>
                     <Form.Control value={reps} id="reps" isInvalid={validated && !validReps} type="number" inputMode="numeric" min={1} max={maxRep} onChange={setInput(setInputReps)}/>
+                    <Tooltip id="orm-auto">{tooltipText}</Tooltip>
                     <Form.Control.Feedback type="invalid">Reps: 1-20</Form.Control.Feedback>
                 </FormGroup>
             </Stack>
@@ -109,20 +121,21 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
     );
 }
 
-function TriggerRendererProp({text ,show, children}:{text:string, show:boolean, children:ReactNode}) {
 
-    const child = Children.toArray(children).findLast(isValidElement); 
+//todo fix use ref on Form.Control
+function IsMounted() {
+    const [mounted, setMounted] = useState(false);
+    const refMounted = useRef(false);
 
-    if(child === undefined)
-        return children;
+    useEffect(()=>{
+        if(!refMounted.current)
+            refMounted.current = true;
+        return ()=>{refMounted.current = false;}
+    },[]);
 
-    return (
-      <OverlayTrigger
-        placement="bottom"
-        overlay={<Tooltip id="orm-auto">{text}</Tooltip>}
-        show={show}
-      >
-        {({ ref }) => cloneElement(child as ReactElement<{ ref?: React.Ref<HTMLElement>}> , { ref })}
-      </OverlayTrigger>
-    );
+    useEffect(()=>{
+        setMounted(refMounted.current);
+    },[refMounted]);
+
+    return mounted;
 }
