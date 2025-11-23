@@ -14,7 +14,6 @@ type Maybe<T>=(T | typeof Not);
 enum Params{
   WEIGHT = "weight",
   REPS = "reps",
-  //INCREMENT = "increment",
 }
 
 type InputData = {
@@ -62,7 +61,7 @@ function setParam(name:Params, value:Maybe<number>, uri = window.location.href) 
     try {
         const url = new URL(uri);
         url.searchParams.set(name, value.toString());
-        history.replaceState(null, '', url);
+        history.replaceState(history.state, '', url);
     } catch (err) {
         console.error("Invalid URL:", err);
         return uri;
