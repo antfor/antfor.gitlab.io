@@ -11,12 +11,16 @@ export type PR = {
     dif:number,
 }
 
+export type Match ={
+    percantage: number,
+    weight: number,
+    reps: number,
+}
+
 export type Result = {
     orm: number,
-    percantage: number[],
-    weight: number[],
-    reps: number[],
-    minPRs:PR[],
+    match: Match[],
+    minPRs: PR[],
 };
 
 function round(n:number, d=0){
@@ -50,12 +54,15 @@ export function calcOneRepMax(weight:number, reps:number, increment:number=5, fo
 
     const orm = estimator.orm(weight,reps);
     const weights = getWeights(orm, increment);
-    const per = getPercentage(orm, weights);
     const repRange = getRepRange(orm, weights, estimator.maxRep);
+
+    const match = getMatch(orm, weights, repRange,);
     const pr = minPr(orm, weights, repRange, estimator.orm);
 
-    return {orm:orm, percantage:per, weight:weights, reps:repRange, minPRs:pr};
+    return {orm:orm, match:match, minPRs:pr};
 }
+
+
 
 function getWeights(orm:number, inc:number):number[]{
 
@@ -65,9 +72,12 @@ function getWeights(orm:number, inc:number):number[]{
         const len = 1 + (maxPercantage*100 - minPercantage*100)/(gap*100);
         return Array.from({length: len}, (_,i) => (maxPercantage-gap*i)*orm);
     }
-
+    
     const max = Math.floor(orm/inc);
-    const min = Math.round(minPercantage*orm/inc)
+    if(max < 1){
+        return [];
+    }
+    const min = Math.round(minPercantage*orm/inc);
     const len = max-min+1;
     return Array.from({length: len}, (_,i) => inc * (max-i));
 }
@@ -75,9 +85,12 @@ function getWeights(orm:number, inc:number):number[]{
 function getPercentage(orm:number, weights:number[]):number[]{
     return weights.map((w)=>(w*100/orm)+0);
 }
+
 function getRepRange(orm:number, weights:number[], maxRep:(w:number, r:number) => number):number[]{
     return weights.map((w) => maxRep(orm, w));
 }
+
+
 
 function minPr(orm:number, ws:number[], rs:number[], ormEst:(w:number, r:number) => number):PR[]{
 
@@ -88,4 +101,15 @@ function minPr(orm:number, ws:number[], rs:number[], ormEst:(w:number, r:number)
     const filter = result.filter((v)=>v.reps<maxReps);
 
     return filter;
+}
+
+function getMatch(orm:number, weights:number[], reps:number[]):Match[]{
+
+    const per = getPercentage(orm, weights);
+    const len = Math.min(per.length ,Math.min(weights.length, reps.length));
+    
+    const getMatch= (p:number,w:number,r:number) => ({percantage: p, weight: w, reps: r});
+    const match = Array.from({length:len}, (_, i) => getMatch(per[i], weights[i], reps[i]));
+    
+    return match;
 }
