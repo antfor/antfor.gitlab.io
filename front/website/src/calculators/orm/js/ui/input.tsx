@@ -5,9 +5,6 @@ import Button from 'react-bootstrap/Button';
 import { FormGroup, Tooltip } from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import { orm } from '../orm.mts'
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-
 
 const isNaNoE = (value:(number|string)) => isNaN(Number(value)) || value === "";
 const ifIsNum = (n:string,f:(n:number)=>void) => {if(!isNaNoE(n)){f(Number(n))}};
@@ -52,17 +49,11 @@ interface input {
     Ireps?:number|string,
     maxRep?:number, 
     setIncrement:((i:number)=>void),
-    setWeight:((w:number)=>void),
-    setReps:((w:number)=>void),
+    setInputs:((w:number, r:number)=>void),
 }
 
 
-type Maybe<T>=(T|"");
-type Settings = {
-    weight:Maybe<number>,
-    reps:Maybe<number>,
-}
-export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement, setWeight, setReps}:input){
+export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement, setInputs}:input){
     
     const [validated, setValidated] = useState(false);
 
@@ -78,9 +69,7 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
         if (validWeight && validReps) {
 
             setValidated(false);
-            setWeight(Number(weight));
-            setReps(Number(reps));
-            
+            setInputs(Number(weight), Number(reps))
         }else{
 
             e.stopPropagation();
@@ -100,13 +89,13 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
                 <FormGroup>
                     <Form.Label >Weight:</Form.Label>
                     <TriggerRendererProp text={`ORM: ${validWeight && validReps ? orm(Number(weight), Number(reps)) : ""}`} show={validWeight && validReps}>
-                        <Form.Control id="weight" isInvalid={validated && !validWeight} type="number" inputMode="decimal" min={0} step={increment} max={100000} onChange={setInput(setInputWeight)}/>
+                        <Form.Control value={weight} id="weight" isInvalid={validated && !validWeight} type="number" inputMode="decimal" min={0} step={increment} max={100000} onChange={setInput(setInputWeight)}/>
                     </TriggerRendererProp>
                     <Form.Control.Feedback type="invalid">{(isNaNoE(weight) || Number(weight) < 1) ? "Weight ≥ 1kg":`Weight ≤ ${maxwWight.toString()}kg`}</Form.Control.Feedback>
                 </FormGroup>
                 <FormGroup>
                     <Form.Label>Reps:</Form.Label>
-                    <Form.Control id="reps" isInvalid={validated && !validReps} type="number" inputMode="numeric" min={1} max={maxRep} onChange={setInput(setInputReps)}/>
+                    <Form.Control value={reps} id="reps" isInvalid={validated && !validReps} type="number" inputMode="numeric" min={1} max={maxRep} onChange={setInput(setInputReps)}/>
                     <Form.Control.Feedback type="invalid">Reps: 1-20</Form.Control.Feedback>
                 </FormGroup>
             </Stack>

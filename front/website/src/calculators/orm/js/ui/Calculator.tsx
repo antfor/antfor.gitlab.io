@@ -1,15 +1,21 @@
 
 import {useState} from 'react';
 import Card from 'react-bootstrap/Card';
-import {calcOneRepMax, simplifyValue, Result} from '../orm.mjs';
+import {calcOneRepMax, simplifyValue, Result, } from '../orm.mjs';
 import {Input} from './input.tsx';
 import {TabelORM, TabelPR} from './table/Table.tsx';
 
 
 const maxReps = 20;
 
-type Maybe<T>=(T|"");
-type WeightAndReps ={weight:Maybe<number>, reps:Maybe<number>};
+const Not = "";
+type Maybe<T>=(T | typeof Not);
+
+enum Params{
+  WEIGHT = "weight",
+  REPS = "reps",
+  //INCREMENT = "increment",
+}
 
 type InputData = {
   weight: Maybe<number>,
@@ -18,8 +24,8 @@ type InputData = {
 };
 
 const defaultSettings:InputData={
-  weight: "",
-  reps: "",
+  weight: Not,
+  reps: Not,
   increment: 2.5,
 }
 
@@ -28,7 +34,7 @@ function Tables({result}:{result:Result}){
     return(
         <>
             <h2>Your <b>ORM</b> is: {simplifyValue(result.orm,2)}kg</h2>
-            <TabelORM data={result}/>
+            <TabelORM data={result.match}/>
             <br/>
             <h2>Needed for new <b>ORM</b>:</h2>
             <TabelPR data={result.minPRs}/>
@@ -39,23 +45,56 @@ function Tables({result}:{result:Result}){
 
 function isDataValid(weight:Maybe<number> ,reps:Maybe<number>){
 
-    return weight !=="" && 1 <= weight && reps !== "" && 1 <= reps && reps <= 20;
+    return weight !==Not && 1 <= weight && reps !== Not && 1 <= reps && reps <= 20;
+}
+
+function getParamNumber(name:Params, url = window.location.href):Maybe<number>{
+    try {
+        const value = new URL(url).searchParams.get(name);
+        return Number.isNaN(value) || value === null || value === Not? Not : Number(value);
+    } catch (err) {
+        console.error("Error getting: ",name," from url. Error: ", err);
+        return Not;
+    }
+}
+
+function setParam(name:Params, value:Maybe<number>, uri = window.location.href) {
+    try {
+        const url = new URL(uri);
+        url.searchParams.set(name, value.toString());
+        history.replaceState(null, '', url);
+    } catch (err) {
+        console.error("Invalid URL:", err);
+        return uri;
+    }
 }
 
 export function Calculator(){
 
   const [increment, setIncrement] = useState(defaultSettings.increment);
 
-  const [weight, setWeight] = useState(defaultSettings.weight);
-  const [reps, setReps] = useState(defaultSettings.reps);  //todo combine
+  let startWeight = getParamNumber(Params.WEIGHT);
+  startWeight = startWeight === Not ? defaultSettings.weight : startWeight;
+  let startReps = getParamNumber(Params.REPS);
+  startReps = startReps === Not ? defaultSettings.reps : startReps;
   
-  const dataValid = isDataValid(weight, reps);
+  const [input, setInput] = useState({weight:startWeight, reps:startReps});
+  
+  setParam(Params.WEIGHT, input.weight);
+  setParam(Params.REPS, input.reps);
+
+  const dataValid = isDataValid(input.weight, input.reps);
 
   let result;
   let tables;
+
   if(dataValid){
-    result = calcOneRepMax(Number(weight),Number(reps),increment);
-    tables = Tables({result});
+    try{
+      result = calcOneRepMax(Number(input.weight),Number(input.reps),increment);
+      tables = Tables({result});
+    } catch(e){
+      console.error("An error occurred: ", (e as Error).message);
+    }
   }
   
 
@@ -65,7 +104,7 @@ export function Calculator(){
           <Card.Header><h1 className="metal-mania-regular"><b>O</b>ne-<b>R</b>ep-<b>M</b>ax 🐍</h1></Card.Header>
           <Card.Body className='container'> 
            
-            <Input increment={increment} maxRep={maxReps} setIncrement={setIncrement} setWeight={setWeight} setReps={setReps}/>
+            <Input Iweight={startWeight} Ireps={startReps} increment={increment} maxRep={maxReps} setIncrement={setIncrement} setInputs={(w,r) => {setInput({ weight:w, reps:r})}}/>
             
             <br/>
             {tables}
