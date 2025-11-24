@@ -33,6 +33,16 @@ function Increment({increment, setIncrement}:{increment:number, setIncrement:((i
         </FormGroup>
     );
 }
+function IsRefMonted<T>(ref:RefObject<T>){
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(()=>{
+            setMounted(Boolean(ref.current));
+    },[ref]);
+
+    return mounted;
+}
+
 
 interface FormElements extends HTMLFormControlsCollection {
   weight: HTMLInputElement,
@@ -60,7 +70,8 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
     const [weight, setInputWeight] = useState(Iweight);
     const [reps, setInputReps] = useState(Ireps);
     
-    const mounted = IsMounted();
+    const refMounted= useRef(null);
+    const mounted = IsRefMonted(refMounted);
     
     const setInput = (c:((n:string)=>void)) => (e:React.ChangeEvent<HTMLInputElement>)=> {c(e.target.value)};
 
@@ -98,8 +109,7 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
                         overlay={<Tooltip id="orm-auto">{tooltipText}</Tooltip>}
                         show={mounted && validWeight && validReps}
                     >
-                        {({ ref }) => 
-                            <Form.Control ref={ref} value={weight} id="weight" isInvalid={validated && !validWeight} type="number" inputMode="decimal" min={0} step={increment} max={100000} onChange={setInput(setInputWeight)}/>}          
+                        <Form.Control ref={refMounted} value={weight} id="weight" isInvalid={validated && !validWeight} type="number" inputMode="decimal" min={0} step={increment} max={100000} onChange={setInput(setInputWeight)}/>                   
                     </OverlayTrigger>
                     <Form.Control.Feedback type="invalid">{(isNaNoE(weight) || Number(weight) < 1) ? "Weight ≥ 1kg":`Weight ≤ ${maxwWight.toString()}kg`}</Form.Control.Feedback>
                 </FormGroup>
