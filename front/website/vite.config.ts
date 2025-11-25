@@ -8,6 +8,7 @@ export default defineConfig({
 
   server: {
     host: 'local.anton-forsberg.com',
+    allowedHosts: ['local.anton-forsberg.com'],
   },
 
   build: {

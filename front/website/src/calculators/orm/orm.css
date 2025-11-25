@@ -150,10 +150,9 @@ input[type=number]::-webkit-outer-spin-button {
   font-size: var(--datalist-font);
   width: calc(var(--range-width) + var(--tick-dim-half) - var(--datalist-font)/4);
   left: calc(var(--datalist-font)/2 - var(--tick-dim-half));
-
 }
 
-.range-wrapper datalist option {
+.range-wrapper datalist span {
   padding: 0;
 }
 

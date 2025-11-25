@@ -27,7 +27,7 @@ type InputData = {
 const defaultSettings:InputData={
   weight: Not,
   reps: Not,
-  increment: 2.5,
+  increment: 5,
 }
 
 function Tables({result}:{result:Result}){
