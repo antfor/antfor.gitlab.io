@@ -38,12 +38,28 @@ body {
   color: white;
 }
 
+#calculators{
+  min-width: 100%;
+  min-height: 100%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 #calculator {
-    font-family: "Oswald", sans-serif;
+    font-family: "Oswald";
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
     margin: 16px;
+    width: 100%;
+    max-width: 768px;
+    min-width: 368px;
+}
+
+h1 {
+  font-size: 3.125rem;
 }
 
 .snake-col.btn-primary{
