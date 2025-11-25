@@ -1,14 +1,17 @@
 import {useEffect, useRef, useState} from 'react';
 import Table from 'react-bootstrap/Table';
+import Stack from 'react-bootstrap/Stack';
 import {Match, PR, simplifyValue} from '../../orm.mjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 import { SORTODIR, isEqual, sortTable, tryGetDir, handleClick} from './table.mjs'
+import './table.css';
+import React from 'react';
 
 
-const Isort = <FontAwesomeIcon icon={faSort} size="2xs"/>
-const IsortUp = <FontAwesomeIcon icon={faSortUp}  size="2xs"/>
-const IsortDown = <FontAwesomeIcon icon={faSortDown}  size="2xs"/>
+const Isort = <FontAwesomeIcon className="clickable" icon={faSort} size="2xs"/>
+const IsortUp = <FontAwesomeIcon className="clickable" icon={faSortUp}  size="2xs"/>
+const IsortDown = <FontAwesomeIcon className="clickable" icon={faSortDown}  size="2xs"/>
 
 function getSortIcon(colum:number, sortedColum:number, order:SORTODIR, data: number[][]){
 
@@ -28,6 +31,15 @@ function getSortIcon(colum:number, sortedColum:number, order:SORTODIR, data: num
     case SORTODIR.ZERO: return;
     default: return;
   } 
+}
+
+function HeadLine(text:(React.JSX.Element | string), Icon: (React.JSX.Element | undefined)){
+  return(
+    <Stack direction="horizontal" className='justify-content-between'>
+      <span>{text}</span>
+      {Icon}
+    </Stack>
+  );
 }
 
 const EmptyMatch:Match = {
@@ -74,9 +86,9 @@ export function TabelORM({data}:{data:Match[]}) {
     <Table striped bordered hover>
       <thead>
         <tr>
-          <th onClick={handleClick(setSorting, percantage, values)}>Percentage {getIcon(percantage)}</th>
-          <th onClick={handleClick(setSorting, weight, values)}>Weight {getIcon(weight)}</th>
-          <th onClick={handleClick(setSorting, reps, values)}>Reps {getIcon(reps)}</th>
+          <th onClick={handleClick(setSorting, percantage, values)}>{HeadLine("Percentage",getIcon(percantage))}</th>
+          <th onClick={handleClick(setSorting, weight, values)}>{HeadLine("Weight",getIcon(weight))}</th>
+          <th onClick={handleClick(setSorting, reps, values)}>{HeadLine("Reps",getIcon(reps))}</th>
         </tr>
       </thead>
 
@@ -137,10 +149,10 @@ export function TabelPR({data}:{data:PR[]}) {
     <Table striped bordered hover>
       <thead>
         <tr>
-          <th onClick={handleClick(setSorting, weight, values)}>Weight  {getIcon(weight)}</th>
-          <th onClick={handleClick(setSorting, reps, values)}>Reps  {getIcon(reps)}</th>
-          <th onClick={handleClick(setSorting, orm, values)}>New <b>ORM</b> {getIcon(orm)}</th>
-          <th onClick={handleClick(setSorting, dif, values)}>Increase  {getIcon(dif)}</th>
+          <th onClick={handleClick(setSorting, weight, values)}>{HeadLine("Weight",getIcon(weight))}</th>
+          <th onClick={handleClick(setSorting, reps, values)}>{HeadLine("Reps",getIcon(reps))}</th>
+          <th onClick={handleClick(setSorting, orm, values)}>{HeadLine(<>New <b>ORM</b></>,getIcon(orm))}</th>
+          <th onClick={handleClick(setSorting, dif, values)}>{HeadLine("Increase",getIcon(dif))}</th>
         </tr>
       </thead>
 
