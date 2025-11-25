@@ -30,7 +30,7 @@ export function Increment({increment, setIncrement}:{increment:number, setIncrem
                 </div> 
                 <Form.Range id="increment" list="rangeLabels" onChange={onChange(i => {setIncrement(values[i])})} value={start} min={0} max={values.length-1} step={1}/> 
                 <datalist id="rangeLabels">
-                    {values.map((v,i)=><option value={i} key={i} label={`${v.toString()} kg`}></option>)}
+                    {values.map((v,i)=><span key={i}>{`${v.toString()} kg`}</span>)}
                 </datalist>       
             </div>
         </FormGroup>

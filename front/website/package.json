@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "host": "vite --host",
     "build": "tsc -b && vite build",
     "postbuild": "purgecss --config ./purgecss.config.cjs --output ./dist/assets/",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "vite preview --host",
     "profile": "lighthouse --view --chrome-flags='--headless'",
     "analyze": "vite-bundle-visualizer",
     "compress": "find dist -type f -regex '.*\\.\\(htm\\|html\\|txt\\|text\\|js\\|xml\\|json\\|mjs\\|svg\\|yaml\\|yml\\|toml\\|css\\)$' -exec brotli -f -k -Z {} \\; && ls -lh dist/*;"
