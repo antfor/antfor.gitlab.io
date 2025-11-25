@@ -1,9 +1,11 @@
 
 import {useState} from 'react';
 import Card from 'react-bootstrap/Card';
+import Stack from 'react-bootstrap/Stack';
 import {calcOneRepMax, simplifyValue, Result, } from '../orm.mjs';
-import {Input} from './input.tsx';
+import {Input} from './input/input.tsx';
 import {TabelORM, TabelPR} from './table/Table.tsx';
+import {Snake} from './Animation.tsx'
 
 
 const maxReps = 20;
@@ -96,11 +98,15 @@ export function Calculator(){
     }
   }
   
-
+  
   return(
-      <div id="hideNav">
       <Card id="calculator" data-bs-theme="dark">
-          <Card.Header><h1 className="metal-mania-regular"><b>O</b>ne-<b>R</b>ep-<b>M</b>ax 🐍</h1></Card.Header>
+          <Card.Header>
+            <Stack direction="horizontal">
+              <h1 className="metal-mania-regular"><b>O</b>ne-<b>R</b>ep-<b>M</b>ax</h1>
+              <Snake/>
+            </Stack>
+          </Card.Header>
           <Card.Body className='container'> 
            
             <Input Iweight={startWeight} Ireps={startReps} increment={increment} maxRep={maxReps} setIncrement={setIncrement} setInputs={(w,r) => {setInput({ weight:w, reps:r})}}/>
@@ -109,6 +115,5 @@ export function Calculator(){
             {tables}
           </Card.Body>
       </Card>
-      </div>
   );
 }
