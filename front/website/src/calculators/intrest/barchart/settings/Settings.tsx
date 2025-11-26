@@ -10,11 +10,12 @@ type key<T> = keyof T
 
 interface propsFormGroup{
     label: string | React.JSX.Element,
+    id: string,
     children: React.JSX.Element,
 }
-function FormGroup({label, children}:propsFormGroup){
+function FormGroup({id, label, children}:propsFormGroup){
     return(
-        <Form.Group>
+        <Form.Group controlId={id}>
             <Form.Label>{label}</Form.Label>
             {children}
         </Form.Group>
@@ -43,23 +44,23 @@ function SettingsComponent({intrestSettings, updateIntrest, breakdownSettings, u
 
     return (
         <Form>
-            <FormGroup label="Ränta per år (%)">
+            <FormGroup id={intrest.keyIntrest+"-FormGroup"} label="Ränta per år (%)">
                 <IntrestForms {...getFormProps(intrest)}/>
             </FormGroup>
             <br/>
-            <FormGroup label="Startbelopp (kr)">
+            <FormGroup id={startMoney.keyIntrest+"-FormGroup"} label="Startbelopp (kr)">
                 <IntrestForms {...getFormProps(startMoney)}/>
             </FormGroup>
             <br/>
-            <FormGroup label="Månadssparande (kr/mån)">
+            <FormGroup id={monthlySaving.keyIntrest+"-FormGroup"} label="Månadssparande (kr/mån)">
                 <IntrestForms {...getFormProps(monthlySaving)}/>
             </FormGroup>
             <br/>
-            <FormGroup label={DropdownInterval({iMap:intervalMap, change:setInterval})}>
+            <FormGroup id={time.keyIntrest+"-FormGroup"} label={DropdownInterval({iMap:intervalMap, change:setInterval})}>
                 <IntrestForms {...getFormProps(time)}/>
             </FormGroup>
             <br/>
-            <FormGroup label="Breakdown">
+            <FormGroup id="Breakdown-FormGroup" label="Breakdown">
                 <BreakDownToggle settings={breakdownSettings} setSettings={updateBreakdown}/>
             </FormGroup>
       </Form>
