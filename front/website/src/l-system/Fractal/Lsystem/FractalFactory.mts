@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-spread */
 import {Rule, succ, func} from './Rule.mts';
 import {State, Vec3} from './State.mts';
 import { Fractal } from './Fractal.mts';

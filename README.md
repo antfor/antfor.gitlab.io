@@ -16,3 +16,6 @@ https://anton-forsberg.com/projects/intrest#calculator
 
 https://anton-forsberg.com/projects/l-system
 
+### One-Rep-Max Calulator
+
+https://anton-forsberg.com/projects/orm?weight=50&reps=10
