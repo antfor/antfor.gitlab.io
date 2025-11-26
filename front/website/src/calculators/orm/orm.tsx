@@ -1,4 +1,4 @@
-import 'scss/fullBootstrap.scss';
+import 'scss/orm.scss';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {Calculator} from './js/ui/Calculator.tsx'

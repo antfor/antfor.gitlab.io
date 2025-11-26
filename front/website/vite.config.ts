@@ -15,11 +15,10 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        orm: resolve(__dirname, 'orm.html'),
-        test: resolve(__dirname, 'test.html'),
         cv: resolve(__dirname, 'cv.html'),
         lsys: resolve(__dirname, 'projects/l-system.html'),
         calc: resolve(__dirname, 'projects/intrest.html'),
+        orm: resolve(__dirname, 'projects/orm.html'),
       },
     },
   },

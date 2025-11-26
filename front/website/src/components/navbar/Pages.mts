@@ -18,4 +18,5 @@ const PROJECT_URL =  BASE_URL + "projects/";
 export const PROJECTS = {
   INTREST: PROJECT_URL + "intrest#calculator",
   FRACTAL: PROJECT_URL + "l-system",
+  ORM: PROJECT_URL + "orm",
 } as const 
