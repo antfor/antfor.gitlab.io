@@ -8,6 +8,7 @@ export default defineConfig({
 
   server: {
     host: 'local.anton-forsberg.com',
+    allowedHosts: ['local.anton-forsberg.com'],
   },
 
   build: {
@@ -17,6 +18,7 @@ export default defineConfig({
         cv: resolve(__dirname, 'cv.html'),
         lsys: resolve(__dirname, 'projects/l-system.html'),
         calc: resolve(__dirname, 'projects/intrest.html'),
+        orm: resolve(__dirname, 'projects/orm.html'),
       },
     },
   },
@@ -24,8 +26,9 @@ export default defineConfig({
   css :{
     preprocessorOptions : {
       scss: {
-        api: "modern-compiler",
+        //api: "modern-compiler",
         quietDeps: true,
+        silenceDeprecations: ["import","color-functions","global-builtin"],
       }, 
     }, 
   },

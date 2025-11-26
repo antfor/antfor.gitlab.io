@@ -136,6 +136,25 @@ function push(state:State){
     f(state, val*e);
     v3.cross(T, T);
     /*
+    import * as twgl from 'twgl.js';
+
+// Correct orientation vector H based on tropism vector T
+function applyTropismCorrection(H, T, e) {
+  // Normalize input vectors
+  const hNorm = twgl.v3.normalize(H);
+  const tNorm = twgl.v3.normalize(T);
+
+  // Compute cross product and its magnitude
+  const cross = twgl.v3.cross(hNorm, tNorm);
+  const alpha = e * twgl.v3.length(cross);
+
+  // Compute corrected vector H'
+  const correction = twgl.v3.scale(tNorm, alpha);
+  const H_prime = twgl.v3.add(hNorm, correction);
+  return twgl.v3.normalize(H_prime);
+    */
+
+    /*
     let m = state.getMat();
     let H = m4.getAxis(m,1); //todo returns vioid
     let axis = v3.cross(H, T);
