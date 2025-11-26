@@ -30,7 +30,8 @@ function ProjectDropDown(){
   return(
     <NavDropdown menuVariant="dark" title="Projects">
       <NavDropdown.Item href={PROJECTS.INTREST}>Compund Intrest</NavDropdown.Item>
-      <NavDropdown.Item href={PROJECTS.FRACTAL} >3D L-systems</NavDropdown.Item>
+      <NavDropdown.Item href={PROJECTS.FRACTAL}>3D L-systems</NavDropdown.Item>
+      <NavDropdown.Item href={PROJECTS.ORM}>One-Rep-Max</NavDropdown.Item>
     </NavDropdown>
   );
 }
