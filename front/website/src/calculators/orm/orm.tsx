@@ -1,7 +1,7 @@
 import 'scss/orm.scss';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {Calculator} from './js/ui/Calculator.tsx'
+import {Calculator} from './ui/Calculator.tsx'
 import './orm.css';
 
 const chart = document.getElementById('calculators');

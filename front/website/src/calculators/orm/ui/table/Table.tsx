@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import Table from 'react-bootstrap/Table';
 import Stack from 'react-bootstrap/Stack';
-import {Match, PR, simplifyValue} from '../../orm.mjs';
+import {Match, PR, simplifyValue} from '../orm/orm.mjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 import { SORTODIR, isEqual, sortTable, tryGetDir, handleClick} from './table.mjs'

@@ -1,6 +1,7 @@
 import Form from 'react-bootstrap/Form';
 import { FormGroup } from 'react-bootstrap';
 import { isNaNoE } from './input.mjs';
+import './increment.css';
 
 
 function onChange(setNumber:((n:number)=>void)){

@@ -4,9 +4,10 @@ import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
 import { FormGroup, Tooltip } from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import { orm } from '../../orm.mts'
+import { orm } from '../orm/orm.mjs'
 import { isValidReps, isValidWeight, IsRefMonted, isNaNoE } from './input.mts';
 import { Increment } from './Increment';
+import './input.css';
 
 interface FormElements extends HTMLFormControlsCollection {
   weight: HTMLInputElement,

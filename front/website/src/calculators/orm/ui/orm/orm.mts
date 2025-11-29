@@ -1,4 +1,4 @@
-import {FORMULA, EstimatorFactory} from "./estimators/estimator.mjs"
+import {FORMULA, EstimatorFactory} from "./estimator.mjs"
 
 const maxReps = 20;
 const minPercantage = 0.5;

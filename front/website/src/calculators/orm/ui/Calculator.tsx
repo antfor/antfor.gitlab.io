@@ -2,10 +2,11 @@
 import {useState} from 'react';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
-import {calcOneRepMax, simplifyValue, Result, } from '../orm.mjs';
+import {calcOneRepMax, simplifyValue, Result, } from './orm/orm.mjs';
 import {Input} from './input/input.tsx';
 import {TabelORM, TabelPR} from './table/Table.tsx';
 import {Snake} from './Animation.tsx'
+import './calculator.css';
 
 
 const maxReps = 20;
