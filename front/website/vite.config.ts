@@ -17,20 +17,20 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         cv: resolve(__dirname, 'cv.html'),
         lsys: resolve(__dirname, 'projects/l-system.html'),
-        calc: resolve(__dirname, 'projects/intrest.html'),
+        calc: resolve(__dirname, 'projects/interest.html'),
         orm: resolve(__dirname, 'projects/orm.html'),
       },
     },
   },
 
-  css :{
-    preprocessorOptions : {
+  css: {
+    preprocessorOptions: {
       scss: {
         //api: "modern-compiler",
         quietDeps: true,
-        silenceDeprecations: ["import","color-functions","global-builtin"],
-      }, 
-    }, 
+        silenceDeprecations: ["import", "color-functions", "global-builtin"],
+      },
+    },
   },
 
   resolve: {
