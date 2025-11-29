@@ -31,6 +31,11 @@ const defaultSettings: InputData = {
   increment: 5,
 }
 
+type Input = {
+    weight: Maybe<number>;
+    reps: Maybe<number>;
+}
+
 function Tables({ result }: { result: Result }) {
 
   return (
@@ -71,6 +76,19 @@ function setParam(name: Params, value: Maybe<number>, uri = window.location.href
   }
 }
 
+function calcORM(weight:Maybe<number>, reps:Maybe<number>, increment:number) {
+
+  if (isDataValid(weight, reps)) {
+    try {
+      return calcOneRepMax(Number(weight), Number(reps), increment);
+    } catch (e) {
+      console.error("An error occurred: ", (e as Error).message);
+    }
+  }
+
+  return Not;
+}
+
 export function Calculator() {
 
   const [increment, setIncrement] = useState(defaultSettings.increment);
@@ -85,18 +103,11 @@ export function Calculator() {
   setParam(Params.WEIGHT, input.weight);
   setParam(Params.REPS, input.reps);
 
-  const dataValid = isDataValid(input.weight, input.reps);
-
-  let result;
+  const result =  useMemo(() => calcORM(input.weight, input.reps, increment), [input.weight, input.reps, increment]);
   let tables;
 
-  if (dataValid) {
-    try {
-      result = useMemo(() => calcOneRepMax(Number(input.weight), Number(input.reps), increment), [input.weight, input.reps, increment]);
-      tables = Tables({ result });
-    } catch (e) {
-      console.error("An error occurred: ", (e as Error).message);
-    }
+  if (result !== Not) {
+    tables = Tables({ result });
   }
 
 
