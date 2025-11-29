@@ -1,20 +1,20 @@
-import {Dispatch, SetStateAction} from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
-export enum SORTODIR{
+export enum SORTODIR {
   EQUAL = 'eql',
   UP = 'asc',
   DOWN = 'desc',
   NONE = '',
   ZERO = 'zero', //todo handle
 }
-type reactSet = Dispatch<SetStateAction<{column: number;order: SORTODIR;}>>;
+type reactSet = Dispatch<SetStateAction<{ column: number; order: SORTODIR; }>>;
 
 
-export function sortTable(colum:number, order:SORTODIR, data: number[][]){
-  if(order === SORTODIR.NONE || order ===  SORTODIR.EQUAL || order === SORTODIR.ZERO)
+export function sortTable(colum: number, order: SORTODIR, data: number[][]) {
+  if (order === SORTODIR.NONE || order === SORTODIR.EQUAL || order === SORTODIR.ZERO)
     return data;
 
-  return data.sort((a, b) => order===SORTODIR.UP ? a[colum] - b[colum] : b[colum] - a[colum]);
+  return data.sort((a, b) => order === SORTODIR.UP ? a[colum] - b[colum] : b[colum] - a[colum]);
 }
 
 function getOrder(col: number, values: number[][]) {
@@ -42,30 +42,30 @@ function getOrder(col: number, values: number[][]) {
 }
 
 
-export function handleClick(setSorting:reactSet, newCol:number, values:number[][]){
+export function handleClick(setSorting: reactSet, newCol: number, values: number[][]) {
 
-  const toggle = (o:SORTODIR) =>  (o === SORTODIR.EQUAL) || (o === SORTODIR.ZERO) ? o : 
-                                   o === SORTODIR.DOWN ? SORTODIR.UP : SORTODIR.DOWN;
+  const toggle = (o: SORTODIR) => (o === SORTODIR.EQUAL) || (o === SORTODIR.ZERO) ? o :
+    o === SORTODIR.DOWN ? SORTODIR.UP : SORTODIR.DOWN;
 
-  const newOrder = (o:SORTODIR, cOld:number, cNew:number) => cOld === cNew ? toggle(o) : toggle(getOrder(cNew, values)); 
-  
-  return () => {setSorting((prev) => ({column: newCol, order: newOrder(prev.order, prev.column, newCol)}))};
+  const newOrder = (o: SORTODIR, cOld: number, cNew: number) => cOld === cNew ? toggle(o) : toggle(getOrder(cNew, values));
+
+  return () => { setSorting((prev) => ({ column: newCol, order: newOrder(prev.order, prev.column, newCol) })) };
 }
 
-export function isEqual(col:number, data: number[][]){
-  
-  return data.reduce((acc,value) => (acc && (data[0][col] === value[col])), true);
+export function isEqual(col: number, data: number[][]) {
+
+  return data.reduce((acc, value) => (acc && (data[0][col] === value[col])), true);
 }
 
-export function tryGetDir(column:number, values:number[][], wanted:SORTODIR){
+export function tryGetDir(column: number, values: number[][], wanted: SORTODIR) {
 
-    const dir = getOrder(column, values);
+  const dir = getOrder(column, values);
 
-    if(dir === SORTODIR.ZERO || dir === SORTODIR.EQUAL){
-        return dir;
-    }else if(wanted === SORTODIR.UP || wanted === SORTODIR.DOWN){
-        return wanted;
-    }
- 
+  if (dir === SORTODIR.ZERO || dir === SORTODIR.EQUAL) {
     return dir;
+  } else if (wanted === SORTODIR.UP || wanted === SORTODIR.DOWN) {
+    return wanted;
+  }
+
+  return dir;
 }

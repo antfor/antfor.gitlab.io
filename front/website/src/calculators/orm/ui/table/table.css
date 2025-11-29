@@ -1,9 +1,3 @@
-
-
-
-
-th:has(.clickable){
+th:has(.clickable) {
     cursor: pointer;
 }
-
-

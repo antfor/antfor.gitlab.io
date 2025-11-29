@@ -10,77 +10,78 @@ import { Increment } from './Increment';
 import './input.css';
 
 interface FormElements extends HTMLFormControlsCollection {
-  weight: HTMLInputElement,
-  reps: HTMLInputElement
-  increment: HTMLInputElement
+    weight: HTMLInputElement,
+    reps: HTMLInputElement
+    increment: HTMLInputElement
 }
 interface InputFormElement extends HTMLFormElement {
-  readonly elements: FormElements
+    readonly elements: FormElements
 }
 type setReact<T> = Dispatch<SetStateAction<T>>
 interface Submit {
-    weight: number|string,
-    reps: number|string,
-    validInputs:boolean,
-    setInputs:((w:number, r:number)=>void),
-    setValidated:setReact<boolean>,
+    weight: number | string,
+    reps: number | string,
+    validInputs: boolean,
+    setInputs: ((w: number, r: number) => void),
+    setValidated: setReact<boolean>,
     e: React.FormEvent<InputFormElement>,
 }
-function handleSubmit(props:Submit) {
+function handleSubmit(props: Submit) {
 
-        props.e.preventDefault();
-    
-        if (props.validInputs) {
+    props.e.preventDefault();
 
-            props.setValidated(false);
-            props.setInputs(Number(props.weight), Number(props.reps))
-        }else{
+    if (props.validInputs) {
 
-            props.e.stopPropagation();
-            props.setValidated(true);
-        }
+        props.setValidated(false);
+        props.setInputs(Number(props.weight), Number(props.reps))
+    } else {
+
+        props.e.stopPropagation();
+        props.setValidated(true);
+    }
 };
 
 interface input {
-    increment:number,
-    Iweight?:number|string,
-    Ireps?:number|string,
-    maxRep?:number, 
-    setIncrement:((i:number)=>void),
-    setInputs:((w:number, r:number)=>void),
+    increment: number,
+    Iweight?: number | string,
+    Ireps?: number | string,
+    maxRep?: number,
+    setIncrement: ((i: number) => void),
+    setInputs: ((w: number, r: number) => void),
 }
 
-export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement, setInputs}:input){
-    
+export function Input({ increment, Iweight = "", Ireps = "", maxRep = 20, setIncrement, setInputs }: input) {
+
     const [validated, setValidated] = useState(false);
     const [weight, setInputWeight] = useState(Iweight);
     const [reps, setInputReps] = useState(Ireps);
-    
-    const refMounted= useRef(null);
+
+    const refMounted = useRef(null);
     const mounted = IsRefMonted(refMounted);
-    
-    const setInput = (c:((n:string)=>void)) => (e:React.ChangeEvent<HTMLInputElement>)=> {c(e.target.value)};
+
+    const setInput = (c: ((n: string) => void)) => (e: React.ChangeEvent<HTMLInputElement>) => { c(e.target.value) };
 
     const maxwWight = 2205;
     const validWeight = isValidWeight(weight, maxwWight)
     const validReps = isValidReps(reps);
-    
+
 
     const tooltipText = `ORM: ${validWeight && validReps ? orm(Number(weight), Number(reps)) : ""}`;
-    const weightError = (isNaNoE(weight) || Number(weight) < 1) ? "Weight ≥ 1kg":`Weight ≤ ${maxwWight.toString()}kg`;
+    const weightError = (isNaNoE(weight) || Number(weight) < 1) ? "Weight ≥ 1kg" : `Weight ≤ ${maxwWight.toString()}kg`;
 
 
-    const submit = (e: React.FormEvent<InputFormElement>) => 
-                {handleSubmit({
-                    weight: weight, reps: reps, validInputs: validWeight && validReps,
-                    setInputs: setInputs, setValidated: setValidated, e:e
-                })}
+    const submit = (e: React.FormEvent<InputFormElement>) => {
+        handleSubmit({
+            weight: weight, reps: reps, validInputs: validWeight && validReps,
+            setInputs: setInputs, setValidated: setValidated, e: e
+        })
+    }
 
-    return(
-        <Form noValidate onSubmit={submit}> 
-        
-            <Stack direction="horizontal" gap={3} className='justify-content-center align-items-start'> 
-            
+    return (
+        <Form noValidate onSubmit={submit}>
+
+            <Stack direction="horizontal" gap={3} className='justify-content-center align-items-start'>
+
                 <FormGroup>
                     <Form.Label htmlFor="weight">Weight:</Form.Label>
                     <OverlayTrigger
@@ -88,20 +89,20 @@ export function Input({increment, Iweight="", Ireps="", maxRep=20, setIncrement,
                         overlay={<Tooltip id="orm-auto">{tooltipText}</Tooltip>}
                         show={mounted && validWeight && validReps}
                     >
-                        <Form.Control ref={refMounted} value={weight} id="weight" isInvalid={validated && !validWeight} type="number" inputMode="decimal" min={0} step={increment} max={100000} onChange={setInput(setInputWeight)}/>                   
+                        <Form.Control ref={refMounted} value={weight} id="weight" isInvalid={validated && !validWeight} type="number" inputMode="decimal" min={0} step={increment} max={100000} onChange={setInput(setInputWeight)} />
                     </OverlayTrigger>
                     <Form.Control.Feedback type="invalid">{weightError}</Form.Control.Feedback>
                 </FormGroup>
 
                 <FormGroup>
                     <Form.Label htmlFor="reps">Reps:</Form.Label>
-                    <Form.Control value={reps} id="reps" isInvalid={validated && !validReps} type="number" inputMode="numeric" min={1} max={maxRep} onChange={setInput(setInputReps)}/>
+                    <Form.Control value={reps} id="reps" isInvalid={validated && !validReps} type="number" inputMode="numeric" min={1} max={maxRep} onChange={setInput(setInputReps)} />
                     <Form.Control.Feedback type="invalid">Reps: 1-20</Form.Control.Feedback>
                 </FormGroup>
             </Stack>
-           <br/>
-            <Stack direction="horizontal" gap={3} className='justify-content-around'> 
-                <Increment increment={increment} setIncrement={setIncrement}/>
+            <br />
+            <Stack direction="horizontal" gap={3} className='justify-content-around'>
+                <Increment increment={increment} setIncrement={setIncrement} />
                 <Button type="submit" className='snake-col'>Submit</Button>
             </Stack>
 

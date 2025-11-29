@@ -1,6 +1,5 @@
-
 /*Button*/
-.snake-col.btn-primary{
+.snake-col.btn-primary {
   background-color: var(--snake-col);
   border-color: var(--snake-col);
   color: black;
@@ -27,8 +26,8 @@
 }
 
 /*Form*/
-#orm-auto{
-  --bs-tooltip-bg: var(--snake-col); 
+#orm-auto {
+  --bs-tooltip-bg: var(--snake-col);
   --bs-tooltip-color: black;
   font-weight: bold;
   font-family: "Oswald", sans-serif;
@@ -39,21 +38,21 @@
   box-shadow: var(--higlight);
 }
 
-#weight{
+#weight {
   border-width: 2px;
   width: 10rem;
 }
 
-#reps{
+#reps {
   border-width: 2px;
   width: 7rem;
 }
 
 .invalid-feedback {
-  display: block; 
+  display: block;
   visibility: hidden;
 }
 
-.is-invalid ~ .invalid-feedback {
+.is-invalid~.invalid-feedback {
   visibility: visible;
 }
