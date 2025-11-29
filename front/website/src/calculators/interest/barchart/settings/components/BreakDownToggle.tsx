@@ -1,7 +1,7 @@
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Stack from 'react-bootstrap/Stack';
-import { breakdownSettings } from '../defaultSettings.ts';
+import { breakdownSettings } from '../defaultSettings.js';
 
 type key<T> = keyof T
 

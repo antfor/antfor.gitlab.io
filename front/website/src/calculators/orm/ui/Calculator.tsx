@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import { calcOneRepMax, simplifyValue, Result, } from './orm/orm.mjs';
@@ -92,7 +92,7 @@ export function Calculator() {
 
   if (dataValid) {
     try {
-      result = calcOneRepMax(Number(input.weight), Number(input.reps), increment);
+      result = useMemo(() => calcOneRepMax(Number(input.weight), Number(input.reps), increment), [input.weight, input.reps, increment]);
       tables = Tables({ result });
     } catch (e) {
       console.error("An error occurred: ", (e as Error).message);
