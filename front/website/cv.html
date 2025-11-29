@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head> 
-    <!-- Required meta tags -->
-    <title>CV - Anton Forsberg</title>
-    <meta charset="utf-8">
-    <meta name="description" content="Anton Forsberg's CV">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
 
-    <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="/src/cv/cv.css" />
+<head>
+  <!-- Required meta tags -->
+  <title>CV - Anton Forsberg</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Anton Forsberg's CV">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.png">
 
-    <!-- JS -->
-    <script type="module" src="/src/cv/cv.mts" defer></script> <!-- todo make async -->
-    <script type="module" src="/src/components/navbar/Navbar.tsx" defer></script> <!-- todo make async -->
-    <script type="module" src="/src/cv/pdf.mjs" defer></script> <!-- todo make async -->
-    <script src="https://acrobatservices.adobe.com/view-sdk/viewer.js" defer></script> <!-- todo make async -->
-   
-  </head>
-  <body>
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="/src/cv/cv.css" />
 
-    <div id="navbar" active="CV" fixed="true"></div>
+  <!-- JS -->
+  <script type="module" src="/src/cv/cv.mts" defer></script> <!-- todo make async -->
+  <script type="module" src="/src/components/navbar/Navbar.tsx" defer></script> <!-- todo make async -->
+  <script type="module" src="/src/cv/pdf.mjs" defer></script> <!-- todo make async -->
+  <script src="https://acrobatservices.adobe.com/view-sdk/viewer.js" defer></script> <!-- todo make async -->
 
-    <div class="pdf-viewer"> 
-      <div id="adobe-dc-view"></div>
-    </div>
+</head>
 
-  </body>
+<body>
+
+  <div id="navbar" active="CV" fixed="true"></div>
+
+  <div class="pdf-viewer">
+    <div id="adobe-dc-view"></div>
+  </div>
+
+</body>
+
 </html>

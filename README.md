@@ -8,14 +8,14 @@ https://anton-forsberg.com/cv
 
 ## Projects
 
-### Compund Intrest Calulator
+### Compound Interest Calculator 
 
-https://anton-forsberg.com/projects/intrest#calculator
+https://anton-forsberg.com/projects/interest#calculator
 
 ### 3D L-systems
 
 https://anton-forsberg.com/projects/l-system
 
-### One-Rep-Max Calulator
+### One-Rep-Max Calculator
 
 https://anton-forsberg.com/projects/orm?weight=50&reps=10
