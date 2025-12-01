@@ -4,6 +4,13 @@
   unicode-range: U+002D, U+004D, U+004F, U+0052, U+0061, U+0065, U+006E, U+0070, U+0078;
 }
 
+@font-face {
+    font-family: 'Oswald';
+    src: url(/orm/oswald.woff2) format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
   --higlight-col: rgba(255, 165, 0, 0.9);
   --higlight: 0 0 10px var(--higlight-col);
@@ -27,7 +34,7 @@ body {
 }
 
 .oswald-regular {
-  font-family: "Oswald", sans-serif;
+  font-family: "Oswald";
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;

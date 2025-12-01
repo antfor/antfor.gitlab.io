@@ -30,7 +30,7 @@
   --bs-tooltip-bg: var(--snake-col);
   --bs-tooltip-color: black;
   font-weight: bold;
-  font-family: "Oswald", sans-serif;
+  font-family: "Oswald";
 }
 
 .form-control:focus {
