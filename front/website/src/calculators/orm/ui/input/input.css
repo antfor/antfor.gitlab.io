@@ -33,18 +33,25 @@
   font-family: "Oswald";
 }
 
+.form-control{
+  caret-color:#d46f2e;
+  border-width: 2px;
+}
+
+.form-control.is-invalid{
+  caret-color:#dc3545;
+}
+
 .form-control:focus {
   border: 2px solid #d46f2e;
   box-shadow: var(--higlight);
 }
 
-#weight {
-  border-width: 2px;
+#weight{
   width: 10rem;
 }
 
 #reps {
-  border-width: 2px;
   width: 7rem;
 }
 
