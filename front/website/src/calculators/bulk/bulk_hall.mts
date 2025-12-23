@@ -1,8 +1,7 @@
 type Params = {
   rhoF?: number;      // kcal per kg stored fat
-  rhoL?: number;      // kcal per kg lean tissue
-  pRatio?: number;    // fraction of energy change stored as lean
-  adaptCoeff?: number;// adaptive thermogenesis per kcal change (fraction)
+  adaptCoeff?: number; // fraction of intake change that becomes AT (e.g., 0.1 = 10%)
+  tau?: number; // AT time constant in days (default 21)
   activityK?: number; // activity coefficient (k) such that A = k * weight
 };
 
@@ -11,20 +10,20 @@ export function hallSim(
   w0: number,                         
   bf0: number,                        
   f1: number,
-  gainWeight:boolean = true, 
-  days?: number, 
+  days: number = 365*10, 
   cutof = 1,                   
   params: Params = {},
 ) {
   // defaults based on Hall papers and practical choices
   const rhoF = params.rhoF ?? 7700;      // kcal per kg stored fat
-  const rhoL = params.rhoL ?? 1000;      // kcal per kg lean
-  const p = params.pRatio ?? 0.1;        // lean partitioning (0.0–0.3 typical)
-  const adapt = params.adaptCoeff ?? 0.0005; // AT per kcal change
+  const adapt = params.adaptCoeff ?? 0.1; // AT per kcal change
+  const tau = params.tau ?? 21; // days to approach AT target
   const results = [];
-
+  
   let F = w0 * bf0;
   let L = w0 - F;
+  let adaptive = 0;
+  let adaptive_target = 0;
 
   const bmrFromLBM = (lbm:number) => 370 + 21.6 * lbm;
 
@@ -32,26 +31,29 @@ export function hallSim(
   const baseTDEE = baseBMR * f1;
   const k = (baseTDEE - baseBMR) / w0;
   const intake = baseTDEE + surplus;
+  const maxAdaptive = 0.15 * baseBMR;
 
-  const cmp = days == null ? ()=>true : (day:number)=> day < days;
+  const dt = 1;
+  const maxSteps = days/dt;
 
-  for (let day = 0; cmp(day); day++) {
+  for (let step = 0; step < maxSteps; step+=dt) {
    
+    const day = Math.round(step);
     const weight = F + L;
     const bmr = bmrFromLBM(L);
     const activity = k * weight;
-    const adaptive = adapt * (intake - baseTDEE);
+    
     const tdee = bmr + activity + adaptive;
+
+    adaptive_target = adapt * (intake - tdee);
+    adaptive += (adaptive_target-adaptive) * dt/tau ;
+    adaptive = Math.min(Math.max(adaptive, -maxAdaptive), maxAdaptive);
 
     const energyImbalance = intake - tdee;
 
-    const dE_lean = p * energyImbalance;
-    const dE_fat = (1 - p) * energyImbalance;
+    const dF  = energyImbalance / rhoF * dt
 
-    const dL = dE_lean / rhoL;
-    const dF = dE_fat / rhoF;
-
-    L = Math.max(0.0, L + dL);
+    L = Math.max(0.0, L);
     F = Math.max(0.0, F + dF);
 
     results.push({
@@ -66,9 +68,7 @@ export function hallSim(
       energyImbalance
     });
 
-    if(gainWeight && energyImbalance <= cutof){
-        return results;
-    }else if(!gainWeight && energyImbalance >= cutof){
+    if(Math.abs(energyImbalance) <= cutof){
         return results;
     }
   }
