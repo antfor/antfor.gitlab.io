@@ -36,47 +36,23 @@ export default function Ui(){
             mb_data.push(mifflin_bulk_weight(Number(surplus),f,Number(weight),Number(height),Number(age)));
         }
         if(validateH(surplus,f,weight,bf)){
-            hb_data.push(hallSim(Number(surplus),Number(weight),Number(bf),f,Number(surplus) > 0));
+            hb_data.push(hallSim(Number(surplus),Number(weight),Number(bf),f));
         }   
     }
 
-    const isLess = (day:number) => {
-        
-        if(weeks == "" && months == "" && years == ""){
-            return true;
-        }
-
-        let days = months == "" ? 0:months*30;
-        days += weeks == "" ? 0:weeks*7;
-        days += years == "" ? 0:years*365;
-
-        return day <= days;
-    }
-
-    const isEq = (day:number) => {
-        
-        if(weeks == "" && months == "" && years == ""){
-            return false;
-        }
-
-        let days = months == "" ? 0:months*30;
-        days += weeks == "" ? 0:weeks*7;
-        days += years == "" ? 0:years*365;
-
-        return day == days;
-    }
+    const cmp = (day:number, less:boolean) => cmpDay(day, weeks, months, years, less);
 
     let hb_chart_data = hb_data.map((dataset) => dataset.map((value) => {return{ x:value.day, y:value.weight }}));
     hb_chart_data = hb_chart_data.map((dataset)=> dataset.filter((data)=> 
-        (data.x%7==0 && isLess(data.x)) || isEq(data.x)));
+        (data.x%7==0 && cmp(data.x,true)) || cmp(data.x,false)));
 
     const hb_weight_data = hb_chart_data.map((value) => value[value.length-1].y);
 
     return (
     <div className="appContainer">
       <header className="appHeader">
-        <h1>Bulking calculator</h1>
-        <div className="subtitle">Compare Mifflin-St Jeor and Hall simulations</div>
+        <h1>Recomp/Bulking calculator</h1>
+        <div className="subtitle">How much fat you gain/loose whiles training to retain lean mass</div>
       </header>
 
       <section className="section">
@@ -137,6 +113,22 @@ function input(label:string, value:number|"", setValue:(n:number|"")=>void, min:
                onChange={(e) => { const val = e.target.value; setValue(val === "" ? "" : Number(val)); }} /> 
     </div> 
     ); 
+}
+
+function cmpDay(day:number, weeks:(number|""), months:(number|""), years:(number|""), LessNotEq = true) {
+        
+  if(weeks == "" && months == "" && years == ""){
+      return LessNotEq;
+  }
+
+  let days = months == "" ? 0:months*30;
+  days += weeks == "" ? 0:weeks*7;
+  days += years == "" ? 0:years*365;
+
+  if(LessNotEq){
+    return day <= days;
+  }
+  return day == days;
 }
 
 function validateM(
