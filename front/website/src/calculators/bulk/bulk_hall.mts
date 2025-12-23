@@ -11,7 +11,7 @@ export function hallSim(
   bf0: number,                        
   f1: number,
   days: number = 365*10, 
-  cutof = 1,                   
+  cutoff = 1,                   
   params: Params = {},
 ) {
   // defaults based on Hall papers and practical choices
@@ -21,7 +21,7 @@ export function hallSim(
   const results = [];
   
   let F = w0 * bf0;
-  let L = w0 - F;
+  const L = w0 - F;
   let adaptive = 0;
   let adaptive_target = 0;
 
@@ -31,7 +31,12 @@ export function hallSim(
   const baseTDEE = baseBMR * f1;
   const k = (baseTDEE - baseBMR) / w0;
   const intake = baseTDEE + surplus;
-  const maxAdaptive = 0.15 * baseBMR;
+
+  const maxAdaptiveUp = 0.15 * baseBMR;
+  const maxAdaptiveDown = -0.25 * baseBMR;
+  const adaptUp = adapt;
+  const adaptDown = adapt * 2.0; 
+  const minFat = 0.05 * w0; 
 
   const dt = 1;
   const maxSteps = days/dt;
@@ -44,17 +49,21 @@ export function hallSim(
     const activity = k * weight;
     
     const tdee = bmr + activity + adaptive;
-
-    adaptive_target = adapt * (intake - tdee);
-    adaptive += (adaptive_target-adaptive) * dt/tau ;
-    adaptive = Math.min(Math.max(adaptive, -maxAdaptive), maxAdaptive);
-
     const energyImbalance = intake - tdee;
+    
+    const adaptEff = energyImbalance > 0 ? adaptUp : adaptDown;
+    adaptive_target = adaptEff * energyImbalance;
+    adaptive += (adaptive_target-adaptive) * dt/tau ;
+    adaptive = Math.min(Math.max(adaptive, maxAdaptiveDown), maxAdaptiveUp);
 
-    const dF  = energyImbalance / rhoF * dt
 
-    L = Math.max(0.0, L);
-    F = Math.max(0.0, F + dF);
+    let dF  = energyImbalance / rhoF * dt
+
+    if (dF < 0) {
+      dF = Math.max(dF, minFat - F);
+    } 
+
+    F += dF;
 
     results.push({
       day,
@@ -68,7 +77,7 @@ export function hallSim(
       energyImbalance
     });
 
-    if(Math.abs(energyImbalance) <= cutof){
+    if(Math.abs(energyImbalance) <= cutoff){
         return results;
     }
   }

@@ -51,8 +51,8 @@ export default function Ui(){
     return (
     <div className="appContainer">
       <header className="appHeader">
-        <h1>Recomp/Bulking calculator</h1>
-        <div className="subtitle">How much fat you gain/loose whiles training to retain lean mass</div>
+        <h1>Bulking/Cutting Calculator</h1>
+        <div className="subtitle">Estimate fat gain or loss when starting at maintenance while training to maintain lean mass</div>                          
       </header>
 
       <section className="section">
