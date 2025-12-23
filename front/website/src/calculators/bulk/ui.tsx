@@ -3,10 +3,7 @@ import { useState } from 'react';
 import {mifflin_bulk_weight} from './bulk_mifflin.mjs';
 import {hallSim} from './bulk_hall.mjs';
 import {Chart} from './chart';
-
-
-
-
+import './ui.css';
 
 
 export default function Ui(){
@@ -75,33 +72,44 @@ export default function Ui(){
 
     const hb_weight_data = hb_chart_data.map((value) => value[value.length-1].y);
 
+    return (
+    <div className="appContainer">
+      <header className="appHeader">
+        <h1>Bulking calculator</h1>
+        <div className="subtitle">Compare Mifflin-St Jeor and Hall simulations</div>
+      </header>
 
-    return(
-    <>
-    <h1>Bulking calculator</h1>
+      <section className="section">
+        <form className="controls" onSubmit={(e)=>{e.preventDefault()}}>
+          {input("Surplus",surplus,setSurplus,-4000,4000,50)}
+          {input("Weight",weight,setWeight,30,150,5)}
+          {input("Height",height,setHeight,120,230,2.5)}
+          {input("Age",age,setAge,14,90,1)}
+          {input("Bodyfat%",bf,setBf,0.01,0.59,0.01)}
+          {input("Activity level (1-2.5)",f,setF,1,2.5,0.1)}
+        </form>
+      </section>
 
-    <form style={{ display: "flex", gap: "1rem" }}> 
-        {input("Surplus",surplus,setSurplus,-4000,4000,50)}
-        {input("Weight",weight,setWeight,30,150,5)}
-        {input("Height",height,setHeight,120,230,2.5)}
-        {input("Age",age,setAge,14,90,1)}
-        {input("Bodyfat%",bf,setBf,0.01,0.59,0.01)}
-        {input("Activity level (1-2.5)",f,setF,1,2.5,0.1)}
-    </form>
+      <section className="section">
+        <h2>Mifflin-St Jeor equation</h2>
+        {Table(Number(weight),mb_data,fs)}
+      </section>
 
-    <h2>Mifflin-St Jeor equation</h2>
-    {Table(Number(weight),mb_data,fs)}
-    
-    <h2>Hall simulation</h2>
-    {input("Weeks",weeks,setWeeks,0,7*52*10,1)}
-    {input("Months",months,setMonths,0,12*10,1)}
-    {input("Years",years,setYears,0,10,1)}
-    {Table(Number(weight),hb_weight_data,fs)}
+      <section className="section">
+        <h2>Hall simulation</h2>
+        <div className="controls" style={{marginBottom:12}}>
+          {input("Weeks",weeks,setWeeks,0,7*52*10,1)}
+          {input("Months",months,setMonths,0,12*10,1)}
+          {input("Years",years,setYears,0,10,1)}
+        </div>
+        {Table(Number(weight),hb_weight_data,fs)}
+        <div className="chartWrap">
+          {Chart(hb_chart_data, fs)}
+        </div>
+      </section>
+    </div>
+  );
 
-    {Chart(hb_chart_data, fs)}
-
-    </>
-    );
 }
 
 function Table(weight:number, data:number[], fs:number[]){
@@ -121,14 +129,14 @@ function Table(weight:number, data:number[], fs:number[]){
     );
 }
 
-function input(label:string, value:number|"", setValue:(n:number|"")=>void,  min:number, max:number, step:number){
-    
-    return(  
-        <label>{label}:
-            <input type="number" value={value} min={min} max={max} step={step} onChange={(e) => { const val = e.target.value; setValue(val === "" ? "" : Number(val)); }}/>
-        </label>
-        
-    );
+function input(label:string, value:number|"", setValue:(n:number|"")=>void, min:number, max:number, step:number){ 
+    return ( 
+    <div className="control" key={label}> 
+        <label>{label}</label> 
+        <input type="number" value={value} min={min} max={max} step={step} 
+               onChange={(e) => { const val = e.target.value; setValue(val === "" ? "" : Number(val)); }} /> 
+    </div> 
+    ); 
 }
 
 function validateM(
@@ -138,7 +146,6 @@ function validateM(
   height: number | "",
   age: number | ""
 ): boolean {
-  // Convert empty strings to NaN for easy checking
   const s = Number(surplus);
   const af = Number(f);
   const w = Number(weight);
@@ -158,7 +165,7 @@ function validateH(
   surplus: number | "",
   f: number | "",
   weight: number | "",
-  bf: number | ""   // body‑fat fraction (0.20 = 20%)
+  bf: number | ""
 ): boolean {
   const s = Number(surplus);
   const af = Number(f);
@@ -169,7 +176,6 @@ function validateH(
   if (!Number.isFinite(af) || af < 1.0 || af > 2.5) return false;
   if (!Number.isFinite(w) || w < 30 || w > 150) return false;
 
-  // Body‑fat must be a fraction, not percent
   if (!Number.isFinite(bodyfat) || bodyfat <= 0 || bodyfat >= 0.6) return false;
 
   return true;
@@ -183,6 +189,6 @@ function round(n: number, d = 0) {
 function simplifyValue(value: number, decimals: number) {
     return new Intl.NumberFormat("en-US", {
         style: "decimal",
-    }).format(round(value, decimals) + 0); // +0 to remove -0
+    }).format(round(value, decimals) + 0);
 }
 

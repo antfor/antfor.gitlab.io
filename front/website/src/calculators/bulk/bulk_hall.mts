@@ -8,32 +8,29 @@ type Params = {
 
 export function hallSim(
   surplus:number,
-  w0: number,                         // initial weight (kg)
-  bf0: number,                        // initial body fat fraction (0-1)
-  f1: number,                         // initial activity multiplier (PAL-like)
+  w0: number,                         
+  bf0: number,                        
+  f1: number,
   gainWeight:boolean = true, 
   days?: number, 
   cutof = 1,                   
   params: Params = {},
 ) {
   // defaults based on Hall papers and practical choices
-  const rhoF = params.rhoF ?? 7700;      // kcal per kg stored fat (practical)
-  const rhoL = params.rhoL ?? 1000;      // kcal per kg lean (approx)
+  const rhoF = params.rhoF ?? 7700;      // kcal per kg stored fat
+  const rhoL = params.rhoL ?? 1000;      // kcal per kg lean
   const p = params.pRatio ?? 0.1;        // lean partitioning (0.0–0.3 typical)
-  const adapt = params.adaptCoeff ?? 0.0005; // AT per kcal change (tunable)
+  const adapt = params.adaptCoeff ?? 0.0005; // AT per kcal change
   const results = [];
 
-  // initial compartments
   let F = w0 * bf0;
   let L = w0 - F;
 
-  // helper: BMR from Katch–McArdle
   const bmrFromLBM = (lbm:number) => 370 + 21.6 * lbm;
 
-  // estimate activity coefficient k so that base A = base_tdee - base_bmr
   const baseBMR = bmrFromLBM(L);
   const baseTDEE = baseBMR * f1;
-  const k = (baseTDEE - baseBMR) / w0; // A = k * w
+  const k = (baseTDEE - baseBMR) / w0;
   const intake = baseTDEE + surplus;
 
   const cmp = days == null ? ()=>true : (day:number)=> day < days;
@@ -43,15 +40,14 @@ export function hallSim(
     const weight = F + L;
     const bmr = bmrFromLBM(L);
     const activity = k * weight;
-    const adaptive = adapt * (intake - baseTDEE); // simple AT proportional to intake change
+    const adaptive = adapt * (intake - baseTDEE);
     const tdee = bmr + activity + adaptive;
 
-    const energyImbalance = intake - tdee; // positive => storage
-    // partition energy imbalance into lean and fat
+    const energyImbalance = intake - tdee;
+
     const dE_lean = p * energyImbalance;
     const dE_fat = (1 - p) * energyImbalance;
 
-    // convert energy to mass (kg)
     const dL = dE_lean / rhoL;
     const dF = dE_fat / rhoF;
 
