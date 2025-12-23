@@ -1,12 +1,11 @@
 
 import { useState } from 'react';
 import {mifflin_bulk_weight} from './bulk_mifflin.mjs';
-import {katch_bulk_weight} from './bulk_katch.mjs';
+import {hallSim} from './bulk_hall.mjs';
+import {Chart} from './chart';
 
 
-//nhs 1.4-2.5, default 1.6
-const fs = [1,1.2,1.4,1.6,1.9];
-const bfs = [0.1,0.15,0.2,0.25];
+
 
 
 
@@ -17,49 +16,95 @@ export default function Ui(){
     const [height, setHeight] = useState<number | "">(182);
     const [age, setAge] = useState<number | "">(27);
 
+    const [bf, setBf] = useState<number | "">(0.15);
+    const [f, setF] = useState<number | "">("");
+
+    const [weeks, setWeeks] = useState<number | "">(0);
+    const [months, setMonths] = useState<number | "">(12);
+    const [years, setYears] = useState<number | "">(0);
+
+    //nhs 1.4-2.5, default 1.6
+    const fs = [1,1.2,1.4,1.6,1.9];
+    
+    if(f != ""){
+        fs.push(f);
+    }
 
     const mb_data = [];
-    const kb_data = [];
-
-    
-    for(const bf of bfs){
-        const tmp = [];
-        for(const f of fs){
-            if(validateK(surplus,f,weight,bf))    
-                tmp.push(katch_bulk_weight(Number(surplus),Number(weight),bf,f));
-        }
-        kb_data.push(tmp);
-    }
+    const hb_data = [];
 
    
     for(const f of fs){
-         if(validateM(surplus,f,weight,height,age)){
-            mb_data.push(mifflin_bulk_weight(Number(surplus),f,Number(weight),Number(height),Number(    age)));
-         }
+        if(validateM(surplus,f,weight,height,age)){
+            mb_data.push(mifflin_bulk_weight(Number(surplus),f,Number(weight),Number(height),Number(age)));
+        }
+        if(validateH(surplus,f,weight,bf)){
+            hb_data.push(hallSim(Number(surplus),Number(weight),Number(bf),f,Number(surplus) > 0));
+        }   
     }
+
+    const isLess = (day:number) => {
+        
+        if(weeks == "" && months == "" && years == ""){
+            return true;
+        }
+
+        let days = months == "" ? 0:months*30;
+        days += weeks == "" ? 0:weeks*7;
+        days += years == "" ? 0:years*365;
+
+        return day <= days;
+    }
+
+    const isEq = (day:number) => {
+        
+        if(weeks == "" && months == "" && years == ""){
+            return false;
+        }
+
+        let days = months == "" ? 0:months*30;
+        days += weeks == "" ? 0:weeks*7;
+        days += years == "" ? 0:years*365;
+
+        return day == days;
+    }
+
+    let hb_chart_data = hb_data.map((dataset) => dataset.map((value) => {return{ x:value.day, y:value.weight }}));
+    hb_chart_data = hb_chart_data.map((dataset)=> dataset.filter((data)=> 
+        (data.x%7==0 && isLess(data.x)) || isEq(data.x)));
+
+    const hb_weight_data = hb_chart_data.map((value) => value[value.length-1].y);
+
 
     return(
     <>
     <h1>Bulking calculator</h1>
 
     <form style={{ display: "flex", gap: "1rem" }}> 
-        {input("Surplus",surplus,setSurplus,-2000,2000,50)}
+        {input("Surplus",surplus,setSurplus,-4000,4000,50)}
         {input("Weight",weight,setWeight,30,150,5)}
-        {input("height",height,setHeight,120,230,2.5)}
-        {input("age",age,setAge,14,90,1)}
+        {input("Height",height,setHeight,120,230,2.5)}
+        {input("Age",age,setAge,14,90,1)}
+        {input("Bodyfat%",bf,setBf,0.01,0.59,0.01)}
+        {input("Activity level (1-2.5)",f,setF,1,2.5,0.1)}
     </form>
-    
-    <h2>Katch-McArdle equation</h2>
-    {TableK(Number(weight),kb_data)}
 
     <h2>Mifflin-St Jeor equation</h2>
-    {TableM(Number(weight),mb_data)}
+    {Table(Number(weight),mb_data,fs)}
+    
+    <h2>Hall simulation</h2>
+    {input("Weeks",weeks,setWeeks,0,7*52*10,1)}
+    {input("Months",months,setMonths,0,12*10,1)}
+    {input("Years",years,setYears,0,10,1)}
+    {Table(Number(weight),hb_weight_data,fs)}
+
+    {Chart(hb_chart_data, fs)}
 
     </>
     );
 }
 
-function TableM(weight:number, data:number[]){
+function Table(weight:number, data:number[], fs:number[]){
     return(
         <table className="gridTable"> 
             <thead> 
@@ -71,26 +116,6 @@ function TableM(weight:number, data:number[]){
                 <tr>
                     {data.map((d,i)=><td key={i}>{" "+simplifyValue(d,2)+"kg ("+simplifyValue(d-weight,2)+"kg) "}</td>)}
                 </tr>
-            </tbody>
-        </table> 
-    );
-}
-
-function TableK(weight:number, data:number[][]){
-    return(
-        <table className="gridTable"> 
-            <thead> 
-                <tr> 
-                    <th>bf%</th>
-                    {fs.map((f,i) => <th key={i}>{f}</th> )}
-                </tr> 
-            </thead>
-            <tbody>
-                {data.map((row,i) =>
-                    <tr key={i}>
-                        <td>{bfs[i]}</td>
-                        {row.map((d,i)=><td key={i}>{" "+simplifyValue(d,2)+"kg ("+simplifyValue(d-weight,2)+"kg) "}</td>)}
-                    </tr>)}
             </tbody>
         </table> 
     );
@@ -120,7 +145,7 @@ function validateM(
   const h = Number(height);
   const a = Number(age);
 
-  if (!Number.isFinite(s) || s < -2000 || s > 2000) return false;
+  if (!Number.isFinite(s) || s < -4000 || s > 4000) return false;
   if (!Number.isFinite(af) || af < 1.0 || af > 2.5) return false;
   if (!Number.isFinite(w) || w < 30 || w > 150) return false;
   if (!Number.isFinite(h) || h < 120 || h > 230) return false;
@@ -129,7 +154,7 @@ function validateM(
   return true;
 }
 
-function validateK(
+function validateH(
   surplus: number | "",
   f: number | "",
   weight: number | "",
@@ -140,7 +165,7 @@ function validateK(
   const w = Number(weight);
   const bodyfat = Number(bf);
 
-  if (!Number.isFinite(s) || s < -2000 || s > 2000) return false;
+  if (!Number.isFinite(s) || s < -4000 || s > 4000) return false;
   if (!Number.isFinite(af) || af < 1.0 || af > 2.5) return false;
   if (!Number.isFinite(w) || w < 30 || w > 150) return false;
 
