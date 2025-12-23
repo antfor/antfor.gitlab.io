@@ -19,6 +19,7 @@ export default defineConfig({
         lsys: resolve(__dirname, 'projects/l-system.html'),
         calc: resolve(__dirname, 'projects/interest.html'),
         orm: resolve(__dirname, 'projects/orm.html'),
+        bulk: resolve(__dirname, 'bulk.html'),
       },
     },
   },
