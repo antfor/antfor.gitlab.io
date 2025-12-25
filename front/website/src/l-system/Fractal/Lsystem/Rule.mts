@@ -1,7 +1,7 @@
-import {State, Vec3} from './State.mts';
+import {State} from './State.mts';
 
 //pred
-export type value = number | number[] | Vec3;
+export type value = number | number[];
 type predElem = string | value;
 export type pred = string | predElem[];
 
