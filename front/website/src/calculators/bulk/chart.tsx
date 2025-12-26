@@ -24,6 +24,7 @@ ChartJS.register(
 
 const options:ChartOptions<'line'> = {
   responsive: true,
+  maintainAspectRatio: false,
   scales: { 
     x: { 
     type: "linear", // important for {x,y} numeric points 
