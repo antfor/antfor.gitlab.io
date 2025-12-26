@@ -45,13 +45,13 @@ const options:ChartOptions<'line'> = {
 };
 
 
-function data(dataSets:{x: number;y: number;}[][], labels:number[]):ChartData<'line'>{
+function data(dataSets:{x: number;y: number;}[][], labels:string[]):ChartData<'line'>{
     const colors = ["#3F51B5","#E91E63","#FF9800","#4CAF50","#00BCD4","#9C27B0"];
     const fills = [ "rgba(63,81,181,0.20)", "rgba(233,30,99,0.20)", "rgba(255,152,0,0.20)", "rgba(76,175,80,0.20)", "rgba(0,188,212,0.20)", "rgba(156,39,176,0.20)" ];
     return {
         datasets: dataSets.map((dataSet,i)=> { return(
             {
-            label: "Activity:" + labels[i].toString(),
+            label: labels[i],
             data: dataSet,
             borderColor:colors[i%colors.length],
             backgroundColor:fills[i%fills.length],
@@ -60,6 +60,6 @@ function data(dataSets:{x: number;y: number;}[][], labels:number[]):ChartData<'l
         };
 }
 
-export function Chart(dataSets:{x: number;y: number;}[][], labels:number[]) {
+export function Chart(dataSets:{x: number;y: number;}[][], labels:string[]) {
   return <Line options={options} data={data(dataSets, labels)} />;
 }
