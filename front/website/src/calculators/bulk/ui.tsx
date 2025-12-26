@@ -3,6 +3,7 @@ import { useState } from 'react';
 import {hallSim} from './bulk_hall.mjs';
 import {Chart} from './chart';
 import './ui.css';
+import { getCalories, getRFL } from './rlf.mts';
 
 
 export default function Ui(){
@@ -16,6 +17,8 @@ export default function Ui(){
     const [weeks, setWeeks] = useState<number | "">(0);
     const [months, setMonths] = useState<number | "">(0);
     const [years, setYears] = useState<number | "">(1);
+
+    const [carbs, setCarbs] = useState<number | "">(0);
 
     const kcals = [2000,2250,2500,2750,3000];
     
@@ -41,6 +44,7 @@ export default function Ui(){
 
     const hb_weight_data = hb_chart_data.map((value) => value[value.length-1].y);
     const labels = hb_chart_data.map((value) => simplifyValue(value[0].tdee,0)+"kalc");
+    const tdee = hb_chart_data.map((value) => value[0].tdee);
 
     return (
     <div className="appContainer">
@@ -70,9 +74,68 @@ export default function Ui(){
           {Chart(hb_chart_data, labels)}
         </div>
       </section>
+
+      <div className="controls" style={{alignItems: "flex-start" }}>
+      <section className="section">
+        <h2>RFL</h2>
+          <form className="controls" onSubmit={(e)=>{e.preventDefault()}}>
+          {input("extra carbs:",carbs,setCarbs,0,1000,10)}
+        </form>
+        <div className="controls">
+          {rfl(Number(weight), Number(bf), Number(carbs))}
+        </div>
+      </section>
+
+      <section className="section">
+        {TableRfl(Number(weight), Number(bf),tdee, labels, Number(carbs))}
+      </section>
+      </div>
+
     </div>
   );
 
+}
+
+function rfl(weight:number, bf:number, carbs=0, male=true){
+  const cat = getRFL(bf, male);
+  const kcal = getCalories(weight, bf, cat, carbs);
+  const s =(s:number) => simplifyValue(s,0);
+  return(
+    <>
+    <div>
+      <p><b>Calorise: </b>{s(kcal[0])}-{s(kcal[1])} kcal/day</p>
+      <p>&emsp;<b>protine:</b> {s(cat.protein[0]*weight)}-{s(cat.protein[1]*weight)}g/day</p>
+      <p>&emsp;<b>fat:</b> ~{cat.fat}g/day</p>
+      <p>&emsp;<b>carbs:</b> ~{carbs}g/day</p>
+      <p><b>Diet length:</b> {cat.length[0]}-{cat.length[1]} {cat.Period}</p>
+    </div>
+    </>
+  );
+}
+
+function TableRfl(weight:number, bf:number, tdee:number[], labels:string[], carbs=0, male=true){
+  const cat = getRFL(bf, male);
+  const kcal = getCalories(weight, bf, cat, carbs);
+    return(
+        <table className="gridTable"> 
+            <thead> 
+                <tr> 
+                    <th>Maintenance Calories:</th>
+                    {labels.map((label,i) => <th key={i}>{label}</th> )}
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Deficit(high):</td>
+                    {tdee.map((d,i)=><td key={i}>{" "+simplifyValue(kcal[1]-d,0)+"kcal "}</td>)}
+                </tr>
+                <tr>
+                    <td>Deficit(low):</td>
+                    {tdee.map((d,i)=><td key={i}>{" "+simplifyValue(kcal[0]-d,0)+"kcal "}</td>)}
+                </tr>
+            </tbody>
+        </table> 
+    );
 }
 
 function Table(weight:number, data:number[], labels:string[]){
