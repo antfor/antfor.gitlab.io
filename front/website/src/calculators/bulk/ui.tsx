@@ -117,6 +117,7 @@ function TableRfl(weight:number, bf:number, tdee:number[], labels:string[], carb
   const cat = getRFL(bf, male);
   const kcal = getCalories(weight, bf, cat, carbs);
     return(
+      <div className="tableWrapper">
         <table className="gridTable"> 
             <thead> 
                 <tr> 
@@ -135,11 +136,13 @@ function TableRfl(weight:number, bf:number, tdee:number[], labels:string[], carb
                 </tr>
             </tbody>
         </table> 
+      </div>
     );
 }
 
 function Table(weight:number, data:number[], labels:string[]){
     return(
+      <div className="tableWrapper">
         <table className="gridTable"> 
             <thead> 
                 <tr> 
@@ -154,6 +157,7 @@ function Table(weight:number, data:number[], labels:string[]){
                 </tr>
             </tbody>
         </table> 
+      </div>
     );
 }
 

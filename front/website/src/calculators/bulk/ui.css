@@ -83,6 +83,7 @@
   border-radius: var(--radius);
   padding: 16px;
   box-shadow: var(--surface-shadow);
+  max-width: 100%; 
   margin-bottom: 18px;
 }
 .section h2 {
@@ -91,11 +92,15 @@
 }
 
 /* Table */
+.tableWrapper { 
+  overflow-x: auto;
+   max-width: 100%; 
+}
+
 .gridTable {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
-  overflow: auto;
 }
 .gridTable thead th {
   text-align:center;
