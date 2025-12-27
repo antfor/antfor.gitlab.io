@@ -1,9 +1,9 @@
 
 import { useState } from 'react';
-import {hallSim} from './bulk_hall.mjs';
+import {hallSim} from './js/bulk_hall.mjs';
+import { getCalories, getRFL } from './js/rlf.mts';
 import {Chart} from './chart';
 import './ui.css';
-import { getCalories, getRFL } from './rlf.mts';
 
 
 export default function Ui(){
@@ -142,7 +142,6 @@ function TableRfl(weight:number, bf:number, tdee:number[], labels:string[], carb
 }
 
 function Table(weight:number, bf:number, data:number[], days:{x:number}[], labels:string[]){
-    //TODO add days to reach gaol
     const lbm = weight * (1- bf);
 
     return(

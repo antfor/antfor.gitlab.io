@@ -16,8 +16,8 @@ function toTuple<T>(a:T,b:T):Tuple<T>{
 }
 
 enum Period{
-    Week="week",
-    Day="day"
+    Week="weeks",
+    Day="days"
 }
 
 const RFL_PARAMS = {
