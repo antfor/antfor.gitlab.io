@@ -45,6 +45,7 @@ export default function Ui(){
     const hb_weight_data = hb_chart_data.map((value) => value[value.length-1].y);
     const labels = hb_chart_data.map((value) => simplifyValue(value[0].tdee,0)+"kalc");
     const tdee = hb_chart_data.map((value) => value[0].tdee);
+    const days = hb_chart_data.map((m) => m.reduceRight((a,c) => (c.y == m[m.length-1].y) ? c : a));
 
     return (
     <div className="appContainer">
@@ -63,13 +64,13 @@ export default function Ui(){
       </section>
 
       <section className="section">
-        <h2>Hall simulation</h2>
+        <h2>Adaptive Weight Change Projection</h2>
         <div className="controls" style={{marginBottom:12}}>
           {input("Weeks",weeks,setWeeks,0,7*52*10,1)}
           {input("Months",months,setMonths,0,12*10,1)}
           {input("Years",years,setYears,0,10,1)}
         </div>
-        {Table(Number(weight),hb_weight_data,labels)}
+        {Table(Number(weight), Number(bf), hb_weight_data, days, labels)}
         <div className="chartWrap">
           {Chart(hb_chart_data, labels)}
         </div>
@@ -140,7 +141,10 @@ function TableRfl(weight:number, bf:number, tdee:number[], labels:string[], carb
     );
 }
 
-function Table(weight:number, data:number[], labels:string[]){
+function Table(weight:number, bf:number, data:number[], days:{x:number}[], labels:string[]){
+    //TODO add days to reach gaol
+    const lbm = weight * (1- bf);
+
     return(
       <div className="tableWrapper">
         <table className="gridTable"> 
@@ -154,6 +158,14 @@ function Table(weight:number, data:number[], labels:string[]){
                 <tr>
                     <td>End Weight:</td>
                     {data.map((d,i)=><td key={i}>{" "+simplifyValue(d,2)+"kg ("+simplifyValue(d-weight,2)+"kg) "}</td>)}
+                </tr>
+                <tr>
+                    <td>Bodyfat%:</td>
+                    {data.map((d,i)=><td key={i}>{" "+simplifyValue((1-lbm/d) *100,1)+"% "}</td>)}
+                </tr>
+                <tr>
+                    <td>Days to Minimum:</td>
+                    {days.map((d,i)=><td key={i}>{`${d.x.toString()} days`}</td>)}
                 </tr>
             </tbody>
         </table> 

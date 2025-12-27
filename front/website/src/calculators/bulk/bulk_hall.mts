@@ -17,7 +17,7 @@ export function hallSim(
   // defaults based on Hall papers and practical choices
   const rhoF = params.rhoF ?? 7700; // kcal per kg stored fat
   const adapt = params.adaptCoeff ?? 0.1; // AT per kcal change
-  const tau = params.tau ?? 21; // days to approach AT target
+  const tau = params.tau ?? 7; // days to approach AT target
   const results = [];
   
   let F = w0 * bf0;
@@ -35,8 +35,10 @@ export function hallSim(
   const maxAdaptiveUp = 0.15 * baseBMR;
   const maxAdaptiveDown = -0.25 * baseBMR;
   const adaptUp = adapt;
-  const adaptDown = adapt; 
-  const minFat = 0.10 * w0; 
+  const adaptDown = adapt;
+
+  const minFatP = 0.1;
+  const minFat = minFatP/(1-minFatP) * L
 
   const dt = 1;
   const maxSteps = Math.min(days, 365*10)/dt;
@@ -56,14 +58,9 @@ export function hallSim(
     adaptive += (adaptive_target-adaptive) * dt/tau ;
     adaptive = Math.min(Math.max(adaptive, maxAdaptiveDown), maxAdaptiveUp);
 
+    const dF  = energyImbalance / rhoF * dt
 
-    let dF  = energyImbalance / rhoF * dt
-
-    if (dF < 0) {
-      dF = Math.max(dF, minFat - F);
-    } 
-
-    F += dF;
+    F = Math.max(minFat, F + dF);
 
     results.push({
       day,
