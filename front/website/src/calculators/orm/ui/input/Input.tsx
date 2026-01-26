@@ -67,7 +67,7 @@ export function Input({ increment, Iweight = "", Ireps = "", maxRep = 20, setInc
 
 
     const tooltipText = `ORM: ${validWeight && validReps ? orm(Number(weight), Number(reps)) : ""}`;
-    const weightError = (isNaNoE(weight) || Number(weight) < 1) ? "Weight ≥ 1kg" : `Weight ≤ ${maxwWight.toString()}kg`;
+    const weightError = isNaNoE(weight) ? "Not a number" : (Number(weight) < 1 ? "Weight ≥ 1kg" : `Weight ≤ ${maxwWight.toString()}kg`);
 
 
     const submit = (e: React.FormEvent<InputFormElement>) => {
