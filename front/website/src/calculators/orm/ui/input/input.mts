@@ -7,10 +7,19 @@ export function isNaNoE(value: (number | string)) {
 export const MaxwWeight = 2205;
 
 export function isValidWeight(weight: (number | string), maxwWeight: number = MaxwWeight) {
-    return !isNaNoE(weight) && 1 <= Number(weight) && Number(weight) <= maxwWeight;
+    if(isNaNoE(weight))
+        return false;
+    
+    const n = Number(weight);
+    return 1 <= n && n <= maxwWeight;
 }
 export function isValidReps(reps: (number | string)) {
-    return !isNaNoE(reps) && 1 <= Number(reps) && Number(reps) <= 20;
+    if (isNaNoE(reps))
+        return false;
+
+    const n = Number(reps);
+
+    return Number.isInteger(n) && n >= 1 && n <= 20;
 }
 
 export function IsRefMonted<T>(ref: RefObject<T>) {
