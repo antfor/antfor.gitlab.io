@@ -7,7 +7,7 @@
   --accent-2: #00bcd4;
   --surface-shadow: 0 6px 18px rgba(15,23,42,0.06);
   --radius: 10px;
-  --gap: 1rem;
+  --gap-controll: 1rem;
   --max-width: 1100px;
   --input-height: 40px;
 }
@@ -45,7 +45,7 @@
 .controls {
   display:flex;
   flex-wrap:wrap;
-  gap: var(--gap);
+  gap: var(--gap-controll);
   margin-bottom: 18px;
   align-items:center;
 }
