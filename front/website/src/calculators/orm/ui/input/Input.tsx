@@ -9,14 +9,6 @@ import { isValidReps, isValidWeight, IsRefMonted, isNaNoE } from './input.mts';
 import { Increment } from './Increment';
 import './input.css';
 
-interface FormElements extends HTMLFormControlsCollection {
-    weight: HTMLInputElement,
-    reps: HTMLInputElement
-    increment: HTMLInputElement
-}
-interface InputFormElement extends HTMLFormElement {
-    readonly elements: FormElements
-}
 type setReact<T> = Dispatch<SetStateAction<T>>
 interface Submit {
     weight: number | string,
@@ -24,7 +16,7 @@ interface Submit {
     validInputs: boolean,
     setInputs: ((w: number, r: number) => void),
     setValidated: setReact<boolean>,
-    e: React.FormEvent<InputFormElement>,
+    e: React.SubmitEvent<HTMLFormElement>,
 }
 function handleSubmit(props: Submit) {
 
@@ -70,7 +62,7 @@ export function Input({ increment, Iweight = "", Ireps = "", maxRep = 20, setInc
     const weightError = isNaNoE(weight) ? "Not a number" : (Number(weight) < 1 ? "Weight ≥ 1kg" : `Weight ≤ ${maxwWight.toString()}kg`);
 
 
-    const submit = (e: React.FormEvent<InputFormElement>) => {
+    const submit: React.SubmitEventHandler<HTMLFormElement> = (e) => {
         handleSubmit({
             weight: weight, reps: reps, validInputs: validWeight && validReps,
             setInputs: setInputs, setValidated: setValidated, e: e
