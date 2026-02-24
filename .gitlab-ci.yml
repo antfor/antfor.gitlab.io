@@ -30,7 +30,7 @@ build:
     - cp -r ./front/website/dist/. build/
     #Compression
     - |
-      find build -type f -regextype posix-extended \
+      find build -type f \
         -regex '.*\.(htm|html|txt|text|js|xml|json|mjs|svg|yaml|yml|toml|css|pdf)$' \
         -exec gzip -f -k -9 {} \; \
         -exec brotli -f -k -Z {} \; \
