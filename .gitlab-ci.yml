@@ -8,6 +8,7 @@ cache:
   key: bun-cache
   paths:
     - front/website/node_modules/
+    - front/website/bun.lockb
 
 build:
   stage: build
@@ -33,9 +34,9 @@ build:
     - |
       find build -type f \
         -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\|pdf\)$' \
-        -exec gzip -f -k -9 {} \; \
-        -exec brotli -f -k -Z {} \; \
-        -exec zstd -f -k --ultra -22 -q {} \;
+        -exec gzip -f -k -9 {} + \
+        -exec brotli -f -k -Z {} + \
+        -exec zstd -f -k --ultra -22 -q {} +
 
   artifacts:
         paths:
@@ -52,6 +53,7 @@ pages_dev:
     name: preview/dev
     url: https://antfor.gitlab.io/dev/
   script:
+    - rm -rf public
     - mkdir -p public
     - cp -r build/. public/
   artifacts:
@@ -68,6 +70,7 @@ pages:
     name: Production
     url: https://anton-forsberg.com
   script:
+    - rm -rf public
     - mkdir -p public
     - cp -r build/. public
     - ls ./public -R -a
