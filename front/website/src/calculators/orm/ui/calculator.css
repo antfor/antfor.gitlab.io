@@ -7,11 +7,13 @@ b {
 }
 
 #calculator {
+  flex: 0 0 auto;
   font-family: "Oswald";
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
-  margin: 16px;
+  margin-inline: auto;
+  margin-block: 16px;
   width: 100%;
   max-width: 768px;
   min-width: 368px;
