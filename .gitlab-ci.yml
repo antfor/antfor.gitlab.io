@@ -80,7 +80,7 @@ pages:
   script:
     - mkdir public
     - mv build/* public
-    - ls ./public -R
+    - ls ./public -R -a
   artifacts:
     paths:
       - public
