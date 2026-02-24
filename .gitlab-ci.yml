@@ -31,7 +31,7 @@ build:
     #Compression
     - |
       find build -type f \
-        -regex '.*\.(htm|html|txt|text|js|xml|json|mjs|svg|yaml|yml|toml|css|pdf)$' \
+        -regex '.*\.\(htm\|html\|txt\|text\|js\|xml\|json\|mjs\|svg\|yaml\|yml\|toml\|css\|pdf\)$' \
         -exec gzip -f -k -9 {} \; \
         -exec brotli -f -k -Z {} \; \
         -exec zstd -f -k --ultra -22 -q {} \;
