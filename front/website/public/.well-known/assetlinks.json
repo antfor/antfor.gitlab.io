@@ -3,8 +3,8 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.antonforsberg.com",
-      "sha256_cert_fingerprints": ["34:D3:7F:72:F2:57:2C:90:C9:34:1B:8F:BA:92:24:F0:F3:82:C0:9A:DC:0E:80:FB:05:3C:C3:C2:0C:90:D8:4D"]
+      "package_name": "com.antonforsberg.orm",
+      "sha256_cert_fingerprints": ["1A:47:B2:8F:98:12:CE:20:07:F6:98:E3:A9:80:1B:AE:54:A8:5E:94:10:56:7D:A7:E6:4A:3C:3B:4E:54:FD:2F"]
     }
   }
 ]
