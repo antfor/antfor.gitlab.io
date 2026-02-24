@@ -112,10 +112,10 @@ export function Calculator() {
 
 
   return (
-    <Card id="calculator" data-bs-theme="dark">
+    <Card id="calculator" data-bs-theme="dark" translate="no">
       <Card.Header>
         <Stack direction="horizontal">
-          <h1 className="metal-mania-regular"><b>O</b>ne-<b>R</b>ep-<b>M</b>ax</h1>
+          <h1 translate="no" className="metal-mania-regular notranslate"><b>O</b>ne-<b>R</b>ep-<b>M</b>ax</h1>
           <Snake />
         </Stack>
       </Card.Header>
