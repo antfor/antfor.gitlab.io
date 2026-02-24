@@ -4,7 +4,7 @@
     "target": {
       "namespace": "android_app",
       "package_name": "com.antonforsberg.com",
-      "sha256_cert_fingerprints": ["1D:19:DE:9A:F9:0C:96:4E:75:CC:55:B2:56:51:41:F7:F7:31:88:33:F1:62:D3:63:1B:C3:4A:0E:27:AF:27:AB"]
+      "sha256_cert_fingerprints": ["60:56:0B:62:A2:B0:1F:89:B8:0E:C3:65:55:57:C7:8A:FB:B8:12:6E:49:92:17:5A:C9:00:51:AF:45:BC:AA:37"]
     }
   }
 ]
