@@ -63,7 +63,7 @@ export default function DefaultNavbar({ active, fixed }: props) {
   return (
     <Navbar expand="md" fixed={positon} className="bg-body-tertiary">
       <Container fluid={true}>
-        <Navbar.Brand className={navStyles.logo} href={activePage === PAGES.HOME ? undefined : PAGES.HOME}>Anton Forsberg</Navbar.Brand>
+        <Navbar.Brand className={navStyles.logo} href={activePage === PAGES.HOME ? undefined : PAGES.HOME}><span translate="no" className="notranslate">Anton Forsberg</span></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav"> <Hamburger /> </Navbar.Toggle>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
