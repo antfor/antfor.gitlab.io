@@ -56,9 +56,13 @@ pages_dev:
     - rm -rf public
     - mkdir -p public
     - cp -r build/. public/
+    - ls ./public -R -a
+    - echo "Pages accessible through ${CI_PAGES_URL}"
   artifacts:
     paths:
       - public
+  pages:
+    path_prefix: "dev"
  
 pages:
   stage: deploy
@@ -74,6 +78,7 @@ pages:
     - mkdir -p public
     - cp -r build/. public
     - ls ./public -R -a
+    - echo "Pages accessible through ${CI_PAGES_URL}"
   artifacts:
     paths:
       - public

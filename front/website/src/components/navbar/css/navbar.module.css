@@ -1,13 +1,13 @@
-
 @font-face {
   font-family: 'Libre Barcode 128 Text';
   src: url(/fonts/logo.woff2) format("woff2");
-  unicode-range: U+20,U+41,U+46,U+62,U+65,U+67,U+6E,U+6F,U+72-74;
+  unicode-range: U+20, U+41, U+46, U+62, U+65, U+67, U+6E, U+6F, U+72-74;
 }
 
 .logo {
   font-family: 'Libre Barcode 128 Text';
   --bs-navbar-brand-font-size: 39px;
   font-size: 39px;
+  overflow: hidden;
+  min-width: 0;
 }
-  
