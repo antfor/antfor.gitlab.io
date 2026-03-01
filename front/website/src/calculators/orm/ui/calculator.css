@@ -14,7 +14,11 @@ b {
   font-style: normal;
   margin-inline: auto;
   margin-block: 16px;
-  width: 100%;
+  width: calc(100% - 32px);
   max-width: 768px;
-  min-width: 368px;
+  min-width: max-content;
+}
+
+.noWrap {
+  white-space: nowrap;
 }
