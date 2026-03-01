@@ -12,9 +12,9 @@ cache:
 
 build:
   stage: build
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master"
-    - if: $CI_COMMIT_BRANCH == "dev"
+  only:
+    - master
+    - dev
   before_script:
     #Website
     - cd ./front/website    
@@ -43,10 +43,10 @@ build:
           - build
 
 
-pages/dev:
+pages_dev:
   stage: deploy
-  rules:
-    - if: $CI_COMMIT_BRANCH == "dev"
+  only:
+    - dev
   dependencies:
     - build
   environment:
@@ -57,7 +57,6 @@ pages/dev:
     - mkdir -p public
     - cp -r build/. public/
     - ls ./public -R -a
-    - echo "Pages accessible through ${CI_PAGES_URL}"
   artifacts:
     paths:
       - public
@@ -66,8 +65,8 @@ pages/dev:
  
 pages:
   stage: deploy
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master"
+  only:
+    - master
   dependencies:
     - build
   environment: 
@@ -78,7 +77,6 @@ pages:
     - mkdir -p public
     - cp -r build/. public
     - ls ./public -R -a
-    - echo "Pages accessible through ${CI_PAGES_URL}"
   artifacts:
     paths:
       - public
