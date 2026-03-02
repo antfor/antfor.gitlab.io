@@ -5,10 +5,11 @@ stages:
     - deploy
 
 cache:
-  key: bun-cache
+  key:
+    files:
+      - front/website/bun.lockb
   paths:
     - front/website/node_modules/
-    - front/website/bun.lockb
 
 build:
   stage: build
