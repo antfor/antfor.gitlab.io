@@ -20,11 +20,15 @@ type fOptions = (step?: number, thicc?: number) => FractalOptions;
 const options = new Map<Fractals, fOptions>();
 
 export enum Fractals {
+    TERNARYTREE_D = "ternaryTree_D",
     DRAGON = "Dragon",
     KOCHSNOWFLAKE = "KochSnowflake",
     BUSH_C = "Bush_C",
-    SYMPODIALTREE_A = "SympodialTree_A",
-    TERNARYTREE_A = "ternaryTree_A",
+    //SYMPODIALTREE_A = "SympodialTree_A",
+    //TERNARYTREE_A = "ternaryTree_A",
+    //TERNARYTREE_B = "ternaryTree_B",
+    //TERNARYTREE_C = "ternaryTree_C",
+    
     PARAMETRICTREE = "parametricTree",
     TETRAHEDRON = "Tetrahedron",
 }
@@ -37,6 +41,22 @@ export interface FractalOptions {
     readonly minIterations: number;
     readonly maxIterations: number;
     readonly defaultIterations: number;
+}
+
+options.set(Fractals.TERNARYTREE_D, ternaryTreeD);
+function ternaryTreeD(step = 4, thickness = step/2): FractalOptions {
+
+    return {
+        fractal: factory.ternaryTreeD(scale, step),
+
+        primitives: linePrim(step, thickness),
+        primitiveOffset: step,
+        thickness: () => 0,
+
+        minIterations: 1,
+        maxIterations: 8,
+        defaultIterations: 7,
+    };
 }
 
 options.set(Fractals.DRAGON, dragon);
@@ -87,7 +107,7 @@ function bushCCol(step = 4, thickness = step / 8.0): FractalOptions {
         defaultIterations: 2,
     };
 }
-
+/*
 options.set(Fractals.SYMPODIALTREE_A, sympodialTreeA);
 function sympodialTreeA(step = 15, thickness = step / 8.0): FractalOptions {
 
@@ -103,9 +123,9 @@ function sympodialTreeA(step = 15, thickness = step / 8.0): FractalOptions {
         defaultIterations: 10,
     };
 }
-
+//*
 options.set(Fractals.TERNARYTREE_A, ternaryTreeA);
-function ternaryTreeA(step = 4, thickness = step * 4): FractalOptions {
+function ternaryTreeA(step = 4, thickness = step/2): FractalOptions {
 
     return {
         fractal: factory.ternaryTreeA(scale, step),
@@ -116,9 +136,42 @@ function ternaryTreeA(step = 4, thickness = step * 4): FractalOptions {
 
         minIterations: 1,
         maxIterations: 7,
-        defaultIterations: 4,
+        defaultIterations: 6,
     };
 }
+
+options.set(Fractals.TERNARYTREE_B, ternaryTreeB);
+function ternaryTreeB(step = 4, thickness = step/2): FractalOptions {
+
+    return {
+        fractal: factory.ternaryTreeB(scale, step),
+
+        primitives: linePrim(step, thickness),
+        primitiveOffset: step,
+        thickness: () => 0,
+
+        minIterations: 1,
+        maxIterations: 7,
+        defaultIterations: 6,
+    };
+}
+
+options.set(Fractals.TERNARYTREE_C, ternaryTreeC);
+function ternaryTreeC(step = 4, thickness = step/2): FractalOptions {
+
+    return {
+        fractal: factory.ternaryTreeC(scale, step),
+
+        primitives: linePrim(step, thickness),
+        primitiveOffset: step,
+        thickness: () => 0,
+
+        minIterations: 1,
+        maxIterations: 8,
+        defaultIterations: 2,
+    };
+}
+//*/
 
 options.set(Fractals.PARAMETRICTREE, parametricTree);
 function parametricTree(step = 4, thickness = step / 8.0): FractalOptions {
@@ -158,6 +211,7 @@ export function getDefault() {
     return defaultFractal;
 }
 
+//TODO remove
 export function getDefaultIterations() {
     return defaultIterations;
 }

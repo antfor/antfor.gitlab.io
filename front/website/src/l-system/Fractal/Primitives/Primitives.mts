@@ -34,7 +34,7 @@ function createTetrahedron(L:number):Arrays{
     const arrays: Arrays = {
         position: [ver1,ver4,ver2,ver2,ver4,ver3,ver3,ver4,ver1,ver1,ver2,ver3].flat(),
         normal:   [nor1,nor1,nor1,nor2,nor2,nor2,nor3,nor3,nor3,nor4,nor4,nor4].flat(),
-        indices:  [0,1,2,3,4,5,6,7,8,9,10,11],
+        indices:  new Uint16Array([0,1,2,3,4,5,6,7,8,9,10,11]),
     };
 
     return arrays;
