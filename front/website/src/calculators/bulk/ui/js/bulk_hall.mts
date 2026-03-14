@@ -23,7 +23,6 @@ export function hallSim(
   let F = w0 * bf0;
   const L = w0 - F;
   let adaptive = 0;
-  let adaptive_target = 0;
 
   const bmrFromLBM = (lbm:number) => 370 + 21.6 * lbm;
 
@@ -54,7 +53,7 @@ export function hallSim(
     const energyImbalance = intake - tdee;
     
     const adaptEff = energyImbalance > 0 ? adaptUp : adaptDown;
-    adaptive_target = adaptEff * energyImbalance;
+    const adaptive_target = adaptEff * energyImbalance;
     adaptive += (adaptive_target-adaptive) * dt/tau ;
     adaptive = Math.min(Math.max(adaptive, maxAdaptiveDown), maxAdaptiveUp);
 

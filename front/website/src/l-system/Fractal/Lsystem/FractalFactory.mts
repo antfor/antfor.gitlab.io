@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-spread */
 import { Rule, succ, func } from './Rule.mts';
 import { State, Vec3 } from './State.mts';
 import { Fractal } from './Fractal.mts';
@@ -42,7 +41,7 @@ class FractalFactory {
 
   bushCParCOl(scale: Vec3 = [1, 1, 1], step = 1.0, dir: Vec3 = [0, 1, 0]) {
     const axiom = "F";
-    const rf = new Rule("F", ['C', [140 / 255, 80 / 255, 60 / 255], ..."FFC", [24 / 255, 180 / 255, 24 / 255], ..."-[-F+F+F]C", [48 / 255, 220 / 255, 48 / 255], ..."+[+F-F-F]"], forwardColor);
+    const rf = new Rule("F", ['C', [140 / 255, 80 / 255, 60 / 255], ...Array.from("FFC"), [24 / 255, 180 / 255, 24 / 255], ...Array.from("-[-F+F+F]C"), [48 / 255, 220 / 255, 48 / 255], ...Array.from("+[+F-F-F]")], forwardColor);
     const rc = new Rule("C", undefined, color as func, true);
     const rp = new Rule("+", undefined, turnRight);
     const rm = new Rule("-", undefined, turnLeft);
