@@ -1,10 +1,5 @@
 import 'scss/cv.scss';
 
-if(window.AdobeDC){
-  openPDF();
-}else{
-  document.addEventListener("adobe_dc_view_sdk.ready", openPDF);
-}
 
 enum Params {
   LANG = "lang",
@@ -69,4 +64,10 @@ function openPDF(){
     content:{ location:{ url: url}},
     metaData:{fileName: pdf}
   }, {embedMode: "IN_LINE", showPrintPDF: false});
+}
+
+if(window.AdobeDC){
+  openPDF();
+}else{
+  document.addEventListener("adobe_dc_view_sdk.ready", openPDF);
 }
