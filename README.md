@@ -28,7 +28,7 @@ https://anton-forsberg.com/projects/l-system
 
 https://anton-forsberg.com/projects/interest#calculator
 
-<img src="images/ränta.png" alt="sierpinski" style="max-height:300px;">
+<img src="images/ränta.png" alt="ränta" style="max-height:300px;">
 
 ### One-Rep-Max Calculator
 
