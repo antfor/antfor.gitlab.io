@@ -21,12 +21,31 @@ const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
 let start = 0.0;
 let start_animate = false;
 let animate = false;
-const  animation_time = 30.0;
 
 const num_animation = 2; 
 let animation = 0;
 
+function draw(time:number, animation_time:number){
+    const multiplier = 2;
+    twgl.resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement, multiplier);
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    
+    //console.log("%d %d",gl.canvas.width/multiplier, gl.canvas.height/multiplier);
+    const uniforms = {
+        time: time,
+        resolution: [gl.canvas.width, gl.canvas.height],
+        animation_time: animation_time,
+        animation: animation,
+    };
+
+    gl.useProgram(programInfo.program);
+    twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
+    twgl.setUniforms(programInfo, uniforms);
+    twgl.drawBufferInfo(gl, bufferInfo);
+}
+
 function render(time: number):void {
+    const animation_time = 30;
 
     if(start_animate){
         start_animate = false;
@@ -48,22 +67,7 @@ function render(time: number):void {
         glTime = 0;
     }
 
-    const multiplier = 2;
-    twgl.resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement, multiplier);
-    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
-    const uniforms = {
-        time: glTime,
-        resolution: [gl.canvas.width, gl.canvas.height],
-        animation_time: animation_time,
-        animation: animation,
-    };
-
-    gl.useProgram(programInfo.program);
-    twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
-    twgl.setUniforms(programInfo, uniforms);
-    twgl.drawBufferInfo(gl, bufferInfo);
-
+    draw(glTime, animation_time);
 
     if(animate){
         requestAnimationFrame(render);
@@ -73,12 +77,63 @@ function render(time: number):void {
 }
 
 
+function saveBlob(blob:Blob, filename:string) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+}
+
+let frame = 0;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function film(){
+
+    animation = 1;
+    const animation_time  = 1;
+    const fps = 1;
+
+    if(start_animate){
+        start_animate = false;
+        frame = 0;
+        animate = true;
+    }
+    
+    const frames = fps*animation_time;
+
+    if(animate && frame >= frames){
+        frame = 0;
+        animate = false;
+        zoomDone();
+    }
+
+    const time = frame * 1/fps;
+    draw(time, animation_time);
+
+    if(animate){
+        myCanvas.toBlob(blob => {
+            if(!blob) {
+                requestAnimationFrame(film); 
+                return;
+            }
+                
+            saveBlob(blob, `frame_${String(frame).padStart(4, "0")}.png`);
+
+            frame +=1; 
+            requestAnimationFrame(film);
+        });
+    }else{
+        reqested = false;
+    }
+}
+
+const renderFunction:(typeof render | typeof film) = render;
+
 let reqested = false;
 function requestRender(){
     if(reqested) return false;
 
     reqested = true;
-    requestAnimationFrame(render);
+    requestAnimationFrame(renderFunction);
 
     return true;
 }
@@ -88,7 +143,7 @@ function refreshRender(){
     
     if(animate || reqested) return;
 
-    render(0);
+    renderFunction(0);
 }
 
 const resizeObserver = new ResizeObserver(refreshRender);
