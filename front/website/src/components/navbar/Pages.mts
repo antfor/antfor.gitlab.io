@@ -16,8 +16,8 @@ export type page = typeof PAGES[keyof typeof PAGES];
 const PROJECT_URL = BASE_URL + "projects/";
 
 export const PROJECTS = {
-  Interest: PROJECT_URL + "interest#calculator",
   FRACTAL: PROJECT_URL + "l-system",
   ORM: PROJECT_URL + "orm",
   Diet: PROJECT_URL + "diet",
+  Interest: PROJECT_URL + "interest#calculator",
 } as const 
