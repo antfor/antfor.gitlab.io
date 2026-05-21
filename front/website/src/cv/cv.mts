@@ -11,7 +11,7 @@ enum Language{
 }
 
 function getParamNumber(name: Params, url = window.location.href):Language{
-  const defaultLanguage = Language.ENG;
+  const defaultLanguage = Language.SV;
   try {
     const value = new URL(url).searchParams.get(name);
     if(value === null ){
